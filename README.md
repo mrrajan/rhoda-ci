@@ -1,6 +1,6 @@
-# ODS-CI
+# ODA-CI
 
-ODS-CI is a framework to test Red Hat Open Data Science features and functionality
+ODA-CI is a framework to test Red Hat Openshift Database Access features and functionality
 using QE tiered testing.
 
 # Requirements
@@ -35,9 +35,8 @@ using QE tiered testing.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
-# ODS-CI Container Image
-See build [README](build/README.md) on how you can build a container to run ODS-CI automation in OpenShift.
+# ODA-CI Container Image
+See build [README](build/README.md) on how you can build a container to run ODA-CI automation in OpenShift.
 
 # License
 This project is open sourced under MIT License.
-AAA
