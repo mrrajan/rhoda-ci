@@ -16,7 +16,7 @@ $ podman run --rm -v $PWD/test-variables.yml:/tmp/rhoda-ci/test-variables.yml:Z 
 
 ### Running the rhoda-ci container image in OpenShift
 
-After building the container, you can deploy the container in a pod running on OpenShift. You can use [this](./ods-ci.pod.yaml) PersistentVolumeClaim and Pod definition to deploy the rhoda-ci container.  NOTE: This example pod attaches a PVC to preserve the test artifacts directory between runs and mounts the test-variables.yml file from a Secret.
+After building the container, you can deploy the container in a pod running on OpenShift. You can use [this](./rhoda-ci.pod.yaml) PersistentVolumeClaim and Pod definition to deploy the rhoda-ci container.  NOTE: This example pod attaches a PVC to preserve the test artifacts directory between runs and mounts the test-variables.yml file from a Secret.
 
 ```
 # Creates a Secret with test variables that can be mounted in ODS-CI container
