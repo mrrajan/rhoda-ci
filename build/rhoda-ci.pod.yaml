@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ods-ci
+  name: rhoda-ci
 spec:
   accessModes:
     - ReadWriteOnce
@@ -14,8 +14,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   labels:
-    deployment: ods-ci
-  name: ods-ci
+    deployment: rhoda-ci
+  name: rhoda-ci
 spec:
   securityContext:
     # This is required to make the test-output volume Writable
@@ -24,25 +24,25 @@ spec:
 
     - image: <INSERT URL TO YOUR BUILT IMAGE>
       imagePullPolicy: Always
-      name: ods-ci
+      name: rhoda-ci
       env:
         # Use this environment variable to pass args to the ods-ci run script in the container
         - name: RUN_SCRIPT_ARGS
-          value: "--test-variables-file /tmp/ods-ci-test-variables/test-variables.yml"
+          value: "--test-variables-file /tmp/rhoda-ci-test-variables/test-variables.yml"
       volumeMounts:
           # Mount the test-variables to prevent leaking secure info for the cluster you test against
-        - name: ods-ci-test-variables
-          mountPath: /tmp/ods-ci-test-variables
+        - name: rhoda-ci-test-variables
+          mountPath: /tmp/rhoda-ci-test-variables
 
-        - mountPath: /tmp/ods-ci/test-output
-          name: ods-ci-test-output
+        - mountPath: /tmp/rhoda-ci/test-output
+          name: rhoda-ci-test-output
   restartPolicy: Never
   volumes:
-    - name: ods-ci-test-variables
+    - name: rhoda-ci-test-variables
       secret:
         # Specify Secret that has the necessary test-variables.yml
-        secretName: ods-ci-test-variables
+        secretName: rhoda-ci-test-variables
     # Persistent Volume where we will store the test-output for this pod
-    - name: ods-ci-test-output
+    - name: rhoda-ci-test-output
       persistentVolumeClaim:
-        claimName: ods-ci
+        claimName: rhoda-ci
