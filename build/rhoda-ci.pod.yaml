@@ -26,7 +26,7 @@ spec:
       imagePullPolicy: Always
       name: rhoda-ci
       env:
-        # Use this environment variable to pass args to the ods-ci run script in the container
+        # Use this environment variable to pass args to the rhoda-ci run script in the container
         - name: RUN_SCRIPT_ARGS
           value: "--test-variables-file /tmp/rhoda-ci-test-variables/test-variables.yml"
       volumeMounts:

@@ -6,7 +6,7 @@ The latest build can be downloaded from: https://quay.io/rhodaci/rhoda-ci:latest
 eg: podman pull quay.io/rhodaci/rhoda-ci:latest
 
 ```bash
-# Build the container (optional if you dont want to use the latest from quay.io/odsci)
+# Build the container (optional if you dont want to use the latest from quay.io/rhodaci)
 $ podman build -t rhoda-ci:master -f build/Dockerfile .
 
 # Mount a file volume to provide a test-variables.yml file at runtime
@@ -19,6 +19,6 @@ $ podman run --rm -v $PWD/test-variables.yml:/tmp/rhoda-ci/test-variables.yml:Z 
 After building the container, you can deploy the container in a pod running on OpenShift. You can use [this](./rhoda-ci.pod.yaml) PersistentVolumeClaim and Pod definition to deploy the rhoda-ci container.  NOTE: This example pod attaches a PVC to preserve the test artifacts directory between runs and mounts the test-variables.yml file from a Secret.
 
 ```
-# Creates a Secret with test variables that can be mounted in ODS-CI container
+# Creates a Secret with test variables that can be mounted in RHODA-CI container
 oc create secret generic rhoda-ci-test-variables --from-file test-variables.yml
 ```
