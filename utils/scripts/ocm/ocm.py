@@ -56,7 +56,7 @@ class OpenshiftClusterManager():
             match = re.search(r'.*\.(\S+)', (os.path.basename(ocm_env[0])))
             if match is not None:
                 self.testing_platform = match.group(1)
-
+ 
     def _is_ocmcli_installed(self):
         """Checks if ocm cli is installed"""
         cmd = "ocm version"
@@ -120,7 +120,6 @@ class OpenshiftClusterManager():
                 chan_grp = ""
                 if (self.channel_group == "candidate"):
                     chan_grp = "--channel-group {}".format(self.channel_group)
-
                 version_cmd = "ocm list versions {} | grep -w \"".format(chan_grp) + re.escape(version) + "*\""
                 log.info("CMD: {}".format(version_cmd))
                 versions = execute_command(version_cmd)
