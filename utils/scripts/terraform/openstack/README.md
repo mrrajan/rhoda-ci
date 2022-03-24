@@ -3,15 +3,15 @@ Script to manage instances in openstack using terraform.
 Currently the script handles provisioning and deleting vm instances.
 
 ## Prerequisites
-Python 3.x
-Install terraform in cli
-pip3 install python-terraform
+- Python 3.x
+- Install terraform in cli
+- pip3 install python-terraform
 
 ## How to Run:
 1. Change directory to the terraform/openstack directory.
 
 ```
-# cd ods-ci/utils/scripts/terraform/openstack
+# cd rhoda-ci/utils/scripts/terraform/openstack
 ```
 
 2. Now run the script.
@@ -57,7 +57,7 @@ optional arguments:
   -h, --help            show this help message and exit
   --flavor-name         Flavour name (default: m1.medium)
   --image-name          Image name to create an instance (default:
-                        CentOS-8-x86_64-GenericCloud-released-latest)
+                        CentOS-Stream-8-x86_64-GenericCloud)
 # python3 provision.py delete_instance -h
 usage: provision.py delete_instance [-h] --cloud_name CLOUD_NAME --vm_name
                                     VM_NAME --key_pair KEY_PAIR --network_name
@@ -116,7 +116,7 @@ optional arguments:
 ## Example:
 To create a vm instance:
 ```
- # python3 provision.py create_instance --cloud_name <cloud_name> --vm_name <vm_name> --vm_user <vm_user> --vm_private_key <vm's ssh public or private key> --key_pair <key pair name> --network_name <network_name> --flavor-name <flavour name to create vm>
+ # python3 provision.py create_instance --cloud_name <cloud_name> --vm_name <vm_name> --vm_user <vm_user> --vm_private_key <vm ssh public or private key> --key_pair <key pair name> --network_name <network_name> --flavor-name <flavour name to create vm>
 ```
 
 To delete a vm instance:
