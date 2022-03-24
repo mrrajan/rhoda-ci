@@ -142,7 +142,7 @@ if __name__ == "__main__":
         optional_create_instance_parser.add_argument("--image-name",
             help="Image name to create an instance",
             action="store", dest="image_name", metavar="",
-            default="CentOS-8-x86_64-GenericCloud-released-latest")
+            default="CentOS-Stream-8-x86_64-GenericCloud")
         create_instance_parser.set_defaults(func=prov_obj.create_instance)
 
         #Argument parsers for delete_instance
@@ -177,7 +177,7 @@ if __name__ == "__main__":
         optional_delete_instance_parser.add_argument("--image-name",
             help="Image name to create an instance",
             action="store", dest="image_name", metavar="",
-            default="CentOS-8-x86_64-GenericCloud-released-latest")
+            default="CentOS-Stream-8-x86_64-GenericCloud")
         delete_instance_parser.set_defaults(func=prov_obj.delete_instance)
 
         #Argument parsers for set_config
