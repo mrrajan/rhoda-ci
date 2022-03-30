@@ -1,3 +1,0 @@
-2022-03-21 17:44:40,303 - ods-ci-logger - INFO - Using the latest osd version available in AWS...
-2022-03-21 17:44:40,303 - ods-ci-logger - INFO - CMD: ocm create cluster --aws-account-id 964832091718 --aws-access-key-id AKIA6BJDZLZDMY35KCEL --aws-secret-access-key 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 --ccs --region us-east-1 --compute-nodes 3 --compute-machine-type m5.2xlarge  testCluster
-2022-03-21 17:44:41,842 - ods-ci-logger - INFO - Failed to create osd cluster testCluster
