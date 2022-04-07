@@ -1,6 +1,6 @@
-# ODA-CI
+# RHODA-CI
 
-ODA-CI is a framework to test Red Hat Openshift Database Access features and functionality
+RHODA-CI is a framework to test Red Hat Openshift Database Access features and functionality
 using QE tiered testing.
 
 # Requirements
@@ -17,10 +17,7 @@ using QE tiered testing.
   1. Edit the test variables file to include information required for this test run.
      You will need to add info required for test execution:
 
-     * URLs based on the test case you are executing
-       ** OpenShift Console
-       ** Open Data Hub Dashboard
-       ** JupyterHub
+     * Openshift Console URL
      * Test user credentials
      * Browser webdriver to use for testing
 
@@ -35,8 +32,8 @@ using QE tiered testing.
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
-# ODA-CI Container Image
-See build [README](build/README.md) on how you can build a container to run ODA-CI automation in OpenShift.
+# RHODA-CI Container Image
+See build [README](build/README.md) on how you can build a container to run RHODA-CI automation in OpenShift.
 
 # License
 This project is open sourced under MIT License.

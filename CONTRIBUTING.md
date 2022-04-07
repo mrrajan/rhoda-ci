@@ -14,7 +14,7 @@ When contributing to this repository, please first discuss the change you wish t
 
 - In your fork, create a branch for your feature
 
-   ```git checkout -b add-test-ods-542-alerts```
+   ```git checkout -b add-branch```
 
 - Develop your feature and create a git commit:
   - Before committing the code, verify that it is formatted following the _ODS-CI Robot Framework Style Guide_ (see [how](https://github.com/red-hat-data-services/ods-ci/blob/master/docs/check-code-style.md)
@@ -33,18 +33,19 @@ When contributing to this repository, please first discuss the change you wish t
 
 - Push your changes:  ```git push```
 
-- Send a PR to ods-ci using GitHub's web interface
+- Send a PR to rhoda-ci using GitHub's web interface
 
 - If the PR can't be merged, rebase your branch to master:
   ```
-  git remote add upstream https://github.com/red-hat-data-services/ods-ci
+  git remote add upstream https://github.com/RHODA-lab/rhoda-ci.git
   git fetch upstream
-  git checkout add-test-ods-542-alerts
+  git checkout add-branch
   git rebase upstream/master
   git push -f
   ```
 
-- Test your PR in Jenkins using the rhods-ci-pr-test pipeline
+<!--
+- Test your PR in Jenkins using the rhoda-ci-pr-test pipeline
    - https://opendatascience-jenkins-csb-rhods.apps.ocp-c1.prod.psi.redhat.com/job/rhods-ci-pr-test
    - Log in if required
    - Build with Parameters (if you don't see this option contact the QE team)
@@ -61,3 +62,4 @@ When contributing to this repository, please first discuss the change you wish t
   ```
 
 - Participate in the feedback of your PR until is merged
+-->

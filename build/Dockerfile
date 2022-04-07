@@ -10,9 +10,9 @@ RUN dnf -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-8.n
     dnf install -y git python3 unzip chromium chromedriver &&\
     dnf clean all
 
-RUN mkdir $HOME/ods-ci
+RUN mkdir $HOME/rhoda-ci
 # Change the WORKDIR so the run script references any files/folders from the root of the repo
-WORKDIR $HOME/ods-ci
+WORKDIR $HOME/rhoda-ci
 
 COPY tests tests/
 COPY requirements.txt run_robot_test.sh setup.py .
