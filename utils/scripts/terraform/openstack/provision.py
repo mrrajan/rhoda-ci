@@ -38,9 +38,7 @@ class OpenstackTerraformProvisioner():
 
     def create_instance(self):
         """Created Openstack vm instance"""
-        print(self.ocm_version)
         ocm_download = "https://github.com/openshift-online/ocm-cli/releases/download/{}/ocm-linux-amd64".format(self.ocm_version)
-        print(ocm_download)
         tf = Terraform(working_dir=self.working_dir,
                        variables={'cloud_name': self.cloud_name,
                                   'vm_name': self.vm_name,
