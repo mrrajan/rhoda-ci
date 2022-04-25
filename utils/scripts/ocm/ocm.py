@@ -97,7 +97,7 @@ class OpenshiftClusterManager():
             return None
         return ret
 
-    def is_rhoda_cluster_exists(self):
+    def is_osd_cluster_exists(self):
         """Checks if cluster exists"""
         ret = self.ocm_describe()
         if ret is None:
@@ -107,8 +107,8 @@ class OpenshiftClusterManager():
         log.info("ocm cluster with name {} exists!".format(self.cluster_name))
         return True
 
-    def rhoda_cluster_create(self):
-        """Creates RHODA cluster"""
+    def osd_cluster_create(self):
+        """Creates OSD cluster"""
 
         if ((self.channel_group == "candidate") and (self.testing_platform == "prod")):
             log.error("Channel group 'candidate' is available only for stage environment.")
@@ -129,10 +129,10 @@ class OpenshiftClusterManager():
                     version = [ver for ver in versions.split("\n") if ver][-1]
                 self.openshift_version = version
             else:
-                log.info("Using the rhoda version given by user as it is...")
+                log.info("Using the osd version given by user as it is...")
             version = "--version {} ".format(self.openshift_version)
         else:
-            log.info("Using the latest rhoda version available in AWS...")
+            log.info("Using the latest osd version available in AWS...")
 
         channel_grp = ""
         if (self.channel_group != ""):
@@ -158,11 +158,11 @@ class OpenshiftClusterManager():
         log.info("CMD: {}".format(cmd))
         ret = execute_command(cmd)
         if ret is None:
-            log.info("Failed to create RHODA cluster {}".format(self.cluster_name))
+            log.info("Failed to create osd cluster {}".format(self.cluster_name))
             sys.exit(1)
 
-    def get_rhoda_cluster_id(self):
-        """Gets rhoda cluster ID"""
+    def get_osd_cluster_id(self):
+        """Gets osd cluster ID"""
 
         cluster_name = self.ocm_describe(filter="--json | jq -r '.id'")
         if cluster_name is None:
@@ -171,8 +171,8 @@ class OpenshiftClusterManager():
             sys.exit(1)
         return cluster_name.strip("\n")
 
-    def get_rhoda_cluster_state(self):
-        """Gets RHODA cluster state"""
+    def get_osd_cluster_state(self):
+        """Gets osd cluster state"""
 
         cluster_state = self.ocm_describe(filter="--json | jq -r '.state'")
         if cluster_state is None:
@@ -181,8 +181,8 @@ class OpenshiftClusterManager():
             sys.exit(1)
         return cluster_state.strip("\n")
 
-    def get_rhoda_cluster_version(self):
-        """Gets rhoda cluster version"""
+    def get_osd_cluster_version(self):
+        """Gets osd cluster version"""
 
         cluster_version = self.ocm_describe(filter="--json | jq -r '.version.raw_id'")
         if cluster_version is None:
@@ -191,8 +191,8 @@ class OpenshiftClusterManager():
             sys.exit(1)
         return cluster_version.strip("\n")
 
-    def get_rhoda_cluster_console_url(self):
-        """Gets RHODA cluster console url"""
+    def get_osd_cluster_console_url(self):
+        """Gets osd cluster console url"""
 
         filter_str = "--json | jq -r '.console.url'"
         cluster_console_url = self.ocm_describe(filter=filter_str)
@@ -202,16 +202,16 @@ class OpenshiftClusterManager():
             sys.exit(1)
         return cluster_console_url.strip("\n")
 
-    def get_rhoda_cluster_info(self):
-        """Gets RHODA cluster information and stores in config file"""
+    def get_osd_cluster_info(self):
+        """Gets osd cluster information and stores in config file"""
         config_template = self.repo_dir + self.config_template
         shutil.copy(config_template, self.repo_dir + "test-variables.yml")
         config_file = self.repo_dir + "test-variables.yml"
         with open(config_file, 'r') as fh:
             data = yaml.safe_load(fh)
-        console_url = self.get_rhoda_cluster_console_url()
+        console_url = self.get_osd_cluster_console_url()
         data['OCP_CONSOLE_URL'] = console_url
-        cluster_version = self.get_rhoda_cluster_version()
+        cluster_version = self.get_osd_cluster_version()
         data['CLUSTER_VERSION'] = cluster_version
         data['OCP_ADMIN_USER'] = {}
         data['OCP_ADMIN_USER']['AUTH_TYPE'] = "htpasswd-cluster-admin"
@@ -221,8 +221,8 @@ class OpenshiftClusterManager():
             yaml_file.write(yaml.dump(data, default_flow_style=False, sort_keys=False))
         log.info("success!")
 
-    def update_rhoda_cluster_info(self, config_file="rhoda_config_file.yaml"):
-        """Updates RHODa cluster information and stores in config file"""
+    def update_osd_cluster_info(self, config_file="rhoda_config_file.yaml"):
+        """Updates osd cluster information and stores in config file"""
 
         with open(config_file, 'r') as file:
             config_data = yaml.load(file)
@@ -236,15 +236,15 @@ class OpenshiftClusterManager():
         with open(config_file, 'w') as yaml_file:
             yaml_file.write( yaml.dump(config_data, default_flow_style=False))
 
-    def wait_for_rhoda_cluster_to_be_ready(self, timeout=7200):
+    def wait_for_osd_cluster_to_be_ready(self, timeout=7200):
         """Waits for cluster to be in ready state"""
 
         log.info("Waiting for cluster to be ready")
-        cluster_state = self.get_rhoda_cluster_state()
+        cluster_state = self.get_osd_cluster_state()
         count = 0
         check_flag = False
         while(count <= timeout):
-            cluster_state = self.get_rhoda_cluster_state()
+            cluster_state = self.get_osd_cluster_state()
             if cluster_state == "ready":
                 log.info("{} is in ready state".format(self.cluster_name))
                 check_flag = True
@@ -394,7 +394,7 @@ class OpenshiftClusterManager():
         output_file = "install_operator.json"
         self._render_template(template_file, output_file, replace_vars)
 
-        cluster_id = self.get_rhoda_cluster_id()
+        cluster_id = self.get_osd_cluster_id()
         cmd = ("ocm post /api/clusters_mgmt/v1/clusters/{}/addons "
                "--body={}".format(cluster_id, output_file))
         log.info("CMD: {}".format(cmd))
@@ -409,7 +409,7 @@ class OpenshiftClusterManager():
 
         addon_state = self.get_addon_state(addon_name)
         if addon_state != "not installed":
-            cluster_id = self.get_rhoda_cluster_id()
+            cluster_id = self.get_osd_cluster_id()
             cmd = ("ocm delete /api/clusters_mgmt/v1/clusters/{}/addons/"
                    "{}".format(cluster_id, addon_name))
             log.info("CMD: {}".format(cmd))
@@ -464,7 +464,7 @@ class OpenshiftClusterManager():
             output_file = "create_ldap_idp.json"
             self._render_template(template_file, output_file, replace_vars)
 
-            cluster_id = self.get_rhoda_cluster_id()
+            cluster_id = self.get_osd_cluster_id()
             cmd = ("ocm post /api/clusters_mgmt/v1/"
                    "clusters/{}/identity_providers "
                    "--body={}".format(cluster_id, output_file))
@@ -532,7 +532,7 @@ class OpenshiftClusterManager():
                                    group="rhods-users")
 
 	# Adds special users
-        # "(", ")", "|", "<", ">" not working in RHODA
+        # "(", ")", "|", "<", ">" not working in OSD
         # "+" and ";" disabled for now
         for char in [".", "^", "$", "*", "?", "[", "]", "{", "}", "@"]:
             self.add_user_to_group(user="ldap-special"+char,
@@ -559,10 +559,10 @@ class OpenshiftClusterManager():
 
     def create_cluster(self):
         """
-        Creates RHODA cluster
+        Creates OSD cluster
         """
-        self.rhoda_cluster_create()
-        self.wait_for_rhoda_cluster_to_be_ready()
+        self.osd_cluster_create()
+        self.wait_for_osd_cluster_to_be_ready()
 
         # Waiting 5 minutes to ensure all the cluster services are
         # up even after cluster is in ready state
@@ -603,25 +603,25 @@ class OpenshiftClusterManager():
         os.environ["OCM_CONFIG"] =  "ocm.json." + self.testing_platform
 
     def delete_cluster(self):
-        """ Delete RHODA Cluster"""
+        """ Delete OSD Cluster"""
 
-        cluster_id = self.get_rhoda_cluster_id()
+        cluster_id = self.get_osd_cluster_id()
         cmd = "ocm delete cluster {}".format(cluster_id)
         log.info("CMD: {}".format(cmd))
         ret = execute_command(cmd)
         if ret is None:
-            log.info("Failed to delete RHODA cluster {}".format(self.cluster_name))
+            log.info("Failed to delete osd cluster {}".format(self.cluster_name))
             sys.exit(1)
-        self.wait_for_rhoda_cluster_to_get_deleted()
+        self.wait_for_osd_cluster_to_get_deleted()
 
-    def wait_for_rhoda_cluster_to_get_deleted(self, timeout=3600):
+    def wait_for_osd_cluster_to_get_deleted(self, timeout=3600):
         """Waits for cluster to get deleted"""
 
-        cluster_exists = self.is_rhoda_cluster_exists()
+        cluster_exists = self.is_osd_cluster_exists()
         count = 0
         check_flag = False
         while(count <= timeout):
-            cluster_exists = self.is_rhoda_cluster_exists()
+            cluster_exists = self.is_osd_cluster_exists()
             if not cluster_exists:
                 log.info("{} is deleted".format(self.cluster_name))
                 check_flag = True
@@ -708,7 +708,7 @@ if __name__ == "__main__":
             required=True)
 
         optional_create_cluster_parser.add_argument("--cluster-name",
-            help="RHODA cluster name",
+            help="OSD cluster name",
             action="store", dest="cluster_name", metavar="",
             default="rhoda-qe-test")
         optional_create_cluster_parser.add_argument("--aws-region",
@@ -740,7 +740,7 @@ if __name__ == "__main__":
             help=("Delete managed OpenShift Dedicated v4 clusters via OCM."),
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         delete_cluster_parser.add_argument("--cluster-name",
-            help="rhoda cluster name",
+            help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
             default="rhoda-qe-test")
         delete_cluster_parser.set_defaults(func=ocm_obj.delete_cluster)
@@ -758,14 +758,14 @@ if __name__ == "__main__":
             action="store", dest="idp_name", metavar="",
             required=True)
         optional_delete_idp_parser.add_argument("--cluster-name",
-            help="rhoda cluster name",
+            help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
             default="rhoda-qe-test")
         delete_idp_parser.set_defaults(func=ocm_obj.delete_idp)
 
-        #Argument parsers for get_rhoda_cluster_info
+        #Argument parsers for get_osd_cluster_info
         info_parser = subparsers.add_parser(
-            'get_rhoda_cluster_info',
+            'get_osd_cluster_info',
             help=("Gets the cluster information"),
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         optional_info_parser = info_parser._action_groups.pop()
@@ -773,7 +773,7 @@ if __name__ == "__main__":
         info_parser._action_groups.append(optional_info_parser)
 
         optional_info_parser.add_argument("--cluster-name",
-            help="rhoda cluster name",
+            help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
             default="rhoda-qe-test")
         optional_info_parser.add_argument("--config_template",
@@ -788,11 +788,11 @@ if __name__ == "__main__":
             help="htpasswd Cluster admin password",
             action="store", dest="htpasswd_cluster_password", metavar="",
             default="")
-        info_parser.set_defaults(func=ocm_obj.get_rhoda_cluster_info)
+        info_parser.set_defaults(func=ocm_obj.get_osd_cluster_info)
 
-        #Argument parsers for update_rhoda_cluster_info
+        #Argument parsers for update_osd_cluster_info
         update_info_parser = subparsers.add_parser(
-            'update_rhoda_cluster_info',
+            'update_osd_cluster_info',
             help=("Updates the cluster information"),
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         optional_update_info_parser = update_info_parser._action_groups.pop()
@@ -800,7 +800,7 @@ if __name__ == "__main__":
         update_info_parser._action_groups.append(optional_update_info_parser)
 
         optional_update_info_parser.add_argument("--cluster-name",
-            help="rhoda cluster name",
+            help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
             default="rhoda-qe-test")
         optional_update_info_parser.add_argument("--htpasswd-cluster-password",
@@ -811,7 +811,7 @@ if __name__ == "__main__":
             help="Ldap test password",
             action="store", dest="ldap_test_password", metavar="",
             default="")
-        update_info_parser.set_defaults(func=ocm_obj.update_rhoda_cluster_info)
+        update_info_parser.set_defaults(func=ocm_obj.update_osd_cluster_info)
 
         #Argument parsers for install_rhods_addon
         install_rhods_parser = subparsers.add_parser(
@@ -821,7 +821,7 @@ if __name__ == "__main__":
         required_install_rhods_parser = install_rhods_parser.add_argument_group('required arguments')
 
         required_install_rhods_parser.add_argument("--cluster-name",
-            help="rhoda cluster name",
+            help="osd cluster name",
             action="store", dest="cluster_name",
             required=True)
         install_rhods_parser.set_defaults(func=ocm_obj.install_rhods_addon)
@@ -834,7 +834,7 @@ if __name__ == "__main__":
         required_install_gpu_parser = install_gpu_parser.add_argument_group('required arguments')
 
         required_install_gpu_parser.add_argument("--cluster-name",
-            help="rhoda cluster name",
+            help="osd cluster name",
             action="store", dest="cluster_name",
             required=True)
         install_gpu_parser.set_defaults(func=ocm_obj.install_gpu_addon)
@@ -850,7 +850,7 @@ if __name__ == "__main__":
         add_machinepool_parser._action_groups.append(optional_machinepool_cluster_parser)
 
         required_machinepool_cluster_parser.add_argument("--cluster-name",
-            help="rhoda cluster name",
+            help="osd cluster name",
             action="store", dest="cluster_name",
             required=True)
 
@@ -892,7 +892,7 @@ if __name__ == "__main__":
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         required_install_rhoda_parser = install_rhoda_parser.add_argument_group('required arguments')
         required_install_rhoda_parser.add_argument("--cluster-name",
-                                                   help="rhoda cluster name",
+                                                   help="osd cluster name",
                                                    action="store", dest="cluster_name",
                                                    required=True)
         install_rhoda_parser.set_defaults(func=ocm_obj.install_rhoda_addon)
