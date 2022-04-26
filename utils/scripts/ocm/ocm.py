@@ -49,6 +49,8 @@ class OpenshiftClusterManager():
         self.pool_node_count = args.get("pool_node_count")
         self.taints = args.get("taints")
         self.pool_name = args.get("pool_name")
+        self.config_template = args.get("config_template")
+        self.repo_dir = args.get("repo_dir")
 
         ocm_env = glob.glob(dir_path+"/../../../ocm.json.*")
         if ocm_env != []:
@@ -56,7 +58,7 @@ class OpenshiftClusterManager():
             match = re.search(r'.*\.(\S+)', (os.path.basename(ocm_env[0])))
             if match is not None:
                 self.testing_platform = match.group(1)
- 
+
     def _is_ocmcli_installed(self):
         """Checks if ocm cli is installed"""
         cmd = "ocm version"
@@ -143,7 +145,6 @@ class OpenshiftClusterManager():
                     channel_grp = "--channel-group {} ".format(self.channel_group)
             else:
                 log.error("Invalid channel group. Values can be 'stable' or 'candidate'.")
-
         cmd = ("ocm create cluster --aws-account-id {} "
                "--aws-access-key-id {} --aws-secret-access-key {} "
                "--ccs --region {} --compute-nodes {} "
@@ -201,31 +202,26 @@ class OpenshiftClusterManager():
             sys.exit(1)
         return cluster_console_url.strip("\n")
 
-    def get_osd_cluster_info(self, config_file="osd_config_file.yaml"):
+    def get_osd_cluster_info(self):
         """Gets osd cluster information and stores in config file"""
-
-        cluster_info = {}
+        config_template = self.repo_dir + self.config_template
+        shutil.copy(config_template, self.repo_dir + "test-variables.yml")
+        config_file = self.repo_dir + "test-variables.yml"
+        with open(config_file, 'r') as fh:
+            data = yaml.safe_load(fh)
         console_url = self.get_osd_cluster_console_url()
-        cluster_info['OCP_CONSOLE_URL'] = console_url
+        data['OCP_CONSOLE_URL'] = console_url
         cluster_version = self.get_osd_cluster_version()
-        cluster_info['CLUSTER_VERSION'] = cluster_version
-        odh_dashboard_url = console_url.replace('console-openshift-console',
-                                                'rhods-dashboard-redhat-ods-applications')
-        cluster_info['ODH_DASHBOARD_URL'] = odh_dashboard_url
-        # TODO: Avoid this hard coding and call
-        # create identity provider method once its ready
-        cluster_info['TEST_USER'] = {}
-        cluster_info['TEST_USER']['AUTH_TYPE'] = "ldap-provider-qe"
-        cluster_info['TEST_USER']['USERNAME'] = "ldap-admin1"
-        cluster_info['OCP_ADMIN_USER'] = {}
-        cluster_info['OCP_ADMIN_USER']['AUTH_TYPE'] = "htpasswd-cluster-admin"
-        cluster_info['OCP_ADMIN_USER']['USERNAME'] = "htpasswd-cluster-admin-user"
-        osd_cluster_info = {}
-        osd_cluster_info[self.cluster_name] = cluster_info
-        with open(config_file, 'w') as file:
-            yaml.dump(osd_cluster_info, file)
+        data['CLUSTER_VERSION'] = cluster_version
+        data['OCP_ADMIN_USER'] = {}
+        data['OCP_ADMIN_USER']['AUTH_TYPE'] = "htpasswd-cluster-admin"
+        data['OCP_ADMIN_USER']['USERNAME'] = "htpasswd-cluster-admin-user"
+        data['OCP_ADMIN_USER']['PASSWORD'] = self.htpasswd_cluster_password
+        with open(config_file, 'w') as yaml_file:
+            yaml_file.write(yaml.dump(data, default_flow_style=False, sort_keys=False))
+        log.info("success!")
 
-    def update_osd_cluster_info(self, config_file="osd_config_file.yaml"):
+    def update_osd_cluster_info(self, config_file="rhoda_config_file.yaml"):
         """Updates osd cluster information and stores in config file"""
 
         with open(config_file, 'r') as file:
@@ -642,12 +638,16 @@ class OpenshiftClusterManager():
         if not self.is_addon_installed("dbaas-operator"):
             self.install_addon("dbaas-operator")
             self.wait_for_addon_installation_to_complete("dbaas-operator")
-        # Waiting 5 minutes to ensure all the services are up
-        time.sleep(300)
+            time.sleep(300)
+        else:
+            log.info("Operator installed already")
 
     def uninstall_rhoda_addon(self):
-        self.uninstall_rhoda("dbaas-operator")
-        self.wait_for_addon_uninstallation_to_complete("dbaas-operator")
+        if self.is_addon_installed("dbaas-operator"):
+            self.uninstall_addon("dbaas-operator")
+            self.wait_for_addon_uninstallation_to_complete("dbaas-operator")
+        else:
+            log.info("Operator is not installed on this cluster")
 
 if __name__ == "__main__":
 
@@ -708,9 +708,9 @@ if __name__ == "__main__":
             required=True)
 
         optional_create_cluster_parser.add_argument("--cluster-name",
-            help="osd cluster name",
+            help="OSD cluster name",
             action="store", dest="cluster_name", metavar="",
-            default="osd-qe-1")
+            default="rhoda-qe-test")
         optional_create_cluster_parser.add_argument("--aws-region",
             help="aws region",
             action="store", dest="aws_region", metavar="",
@@ -742,7 +742,7 @@ if __name__ == "__main__":
         delete_cluster_parser.add_argument("--cluster-name",
             help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
-            default="osd-qe-1")
+            default="rhoda-qe-test")
         delete_cluster_parser.set_defaults(func=ocm_obj.delete_cluster)
 
         #Argument parsers for delete_idp
@@ -760,7 +760,7 @@ if __name__ == "__main__":
         optional_delete_idp_parser.add_argument("--cluster-name",
             help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
-            default="osd-qe-1")
+            default="rhoda-qe-test")
         delete_idp_parser.set_defaults(func=ocm_obj.delete_idp)
 
         #Argument parsers for get_osd_cluster_info
@@ -775,7 +775,19 @@ if __name__ == "__main__":
         optional_info_parser.add_argument("--cluster-name",
             help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
-            default="osd-qe-1")
+            default="rhoda-qe-test")
+        optional_info_parser.add_argument("--config_template",
+            help="template file to generate config",
+            action="store", dest="config_template", metavar="",
+            default="test-variables.yml.example")
+        optional_info_parser.add_argument("--repo_dir",
+            help="template file to generate config",
+            action="store", dest="repo_dir", metavar="",
+            default="")
+        optional_info_parser.add_argument("--htpasswd-cluster-password",
+            help="htpasswd Cluster admin password",
+            action="store", dest="htpasswd_cluster_password", metavar="",
+            default="")
         info_parser.set_defaults(func=ocm_obj.get_osd_cluster_info)
 
         #Argument parsers for update_osd_cluster_info
@@ -790,7 +802,7 @@ if __name__ == "__main__":
         optional_update_info_parser.add_argument("--cluster-name",
             help="osd cluster name",
             action="store", dest="cluster_name", metavar="",
-            default="osd-qe-1")
+            default="rhoda-qe-test")
         optional_update_info_parser.add_argument("--htpasswd-cluster-password",
             help="htpasswd Cluster admin password",
             action="store", dest="htpasswd_cluster_password", metavar="",
@@ -868,7 +880,7 @@ if __name__ == "__main__":
         required_uninstall_rhods_parser = uninstall_rhods_parser.add_argument_group('required arguments')
 
         required_uninstall_rhods_parser.add_argument("--cluster-name",
-            help="osd cluster name",
+            help="rhoda cluster name",
             action="store", dest="cluster_name",
             required=True)
         uninstall_rhods_parser.set_defaults(func=ocm_obj.uninstall_rhods_addon)
@@ -892,7 +904,7 @@ if __name__ == "__main__":
             formatter_class=argparse.ArgumentDefaultsHelpFormatter)
         required_uninstall_rhoda_parser = uninstall_rhoda_parser.add_argument_group('required arguments')
         required_uninstall_rhoda_parser.add_argument("--cluster-name",
-                                                     help="osd cluster name",
+                                                     help="rhoda cluster name",
                                                      action="store", dest="cluster_name",
                                                      required=True)
         uninstall_rhoda_parser.set_defaults(func=ocm_obj.uninstall_rhoda_addon)
