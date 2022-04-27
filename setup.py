@@ -29,7 +29,7 @@ setup(
         "requests",
         "robotframework-requests",
         "escapism",
-        "semver>=2,<3"
+        "semver>=2,<3",
     ],
     zip_safe=True,
     include_package_data=True,
