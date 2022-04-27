@@ -1,7 +1,7 @@
 *** Settings ***
 Library    String
-Resource    ../OR/login_obj.resource
-Resource    ../Keywords/login.resource
+Resource    ../keywords/login.resource
+Resource    ../objectrepo/login_obj.resource
 
 *** Keywords ***
 User Navigates To ${subMenuOption} Under ${sideNavBarMenu}

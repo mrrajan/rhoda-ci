@@ -1,7 +1,7 @@
 *** Settings ***
 Library     SeleniumLibrary
 Library     BuiltIn
-Resource    ../OR/login_obj.resource
+Resource    ../objectrepo/login_obj.resource
 
 *** Keywords ***
 The Browser Is On Openshift Home Screen

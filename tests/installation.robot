@@ -2,8 +2,8 @@
 Documentation    Test to verify installed operators screen for RHODA
 Metadata         Version    0.0.1
 Library         SeleniumLibrary
-Resource        ../Resources/Keywords/navigation.resource
-Resource        ../Resources/Keywords/operators.resource
+Resource        ../resources/keywords/navigation.resource
+Resource        ../resources/keywords/operators.resource
 Suite Setup     Set Library Search Order  SeleniumLibrary
 Test Setup      Given The Browser Is On Openshift Home Screen
 Test Teardown   Close Browser

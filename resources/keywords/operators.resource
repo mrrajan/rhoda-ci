@@ -1,6 +1,6 @@
 *** Settings ***
-Resource    ../Keywords/navigation.resource
-Resource    ../OR/operatorhub_obj.resource
+Resource    ../keywords/navigation.resource
+Resource    ../objectrepo/operatorhub_obj.resource
 
 *** Keywords ***
 User Searches Openshift Database Access Operator On RHODA Installed Cluster
