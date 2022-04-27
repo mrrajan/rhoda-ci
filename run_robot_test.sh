@@ -1,6 +1,6 @@
 #/bin/bash
 
-TEST_CASE_FILE=Tests
+TEST_CASE_FILE=tests
 TEST_VARIABLES_FILE=test-variables.yaml
 TEST_VARIABLES=""
 TEST_ARTIFACT_DIR="test-output"
