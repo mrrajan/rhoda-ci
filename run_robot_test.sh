@@ -1,7 +1,7 @@
 #/bin/bash
 
 TEST_CASE_FILE=Tests
-TEST_VARIABLES_FILE=test-variables.yml
+TEST_VARIABLES_FILE=test-variables.yaml
 TEST_VARIABLES=""
 TEST_ARTIFACT_DIR="test-output"
 EXTRA_ROBOT_ARGS=""
@@ -73,7 +73,7 @@ while [ "$#" -gt 0 ]; do
 done
 
 if [[ ! -f "${TEST_VARIABLES_FILE}" ]]; then
-  echo "Robot Framework test variable file (test-variables.yml) is missing"
+  echo "Robot Framework test variable file (test-variables.yaml) is missing"
   exit 1
 fi
 

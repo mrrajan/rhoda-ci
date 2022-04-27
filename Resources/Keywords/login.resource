@@ -1,10 +1,10 @@
 *** Settings ***
 Library     SeleniumLibrary
 Library     BuiltIn
-Resource    ../OR/Login_OR.resource
+Resource    ../OR/login_obj.resource
 
 *** Keywords ***
-The Browser is on Openshift Home screen
+The Browser Is On Openshift Home Screen
     Open Browser  ${OCP_CONSOLE_URL}  browser=${BROWSER.NAME}  options=${BROWSER.OPTIONS}
     Select Login Authentication Type    ${OCP_ADMIN_USER.AUTH_TYPE}
     Login To Openshift
@@ -22,4 +22,8 @@ Login To Openshift
     Input Text    ${txtBxUserName}     ${OCP_ADMIN_USER.USERNAME}
     Input Password    ${txtBxPassword}     ${OCP_ADMIN_USER.PASSWORD}
     Click Element    ${btnLogin}
+    Page Should Not Contain Element    ${lblLoginError}     message=Login Failed
     Wait Until Page Contains Element    ${titleOverview}    timeout=30s
+
+Tear Down The Test Suite
+    Log     Test Suite Test Down

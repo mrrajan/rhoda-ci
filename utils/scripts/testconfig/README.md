@@ -1,5 +1,5 @@
 # Generate test configuration yaml file
-Script to generate test config file - test-variables.yml
+Script to generate test config file - test-variables.yaml
 
 ## Prerequisites
 Python 3.x

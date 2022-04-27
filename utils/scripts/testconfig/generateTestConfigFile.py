@@ -41,7 +41,7 @@ def parse_args():
     parser.add_argument("-c", "--configtemplate",
                         help="absolute path of test config yaml file template",
                         action="store", dest="config_template",
-                        default="utils/scripts/testconfig/test-variables.yml")
+                        default="utils/scripts/testconfig/test-variables.yaml")
     parser.add_argument("-t", "--testcluster",
                         help="Test cluster. Eg: modh-qe-1",
                         action="store", dest="test_cluster",
@@ -144,7 +144,7 @@ def main():
     else:
         print ("Skipping cloning of config gitlab repo")
 
-    config_file = args.repo_dir + "/test-variables.yml"
+    config_file = args.repo_dir + "/test-variables.yaml"
     config_data = read_yaml(config_file)
 
     # Generate test config file
