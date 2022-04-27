@@ -29,4 +29,4 @@ The Operator Tile Loads With ${expected} Status
     Should Be Equal    ${expected}    ${actual.strip()}
 
 Openshift Database Access Operator Filtered With Succeeded Status
-    Page Should Contain Element    ${elemDbaasStatus}
+    Wait Until Page Contains Element    ${elemDbaasStatus}  timeout=15s
