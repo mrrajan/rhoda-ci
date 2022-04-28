@@ -1,14 +1,14 @@
 *** Settings ***
-Resource    ../Keywords/Navigation.resource
-Resource    ../OR/OperatorHub_OR.resource
+Resource    ../keywords/navigation.resource
+Resource    ../objectrepo/operatorhub_obj.resource
 
 *** Keywords ***
-User Searches Openshift Database Access Operator on RHODA installed cluster
-    The Browser is on OperatorHub page
-    User Filters redhat-dbaas-operator On Project Dropdown
+User Searches Openshift Database Access Operator On RHODA Installed Cluster
+    The Browser Is On OperatorHub Page
+    User Filters redhat-dbaas-operator Namespace On Project Dropdown
     User Filters Database Access Operator On Filter TextBox
 
-User Filters ${projectName} On Project Dropdown
+User Filters ${projectName} Namespace On Project Dropdown
     Wait Until Page Contains Element    ${drpDwnProjectSelect}      timeout=15s
     Click Element    ${drpDwnProjectSelect}
     Element Should Be Visible    ${txtBxProjectSelect}
@@ -22,8 +22,11 @@ User Filters ${projectName} On Project Dropdown
 User Filters ${operatorName} Operator On Filter TextBox
     Wait Until Page Contains Element    ${txtBxFilter}  timeout=15s
     Input Text    ${txtBxFilter}    ${operatorName}
-    Wait Until Page Contains Element    ${eleDatabaseAccessTile}
+    Wait Until Page Contains Element    ${elemDatabaseAccessTile}
 
-The Operator tile loads with ${expected} status
-    ${actual}=   Get Element Attribute    ${eleDatabaseAccessStatus}    innerText
+The Operator Tile Loads With ${expected} Status
+    ${actual}=   Get Element Attribute    ${elemDatabaseAccessStatus}    innerText
     Should Be Equal    ${expected}    ${actual.strip()}
+
+Openshift Database Access Operator Filtered With Succeeded Status
+    Wait Until Page Contains Element    ${elemDbaasStatus}  timeout=15s

@@ -205,8 +205,8 @@ class OpenshiftClusterManager():
     def get_osd_cluster_info(self):
         """Gets osd cluster information and stores in config file"""
         config_template = self.repo_dir + self.config_template
-        shutil.copy(config_template, self.repo_dir + "test-variables.yml")
-        config_file = self.repo_dir + "test-variables.yml"
+        shutil.copy(config_template, self.repo_dir + "test-variables.yaml")
+        config_file = self.repo_dir + "test-variables.yaml"
         with open(config_file, 'r') as fh:
             data = yaml.safe_load(fh)
         console_url = self.get_osd_cluster_console_url()
@@ -779,7 +779,7 @@ if __name__ == "__main__":
         optional_info_parser.add_argument("--config_template",
             help="template file to generate config",
             action="store", dest="config_template", metavar="",
-            default="test-variables.yml.example")
+            default="test-variables.yaml.example")
         optional_info_parser.add_argument("--repo_dir",
             help="template file to generate config",
             action="store", dest="repo_dir", metavar="",

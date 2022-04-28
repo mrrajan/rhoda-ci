@@ -11,7 +11,7 @@ using QE tiered testing.
   1. Create a variables file for all of the global test values
      ```bash
      # Create the initial test variables from the example template variables file
-     cp test-variables.yml.example test-variables.yml
+     cp test-variables.yaml.example test-variables.yaml
      ```
 
   1. Edit the test variables file to include information required for this test run.

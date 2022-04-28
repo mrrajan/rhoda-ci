@@ -7,5 +7,6 @@ ${txtBxProjectSelect}           //input[contains(@data-test,"dropdown-text-filte
 ${btnProjectSelect}             //span[.="<<project>>"]/parent::button
 ${lblProjectSelect}             //span[.="Project: <<project>>"]
 ${txtBxFilter}                  //input[@data-test="search-operatorhub"]
-${eleDatabaseAccessTile}        //a[contains(@class, "co-catalog-tile") and contains(@href,"redhat-dbaas-operator")]
-${eleDatabaseAccessStatus}      //a[contains(@class, "co-catalog-tile") and contains(@href,"redhat-dbaas-operator")]/div[contains(@class,"footer")]/span
+${elemDatabaseAccessTile}       //a[contains(@class, "co-catalog-tile") and contains(@href,"redhat-dbaas-operator")]
+${elemDatabaseAccessStatus}     //a[contains(@href,"redhat-dbaas-operator")]/div[contains(@class,"footer")]/span
+${elemDbaasStatus}              //a[contains(.,"OpenShift Database Access Operator")]//ancestor::tr/td[contains(.,"Succeeded")]

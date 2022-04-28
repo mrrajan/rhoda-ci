@@ -85,7 +85,7 @@ def main():
     if not ret:
         sys.exit(1)
 
-    polarion_config_file = "polarion_config.yml"
+    polarion_config_file = "polarion_config.yaml"
     filename = SCRIPT_DIR + polarion_config_file
     config_data = read_yaml(filename)
     generate_polarion_config(filename, config_data, args.testrun_title)
