@@ -1,5 +1,6 @@
 import argparse
 import os
+import requests
 import shutil
 import sys
 
@@ -115,6 +116,20 @@ class OpenstackTerraformProvisioner:
         os.makedirs(dst_dir, exist_ok=True)
         shutil.move(output_file, os.path.join(dst_dir, output_file))
 
+    def get_ocm_latest_tag(self):
+        """Retrieves the version corresponding to the latest tag on OCM GitHub"""
+        try:
+            resp = requests.get(
+                "https://api.github.com/repos/openshift-online/ocm-cli/releases/latest"
+            )
+            resp_dict = resp.json()
+            tag_name = resp_dict["tag_name"]
+        except Exception as err:
+            log.warning("Exception occurred: {}".format(err))
+            log.info("Using v0.1.62 as OCM Version")
+            tag_name = "v0.1.62"
+        return tag_name
+
 
 if __name__ == "__main__":
 
@@ -202,7 +217,7 @@ if __name__ == "__main__":
         action="store",
         dest="ocm_version",
         metavar="",
-        default="v0.1.62",
+        default=prov_obj.get_ocm_latest_tag(),
     )
     create_instance_parser.set_defaults(func=prov_obj.create_instance)
 
