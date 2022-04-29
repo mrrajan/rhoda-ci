@@ -1,12 +1,17 @@
 import os
-import subprocess
-import shutil
-import yaml
+import random
 import re
+import shutil
+import string
+import subprocess
 import sys
 import time
+
 import jinja2
+import yaml
 from logger import log
+
+ROBOT_LIBRARY_VERSION = "0.1"
 
 
 def clone_config_repo(**kwargs):
@@ -119,3 +124,12 @@ def render_template(search_path, template_file, output_file, replace_vars):
             "Failed to render template and create json " "file {}".format(output_file)
         )
         sys.exit(1)
+
+
+def random_string():
+    text = string.ascii_lowercase
+    return "".join(random.choice(text) for i in range(5))
+
+
+def get_provider_account_name(string_suffix: string = "DBAAS"):
+    return (random_string() + string_suffix).lower().replace(" ", "-")[:10]
