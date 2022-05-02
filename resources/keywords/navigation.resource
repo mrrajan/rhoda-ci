@@ -1,7 +1,7 @@
 *** Settings ***
 Library     String
 Resource    ../keywords/login.resource
-Resource    ../objectrepo/login_obj.resource
+Resource    ../object_repo/login_obj.resource
 
 
 *** Keywords ***

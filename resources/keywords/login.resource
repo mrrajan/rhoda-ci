@@ -1,7 +1,7 @@
 *** Settings ***
 Library     SeleniumLibrary
 Library     BuiltIn
-Resource    ../objectrepo/login_obj.resource
+Resource    ../object_repo/login_obj.resource
 
 
 *** Keywords ***

@@ -1,7 +1,7 @@
 *** Settings ***
 Resource    ../keywords/navigation.resource
-Resource    ../objectrepo/operatorhub_obj.resource
-Resource    ../objectrepo/installed_operators_obj.resource
+Resource    ../object_repo/operatorhub_obj.resource
+Resource    ../object_repo/installed_operators_obj.resource
 
 
 *** Keywords ***

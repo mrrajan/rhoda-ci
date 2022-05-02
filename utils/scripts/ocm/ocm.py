@@ -279,13 +279,13 @@ class OpenshiftClusterManager:
         config_file = self.configrepo_dir + "test-variables.yaml"
         with open(config_file, "r") as fh:
             data = yaml.safe_load(fh)
-        data["ISV_CRED"]["MONGODB"] = {}
-        data["ISV_CRED"]["MONGODB"]["ORG_ID"] = self.mongo_org_id
-        data["ISV_CRED"]["MONGODB"]["PUB_KEY"] = self.mongo_pub_key
-        data["ISV_CRED"]["MONGODB"]["PRI_KEY"] = self.mongo_pri_key
-        data["ISV_CRED"]["CRUNCHYDB"]["PUB_KEY"] = self.crunchy_pub_key
-        data["ISV_CRED"]["CRUNCHYDB"]["PRI_KEY"] = self.crunchy_pri_key
-        data["ISV_CRED"]["COCKROACHDB"]["API_KEY"] = self.crdb_api_key
+        data["MONGODB"] = {}
+        data["MONGODB"]["ORG_ID"] = self.mongo_org_id
+        data["MONGODB"]["PUB_KEY"] = self.mongo_pub_key
+        data["MONGODB"]["PRI_KEY"] = self.mongo_pri_key
+        data["CRUNCHYDB"]["PUB_KEY"] = self.crunchy_pub_key
+        data["CRUNCHYDB"]["PRI_KEY"] = self.crunchy_pri_key
+        data["COCKROACHDB"]["API_KEY"] = self.crdb_api_key
         with open(config_file, "w") as yaml_file:
             yaml_file.write(yaml.dump(data, default_flow_style=False, sort_keys=False))
         log.info("update isv infromation success!")

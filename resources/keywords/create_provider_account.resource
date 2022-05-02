@@ -1,7 +1,7 @@
 *** Settings ***
 Resource    ../keywords/operators.resource
-Resource    ../objectrepo/database_access_obj.resource
-Resource    ../objectrepo/installed_operators_obj.resource
+Resource    ../object_repo/database_access_obj.resource
+Resource    ../object_repo/installed_operators_obj.resource
 Library     ../../utils/scripts/util.py
 
 
