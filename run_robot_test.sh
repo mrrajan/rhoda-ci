@@ -85,7 +85,7 @@ disp_usage() {
     echo "      -i <TEST_INCLUDE_TAG>: Specify included tags for Robot"
     echo "      -r <EXTRA_ROBOT_ARGS>: Additional arguments to pass to the robot cli"
     echo "      -s: Skip the installation of required Python Libraries"
-    echo "      -t <TEST_CASE_FILE>: Specify test case to run, should be present under Tests directory"
+    echo "      -t <TEST_CASE_FILE>: Specify test case to run, should be present under tests directory"
     echo "      -u: Update/Create Python VirtualEnv"
     echo "      -v <>: Override/Add global variables specified in the test variables file"
 }
