@@ -53,9 +53,9 @@ User Enters Data To Create MongoDB Provider Account
     [Arguments]    ${mongoDB}=MongoDB Atlas Cloud Database Service
     User Enters Provider Account Name And Selects Database Provider ${mongoDB}
     Wait Until Page Contains Element    ${txtBxMongoDBOrgID}    timeout=10s
-    Input Text    ${txtBxMongoDBOrgID}    ${ISV_CRED.MONGODB.ORG_ID}
-    Input Text    ${txtBxMongoDBPubAPI}    ${ISV_CRED.MONGODB.PUB_KEY}
-    Input Text    ${txtBxMongoDBPrivAPI}    ${ISV_CRED.MONGODB.PRI_KEY}
+    Input Text    ${txtBxMongoDBOrgID}    ${MONGODB.ORG_ID}
+    Input Text    ${txtBxMongoDBPubAPI}    ${MONGODB.PUB_KEY}
+    Input Text    ${txtBxMongoDBPrivAPI}    ${MONGODB.PRI_KEY}
     Element Should Be Visible    ${btnCreateEnabled}
     Click Element    ${btnCreateEnabled}
 
