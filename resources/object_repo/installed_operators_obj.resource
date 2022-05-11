@@ -6,3 +6,8 @@ Object Repository for Installed Operators Screen
 ${elemDbaasStatus}          //a[contains(.,"OpenShift Database Access Operator")]//ancestor::tr/td[contains(.,"Succeeded")]
 ${titleDbaasOperator}       //h1[contains(.,"OpenShift Database Access Operator") and contains(@class,"logo__name")]
 ${elemDbaasInvStatus}       //td[contains(.,"<<paname>>")]/parent::tr/td[contains(.,"SpecSynced, InventoryReady")]
+${btnLastUpdatedHeader}     //th[contains(@data-label,"Last updated")]
+${btnInventoryFilterType}   //button[contains(@data-test-id,"dropdown-button")]
+${btnInventoryFilterName}   id:NAME-Link
+${txtBxSearchByName}        //input[@aria-label="Search by name..."]
+

@@ -3,17 +3,16 @@ Resource    ../keywords/operators.resource
 Resource    ../object_repo/database_access_obj.resource
 Resource    ../object_repo/installed_operators_obj.resource
 Library     ../../utils/scripts/util.py
+Library     ../../utils/scripts/dbaas_connection.py
 
 
 *** Variables ***
-${PROJECT}          dedicated-admin
 ${provaccname}      ${EMPTY}
-
 
 *** Keywords ***
 User Filters Project Other Than redhat-dbaas-operator And Navigates To Database Access Page
     User Navigates To Installed Operators Under Operators
-    User Filters ${PROJECT} Namespace On Project Dropdown
+    User Filters dedicated-admin Namespace On Project Dropdown
     User Navigates To Database Access Page
 
 User Navigates To Create Provider Account Screen From Database Access Page
@@ -53,9 +52,9 @@ User Enters Data To Create MongoDB Provider Account
     [Arguments]    ${mongoDB}=MongoDB Atlas Cloud Database Service
     User Enters Provider Account Name And Selects Database Provider ${mongoDB}
     Wait Until Page Contains Element    ${txtBxMongoDBOrgID}    timeout=10s
-    Input Text    ${txtBxMongoDBOrgID}    ${MONGODB.ORG_ID}
-    Input Text    ${txtBxMongoDBPubAPI}    ${MONGODB.PUB_KEY}
-    Input Text    ${txtBxMongoDBPrivAPI}    ${MONGODB.PRI_KEY}
+    Input Text    ${txtBxMongoDBOrgID}    ${MONGO.ORG_ID}
+    Input Text    ${txtBxMongoDBPubAPI}    ${MONGO.PUB_KEY}
+    Input Text    ${txtBxMongoDBPrivAPI}    ${MONGO.PRI_KEY}
     Element Should Be Visible    ${btnCreateEnabled}
     Click Element    ${btnCreateEnabled}
 
@@ -64,15 +63,29 @@ Provider Account Creation Successful And Application Navigates To Success Screen
     Provider Account Creation Success
 
 Application Navigates To Provider Account Creation Success Screen
-    Wait Until Page Contains Element    ${lblDBInstSuccess}    timeout=10s
+    Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${lblDBInstSuccess}
     Element Should Be Visible    ${btnViewProviderAcc}
 
 Provider Account Creation Success
     Click Element    ${btnViewProviderAcc}
+    Wait Until Page Contains Element    ${btnLastUpdatedHeader}     timeout=10s
+    Filter ${provaccname} On DBaaS Inventory
     ${elemDbaasInvStatusUpd}=    Replace String    ${elemDbaasInvStatus}    <<paname>>    ${provaccname}
-    Wait Until Keyword Succeeds
-    ...    5x
-    ...    1s
-    ...    Wait Until Page Contains Element
-    ...    ${elemDbaasInvStatusUpd}
-    ...    timeout=10s
+    Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${elemDbaasInvStatusUpd}
+    Set Suite Variable    ${provaccname}
+
+User Creates MongoDB Provider Account
+    Run Keyword If    "${provaccname}" == "${EMPTY}"
+    ...    Create MongoDB Provider Account
+    ...  ELSE
+    ...    Log To Console    Provider Account ${provaccname} Exists
+
+Create MongoDB Provider Account
+    User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
+    User Navigates To Create Provider Account Screen From Database Access Page
+    User Enters Data To Create MongoDB Provider Account
+    Provider Account Creation Successful And Application Navigates To Success Screen
+
+
+
+

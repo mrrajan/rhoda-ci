@@ -133,3 +133,7 @@ def random_string():
 
 def get_provider_account_name(string_suffix: string = "DBAAS"):
     return (random_string() + string_suffix).lower().replace(" ", "-")[:10]
+
+
+def get_project_name(string_name: list):
+    return ("-".join(string_name) + random_string()).lower().replace(" ", "-")[:25]

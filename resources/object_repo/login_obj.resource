@@ -17,3 +17,8 @@ ${lblChildPageHeader}       //h1[contains(.,"<<submenu>>")]
 ${lblPageTitle}             //span[contains(@data-test-id,"resource-title") and contains(.,"<<header>>")]
 ${elemDataServiceNav}       //li[starts-with(.,"Data Services") and contains(@class,"nav")]
 ${elemDataAccessNav}        //li[starts-with(.,"Data Services") and contains(@class,"nav")]/section//li[contains(.,"Database Access")]
+${btnPerspective}           (//div[@id="page-sidebar"]//button)[1]
+${elemPerspectiveOpt}       //h2[.="<<option>>"]/parent::a
+${elemWelcomeTile}          id:guided-tour-modal
+${btnWelcomTileClose}       //div[@id="guided-tour-modal"]/button
+
