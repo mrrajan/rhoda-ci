@@ -3,15 +3,16 @@ Resource    ../keywords/create_provider_account.resource
 Resource    ../object_repo/developer_catalog_obj.resource
 
 *** Variables ***
-${newProject}      ${EMPTY}
+${newProject}        ${EMPTY}
 ${instanceName}      ${EMPTY}
 
 *** Keywords ***
 User Selects A Project For Database Connection
     Run Keyword If    '${newProject}'=='${EMPTY}'
     ...    Create New Project
-    ...  ELSE
+    ...  ELSE    Run Keywords
     ...    Log To Console    Project ${newProject} exists
+    ...    AND    Set Project Namespace To ${newProject}
 
 Create New Project
     Wait Until Page Contains Element    ${drpDwnProjectSelect}    timeout=15s
@@ -23,7 +24,18 @@ Create New Project
     Set Suite Variable    ${newProject}
     Input Text    ${txtBxProjectName}    ${newProject}
     Click Element    ${btnConfirmCreate}
+    ${lblProjectSelectUpd}=     Replace String    ${lblProjectSelect}    <<project>>    ${newProject}
     Element Should Not Be Visible    ${txtProjectCreateError}
+    Wait Until Page Contains Element    ${lblProjectSelectUpd}
+
+Set Project Namespace To ${proj}
+    Wait Until Page Contains Element    ${drpDwnProjectSelect}    timeout=15s
+    Click Element    ${drpDwnProjectSelect}
+    ${btnProjectSelectUpd}=    Replace String    ${btnProjectSelect}    <<project>>    ${proj}
+    ${lblProjectSelectUpd}=    Replace String    ${lblProjectSelect}    <<project>>    ${proj}
+    Wait Until Page Contains Element    ${btnProjectSelectUpd}    timeout=5s
+    Click Element    ${btnProjectSelectUpd}
+    Element Should Be Visible    ${lblProjectSelectUpd}
 
 User Navigates To Connect ${databaseProvider} Screen On Developers View
     User Selects Developer View
@@ -56,15 +68,17 @@ User Selects Database Instance For The Provider Account
     ${instanceName}=    Select Database Instance    ${tableDevCatDatabaseInstance}    ${btnDevCatDBInstanceConnect}    ${txtAlreadyExists}
     Set Suite Variable    ${instanceName}
 
-User Changes Topology View To List View
+Set ${type} View On Topology View
     Wait Until Page Contains Element    ${btnDevTopologyViewSwitch}     timeout=10s
     ${currentView}=     Get Element Attribute    ${btnDevTopologyViewSwitch}    aria-label
-    Run Keyword If    '${currentView}'=='List view'
-    ...    Click Element    ${currentView}
-    Element Should Be Visible    ${elemGraphView}
+    Run Keyword If    "${type}" in """${currentView}"""
+    ...    Click Element    ${btnDevTopologyViewSwitch}
+    ${btnTopologyViewUpd}=    Replace String    ${btnTopologyView}    <<type>>    ${type}
+    Element Should Not Be Visible    ${btnTopologyViewUpd}
 
 DBSC Instance Deployed On Developer Topology Graph View
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${txtBxDisplayOptions}
+    Set Graph View On Topology View
     ${instance}=    Get Substring    ${instanceName}    0   6
     ${elemDBInstanceTopologyUpd}=       Replace String    ${elemDBInstanceTopology}    <<instance>>    ${instance}
     Wait Until Page Contains Element    ${elemDBInstanceTopologyUpd}    timeout=10s
@@ -73,7 +87,7 @@ DBSC Instance Deployed On Developer Topology Graph View
 
 DBSC Instance Deployed On Developer Topology List View
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${txtBxDisplayOptions}
-    User Changes Topology View To List View
+    Set List View On Topology View
     ${txtTopologyListInstanceUpd}=       Replace String    ${txtTopologyListInstance}    <<instance>>    ${instanceName}
     Wait Until Page Contains Element    ${txtTopologyListInstanceUpd}  timeout=10s
     Click Element    ${txtTopologyListInstanceUpd}
@@ -82,4 +96,3 @@ DBSC Instance Deployed On Developer Topology List View
 DBSC Instance Pan Displays
     ${elemTopologyInstancePanUpd}=     Replace String    ${elemTopologyInstancePan}    <<instance>>    ${instanceName}
     Wait Until Page Contains Element    ${elemTopologyInstancePanUpd}    timeout=10s
-

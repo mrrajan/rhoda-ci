@@ -21,7 +21,7 @@ ${btnDevCatDBInstanceConnect}   id:instance-select-button
 ${txtAlreadyExists}             //h4[contains(.,"AlreadyExists")]
 ${elemDBInstanceTopology}       //*[name()="g" and @class="odc-operator-backed-service" and (contains(.,"<<instance>>"))]
 ${btnDevTopologyViewSwitch}     //button[@data-test-id="topology-switcher-view"]
-${elemGraphView}                //button[@data-test-id="topology-switcher-view" and contains(@aria-label,"Graph")]
+${btnTopologyView}              //button[@data-test-id="topology-switcher-view" and contains(@aria-label,"<<type>>")]
 ${elemTopologyInstancePan}      //a[contains(.,"<<instance>>")]
 ${txtTopologyListInstance}      //span[contains(.,"DBaaS")]/parent::div[contains(.,"<<instance>>")]
 ${txtBxDisplayOptions}          //span[contains(.,"Display options")]
