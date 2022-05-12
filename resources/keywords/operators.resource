@@ -32,3 +32,8 @@ The Operator Tile Loads With ${expected} Status
 
 Openshift Database Access Operator Filtered With Succeeded Status
     Wait Until Page Contains Element    ${elemDbaasStatus}    timeout=15s
+
+Filter ${provaccname} On DBaaS Inventory
+    Wait Until Page Contains Element    ${btnInventoryFilterType}   timeout=10s
+    Element Should Be Visible    ${txtBxSearchByName}
+    Input Text    ${txtBxSearchByName}    ${provaccname}

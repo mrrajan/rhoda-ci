@@ -1,5 +1,4 @@
 *** Settings ***
-Library     String
 Resource    ../keywords/login.resource
 Resource    ../object_repo/login_obj.resource
 

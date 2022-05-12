@@ -1,18 +1,20 @@
 *** Settings ***
 Library     SeleniumLibrary
 Library     BuiltIn
+Library     String
 Resource    ../object_repo/login_obj.resource
 
 
 *** Keywords ***
 The Browser Is On Openshift Home Screen
+    Set Selenium Implicit Wait    5s
     Open Browser    ${OCP_CONSOLE_URL}    browser=${BROWSER.NAME}    options=${BROWSER.OPTIONS}
     Select Login Authentication Type    ${OCP_ADMIN_USER.AUTH_TYPE}
     Login To Openshift
 
 Select Login Authentication Type
     [Arguments]    ${auth_type}
-    Wait Until Page Contains Element    ${titleLoginType}    timeout=15s
+    Wait Until Keyword Succeeds    6x    5s    Wait Until Page Contains Element    ${titleLoginType}
     Click Element    link:${auth_type}
 
 Login To Openshift
@@ -24,7 +26,21 @@ Login To Openshift
     Input Password    ${txtBxPassword}    ${OCP_ADMIN_USER.PASSWORD}
     Click Element    ${btnLogin}
     Page Should Not Contain Element    ${lblLoginError}    message=Login Failed
-    Wait Until Keyword Succeeds    10x    2s    Page Should Contain Element    ${titleOverview}
+    Wait Until Keyword Succeeds    6x    5s    Wait Until Page Contains Element    ${btnPerspective}
+    User Selects Administrator View
+
+User Selects ${perspective} View
+    User Closes Welcome Message
+    Wait Until Page Contains Element    ${btnPerspective}   timeout=15s
+    Click Element    ${btnPerspective}
+    ${elemPerspectiveOptUpd}=    Replace String    ${elemPerspectiveOpt}    <<option>>    ${perspective}
+    Wait Until Keyword Succeeds    6x    2s    Wait Until Page Contains Element  ${elemPerspectiveOptUpd}
+    Click Element    ${elemPerspectiveOptUpd}
 
 Tear Down The Test Suite
     Log    Test Suite Test Down
+
+User Closes Welcome Message
+    ${welcomeTile}=     Run Keyword And Return Status    Element Should Be Visible    ${elemWelcomeTile}
+    Run Keyword If    ${welcomeTile}
+    ...    Click Element    ${btnWelcomTileClose}
