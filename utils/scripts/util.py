@@ -131,9 +131,13 @@ def random_string():
     return "".join(random.choice(text) for i in range(5))
 
 
-def get_provider_account_name(string_suffix: string = "DBAAS"):
-    return (random_string() + string_suffix).lower().replace(" ", "-")[:10]
+def get_provider_account_name(string_suffix: string = "DBAAS", invalid=None):
+    isvname = string_suffix.lower().split(" ")[0]
+    if invalid:
+        return str(time.time())[-4:] + "-" + isvname + "-inv"
+    else:
+        return str(time.time())[-4:] + "-" + isvname + "-test"
 
 
 def get_project_name(string_name: list):
-    return ("-".join(string_name) + random_string()).lower().replace(" ", "-")[:25]
+    return str(time.time())[-4:] + "-" + ("-".join(string_name)).lower()

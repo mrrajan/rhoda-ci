@@ -18,6 +18,7 @@ Select Login Authentication Type
     Click Element    link:${auth_type}
 
 Login To Openshift
+    Wait Until Page Contains Element    ${titleLoginPage}    timeout=10s
     Element Should Be Visible    ${titleLoginPage}
     Element Should Be Visible    ${txtBxUserName}
     Element Should Be Visible    ${txtBxPassword}
@@ -37,10 +38,10 @@ User Selects ${perspective} View
     Wait Until Keyword Succeeds    6x    2s    Wait Until Page Contains Element  ${elemPerspectiveOptUpd}
     Click Element    ${elemPerspectiveOptUpd}
 
-Tear Down The Test Suite
-    Log    Test Suite Test Down
-
 User Closes Welcome Message
     ${welcomeTile}=     Run Keyword And Return Status    Element Should Be Visible    ${elemWelcomeTile}
     Run Keyword If    ${welcomeTile}
     ...    Click Element    ${btnWelcomTileClose}
+
+Tear Down The Test Suite
+    Log    Test Suite Test Down
