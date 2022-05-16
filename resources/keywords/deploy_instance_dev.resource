@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../keywords/create_provider_account.resource
 Resource    ../object_repo/developer_catalog_obj.resource
+Resource    ../object_repo/provision_dbinstance_obj.resource
 
 *** Variables ***
 ${newProject}        ${EMPTY}
@@ -63,10 +64,21 @@ User Selects ${databaseProvider} Tile Under Connected Database
     Element Should Be Visible    ${hdrConnectedDBScreen}
 
 User Selects Database Instance For The Provider Account
-    Wait Until Page Contains Element    ${drpDwnDevCatProviderAccount}     timeout=10s
-    Select From List By Label    ${drpDwnDevCatProviderAccount}     ${provaccname}
+    Wait Until Page Contains Element    ${drpDwnDevCatProvAcc}     timeout=10s
+    Select From List By Label    ${drpDwnDevCatProvAcc}     ${provaccname}
     ${instanceName}=    Select Database Instance    ${tableDevCatDatabaseInstance}    ${btnDevCatDBInstanceConnect}    ${txtAlreadyExists}
     Set Suite Variable    ${instanceName}
+
+User Filters And Selects The Created Database Instance
+    Wait Until Page Contains Element    ${drpDwnDevCatProvAcc}     timeout=10s
+    Select From List By Label    ${drpDwnDevCatProvAcc}     ${provaccname}
+    Element Should Be Visible    ${txtBxSearchByName}
+    Input Text    ${txtBxSearchByName}    ${instanceName}
+    ${elemInstanceRadioUpd}=    Replace String    ${elemInstanceRadio}    <<inst-name>>    ${instanceName}
+    Element Should Be Visible    ${elemInstanceRadioUpd}
+    Click Element    ${elemInstanceRadioUpd}
+    Scroll Element Into View    ${btnConnectInst}
+    Click Button    ${btnConnectInst}
 
 Set ${type} View On Topology View
     Wait Until Page Contains Element    ${btnDevTopologyViewSwitch}     timeout=10s
@@ -95,4 +107,4 @@ DBSC Instance Deployed On Developer Topology List View
 
 DBSC Instance Pan Displays
     ${elemTopologyInstancePanUpd}=     Replace String    ${elemTopologyInstancePan}    <<instance>>    ${instanceName}
-    Wait Until Page Contains Element    ${elemTopologyInstancePanUpd}    timeout=10s
+    Wait Until Page Contains Element    ${elemTopologyInstancePanUpd}    timeout=15s

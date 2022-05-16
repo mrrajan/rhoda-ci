@@ -15,7 +15,7 @@ ${lnkDBProviderTile}            //div[contains(.,"<<dbprovider>>")]/parent::a[co
 ${hdrDBProviderModal}           //h1[contains(.,"Mongo") and contains(@class,"title")]
 ${btnDBProviderConnect}         //div[contains(@class,"overlay-action")]//a[contains(.,"Connect")]
 ${hdrDBProviderConnectScreen}   //h1[contains(.,"Connect") and contains (.,"<<dbprovider>>")]
-${drpDwnDevCatProviderAccount}  //select[contains(@aria-label,"Provider Account")]
+${drpDwnDevCatProvAcc}          //select[contains(@aria-label,"Provider Account")]
 ${tableDevCatDatabaseInstance}  //table[contains(@aria-label,"Instance Table")]//tbody/tr
 ${btnDevCatDBInstanceConnect}   id:instance-select-button
 ${txtAlreadyExists}             //h4[contains(.,"AlreadyExists")]

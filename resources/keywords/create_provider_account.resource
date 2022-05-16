@@ -9,10 +9,10 @@ Library     ../../utils/scripts/dbaas_connection.py
 
 
 *** Variables ***
-${provaccname}      ${EMPTY}
-${INV_ORG_ID}       invalid_org_id
-${INV_PUB_KEY}      invalid_pub_key
-${INV_PRI_KEY}      invalid_private_key
+${provaccname}        ${EMPTY}
+${INV_ORG_ID}         invalid_org_id
+${INV_PUB_KEY}        invalid_pub_key
+${INV_PRI_KEY}        invalid_private_key
 
 *** Keywords ***
 User Selects Invalid Namespace For Provider Account Creation And Navigates To Database Access Page
@@ -26,6 +26,10 @@ User Navigates To Create Provider Account Screen From Database Access Page
     ...    Select Database Provider Account From Create Button DropDown
     ...    ELSE
     ...    Click Element    ${btnCreateProviderAcc}
+    Sleep    8s
+    Comment    [known issue] Auto Page Refresh - Blind Sleep provided for mitigation
+    ...        Will be replaced with intelligent wait if issue persists in near future
+    ...        Will be removed once issue is fixed
 
 Select ${option} From ${menu} Button DropDown
     ${btnMenuDropDownUpd}=    Replace String    ${btnMenuDropDown}    <<menu>>    ${menu}
@@ -138,7 +142,6 @@ Provider Account Available on Database Access Screen
     ${elemProvAccUpd}=    Replace String    ${elemProvAcc}    <<paname>>    ${provaccname}
     ${updProvAcc}=    Replace String    ${elemDBProvider}    <<paname>>    ${provaccname}
     ${isvName}=    Fetch From Left    ${isv}    ${SPACE}
-    Log To Console    ${isvName}
     ${elemDBProviderUpd}=    Replace String    ${updProvAcc}    <<isvname>>    ${isvName}
     Element Should Be Visible    ${elemProvAccUpd}
     Element Should Be Visible    ${elemDBProviderUpd}
@@ -168,13 +171,24 @@ Check Status Of Invalid Provider Account
     ${elemDbaasInvStatusUpd}=    Replace String    ${elemDbaasInvStatus}    <<paname>>    ${provaccname}
     Page Should Not Contain Element    ${elemDbaasInvStatusUpd}
 
-User Creates ${databaseProvider} Provider Account
-    Run Keyword If    "${provaccname}" == "${EMPTY}"
-    ...    Create ${databaseProvider} Provider Account
-    ...  ELSE
-    ...    Log To Console    Provider Account ${provaccname} Exists
+User Creates Invalid ${databaseProvider} Provider Account
+    User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
+    User Navigates To Create Provider Account Screen From Database Access Page
+    Run Keyword If    "Mongo" in """${databaseProvider}"""
+    ...    User Enters Invalid Data To Create MongoDB Provider Account
+    ...  ELSE IF    "Crunchy" in """${databaseProvider}"""
+    ...    User Enters Invalid Data To Create CrunchyDB Provider Account
+    ...  ELSE IF    "Cockroach" in """${databaseProvider}"""
+    ...    User Enters Invalid Data To Create CockroachDB Provider Account
+    Provider Account Creation Failure
 
-Create ${databaseProvider} Provider Account
+User Creates Valid ${databaseProvider} Provider Account
+    Run Keyword If    "${provaccname}" == "${EMPTY}"
+    ...    Create Valid ${databaseProvider} Provider Account
+    ...  ELSE
+    ...    Log     Provider Account ${provaccname} Exists    console=yes
+
+Create Valid ${databaseProvider} Provider Account
     User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
     User Navigates To Create Provider Account Screen From Database Access Page
     Run Keyword If    "Mongo" in """${databaseProvider}"""
