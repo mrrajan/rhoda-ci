@@ -12,16 +12,16 @@ Test Teardown       Close Browser
 
 
 *** Test Cases ***
-Scenario: Error Message To Select Valid Namespace For Provider Account Creation
-    When User Filters Project Other Than redhat-dbaas-operator And Navigates To Database Access Page
+Scenario: Verify error message for invalid credentials on CockroachDB
+    [Tags]    smoke
+    When User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
     And User Navigates To Create Provider Account Screen From Database Access Page
-    Then Application Navigate To Create Provider Account Page And Error Message Displayed For Invalid Namespace
+    And User Enters Invalid Data To Create CockroachDB Provider Account
+    Then Provider Account Creation Failure
 
 Scenario: Create Cockroach Provider Account From Administrator View
+    [Tags]    smoke
     When User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
     And User Navigates To Create Provider Account Screen From Database Access Page
     And User Enters Data To Create CockroachDB Provider Account
-    Then Provider Account Creation Successful And Application Navigates To Success Screen
-
-
-
+    Then Provider Account Creation Success
