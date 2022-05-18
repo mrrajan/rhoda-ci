@@ -85,30 +85,6 @@ def execute_command(cmd, get_stderr=False):
         return None
 
 
-def oc_login(ocp_console_url, username, password, timeout=600):
-    """
-    Login to test cluster using oc cli command
-    """
-    cluster_api_url = ocp_console_url.replace("console-openshift-console.apps", "api")
-    cluster_api_url = re.sub(r"/$", "", cluster_api_url) + ":6443"
-    cmd = "oc login -u {} -p {} {} --insecure-skip-tls-verify=true".format(
-        username, password, cluster_api_url
-    )
-    count = 0
-    chk_flag = 0
-    while count <= timeout:
-        out = execute_command(cmd)
-        if (out is not None) and ("Login successful" in out):
-            print("Logged into cluster successfully")
-            chk_flag = 1
-            break
-        time.sleep(5)
-        count += 5
-    if not chk_flag:
-        print("Failed to login to cluster")
-        sys.exit(1)
-
-
 def render_template(search_path, template_file, output_file, replace_vars):
     """Helper module to render jinja template"""
 
