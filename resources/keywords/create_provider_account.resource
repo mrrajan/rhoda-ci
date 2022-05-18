@@ -97,6 +97,24 @@ User Enters Invalid Data To Create CrunchyDB Provider Account
     Element Should Be Visible    ${btnCreateEnabled}
     Click Element    ${btnCreateEnabled}
 
+User Enters Data To Create CockroachDB Provider Account
+    [Arguments]    ${isv}=CockroachDB Cloud
+    set Suite Variable    ${isv}
+    User Enters Provider Account Name And Selects Database Provider
+    Wait Until Page Contains Element    ${txtBxCockroachAPI}    timeout=10s
+    Input Text    ${txtBxCockroachAPI}    ${COCKROACH.API_KEY}
+    Element Should Be Visible    ${btnCreateEnabled}
+    Click Element    ${btnCreateEnabled}
+
+User Enters Invalid Data To Create CockroachDB Provider Account
+    [Arguments]    ${isv}=CockroachDB Cloud
+    Set Suite Variable    ${isv}
+    User Enters Provider Account Name And Selects Database Provider    True
+    Wait Until Page Contains Element    ${txtBxCockroachAPI}    timeout=10s
+    Input Text    ${txtBxCockroachAPI}    ${INV_PRI_KEY}
+    Element Should Be Visible    ${btnCreateEnabled}
+    Click Element    ${btnCreateEnabled}
+
 Provider Account Creation Success
     Application Navigates To Provider Account Creation Success Screen
     Provider Account Creation Success Page
@@ -164,9 +182,5 @@ Create ${databaseProvider} Provider Account
     ...  ELSE IF    "Crunchy" in """${databaseProvider}"""
     ...    User Enters Data To Create CrunchyDB Provider Account
     ...  ELSE IF    "Cockroach" in """${databaseProvider}"""
-    ...    User Enters Data To Create CrunchyDB Provider Account
+    ...    User Enters Data To Create CockroachDB Provider Account
     Provider Account Creation Success
-
-
-
-
