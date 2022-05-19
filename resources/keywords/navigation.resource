@@ -10,14 +10,16 @@ User Navigates To ${subMenuOption} Under ${sideNavBarMenu}
     User Selects ${subMenuOption} On ${sideNavBarMenu}
 
 User Expands ${sideNavBarMenu}
-    ${elemNavMenuUpd}=    Replace String    ${elemNavMenu}    <<menu>>    ${sideNavBarMenu}
-    Element Should Be Visible    ${elemNavMenuUpd}
-    Click Element    ${elemNavMenuUpd}
+    ${btnNavMenuUpd}=    Replace String    ${btnNavMenu}    <<menu>>    ${sideNavBarMenu}
+    Element Should Be Visible    ${btnNavMenuUpd}
+    ${expanded}=    Get Element Attribute    ${btnNavMenuUpd}    aria-expanded
+    Run Keyword If    '${expanded}'=='false'
+    ...    Click Element    ${btnNavMenuUpd}
 
 User Selects ${subMenuOption} On ${sideNavBarMenu}
     ${elemNavChildMenuUpd}=    Replace String    ${elemNavChildMenu}    <<menu>>    ${sideNavBarMenu}
     ${elemNavChildMenuUpd}=    Replace String    ${elemNavChildMenuUpd}    <<submenu>>    ${subMenuOption}
-    Element Should Be Visible    ${elemNavChildMenuUpd}
+    Wait Until Element Is Visible    ${elemNavChildMenuUpd}    timeout=3s
     Click Element    ${elemNavChildMenuUpd}
     ${lblChildPageHeader}=    Replace String    ${lblChildPageHeader}    <<submenu>>    ${subMenuOption}
     Wait Until Page Contains Element    ${lblChildPageHeader}    timeout=30s

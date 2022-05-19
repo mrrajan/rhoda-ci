@@ -1,6 +1,7 @@
 *** Settings ***
 Resource    ../keywords/import_provider_account.resource
 Resource    ../object_repo/developer_catalog_obj.resource
+Resource    ../object_repo/provision_dbinstance_obj.resource
 
 *** Variables ***
 ${newProject}        ${EMPTY}
@@ -65,7 +66,19 @@ User Selects Database Instance For The Provider Account
     Wait Until Page Contains Element    ${drpDwnDevProvAccount}     timeout=10s
     Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
     ${instanceName}=    Select Database Instance    ${tblDevDBInstance}    ${btnDevDBInstanceConnect}    ${txtAlreadyExists}
+    User Clicks Continue On Topoloy Binding Instructions
     Set Suite Variable    ${instanceName}
+
+User Filters And Selects The Created Database Instance
+    Wait Until Page Contains Element    ${drpDwnDevProvAccount}     timeout=10s
+    Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
+    Element Should Be Visible    ${txtBxSearchByName}
+    Input Text    ${txtBxSearchByName}    ${instanceName}
+    ${elemInstanceRadioUpd}=    Replace String    ${elemInstanceRadio}    <<inst-name>>    ${instanceName}
+    Element Should Be Visible    ${elemInstanceRadioUpd}
+    Click Element    ${elemInstanceRadioUpd}
+    Scroll Element Into View    ${btnConnectInst}
+    Click Button    ${btnConnectInst}
 
 Set ${type} View On Topology View
     Wait Until Page Contains Element    ${btnDevTopViewSwitch}     timeout=10s
@@ -95,3 +108,7 @@ DBSC Instance Deployed On Developer Topology List View
 DBSC Instance Pan Displays
     ${elemTopInstancePanUpd}=     Replace String    ${elemTopInstancePan}    <<instance>>    ${instanceName}
     Wait Until Page Contains Element    ${elemTopInstancePanUpd}    timeout=10s
+
+User Clicks Continue On Topoloy Binding Instructions
+    Wait Until Page Contains Element    ${hdrTopBindInstr}      timeout=10s
+    Click Element    ${btnTopBindContinue}

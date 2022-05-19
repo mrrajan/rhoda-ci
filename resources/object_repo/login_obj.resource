@@ -12,6 +12,7 @@ ${lblLoginError}            //div[contains(@class,"error-placeholder")]/p[contai
 ${titleOverview}            //span[contains(.,"Overview")]
 ${elemNavSideBar}           //div[@id="page-sidebar"]
 ${elemNavMenu}              //li[starts-with(.,"<<menu>>") and contains(@class,"nav")]
+${btnNavMenu}               //li[starts-with(.,"<<menu>>") and contains(@class,"nav")]/button
 ${elemNavChildMenu}         //li[starts-with(.,"<<menu>>") and contains(@class,"nav")]/section//li[contains(.,"<<submenu>>")]
 ${lblChildPageHeader}       //h1[contains(.,"<<submenu>>")]
 ${lblPageTitle}             //span[contains(@data-test-id,"resource-title") and contains(.,"<<header>>")]

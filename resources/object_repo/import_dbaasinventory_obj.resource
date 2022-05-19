@@ -5,6 +5,7 @@ Object Repository for DBaaSInvertories Screen
 *** Variables ***
 ${titleImportProviderAcc}       //div[@class="section-title" and contains(.,"Import Database Provider Account")]
 ${txtInvalidNamespace}          //h4[contains(.,"Invalid Namespace")]
+${btnCreateDisabled}            //button[contains(.,"Create") and @aria-disabled="true"]
 ${btnImportDisabled}            //button[contains(.,"Import") and @aria-disabled="true"]
 ${btnCancelEnabled}             //button[contains(.,"Cancel") and @aria-disabled="false"]
 ${txtBxName}                    id:inventory-name
@@ -16,6 +17,7 @@ ${txtBxCrunchyPubAPI}           id:crunchy-bridge-registration-publicApiKey
 ${txtBxCrunchyPrivAPI}          id:crunchy-bridge-registration-privateApiSecret
 ${txtBxCockroachAPI}            id:cockroachdb-cloud-registration-apiSecretKey
 ${btnImportEnabled}             //button[contains(.,"Import") and @aria-disabled="false"]
+${btnCreateEnabled}             //button[contains(.,"Create") and @aria-disabled="false"]
 ${lblDBInstSuccess}             //h2[contains(.,"Database instances") and contains(.,"successful")]
 ${btnViewProviderAcc}           //button[contains(.,"View Provider Accounts")]
 ${tblInstanceTable}             id:instance-table

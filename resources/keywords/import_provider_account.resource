@@ -1,6 +1,6 @@
 *** Settings ***
 Resource    ../keywords/operators.resource
-Resource    ../object_repo/create_dbaasinventory_obj.resource
+Resource    ../object_repo/import_dbaasinventory_obj.resource
 Resource    ../object_repo/database_access_obj.resource
 Resource    ../object_repo/installed_operators_obj.resource
 Library     ../../utils/scripts/util.py
@@ -9,10 +9,10 @@ Library     ../../utils/scripts/dbaas_connection.py
 
 
 *** Variables ***
-${provaccname}      ${EMPTY}
-${INV_ORG_ID}       invalid_org_id
-${INV_PUB_KEY}      invalid_pub_key
-${INV_PRI_KEY}      invalid_private_key
+${provaccname}        ${EMPTY}
+${INV_ORG_ID}         invalid_org_id
+${INV_PUB_KEY}        invalid_pub_key
+${INV_PRI_KEY}        invalid_private_key
 
 *** Keywords ***
 User Selects Invalid Namespace To Import Database Provider Account And Navigates To Database Access Page
@@ -25,6 +25,10 @@ User Navigates To Import Database Provider Account Screen From Database Access P
     Run Keyword If    ${status}
     ...    Log To Console    No Database Provider Accounts Already Imported
     Select Import Database Provider Account From Configuration Button DropDown
+    Sleep    8s
+    Comment    [known issue] Auto Page Refresh - Blind Sleep provided for mitigation
+    ...        Will be replaced with intelligent wait if issue persists in near future
+    ...        Will be removed once issue is fixed
 
 Select ${option} From ${menu} Button DropDown
     ${btnMenuDropDownUpd}=    Replace String    ${btnMenuDropDown}    <<menu>>    ${menu}
@@ -116,7 +120,7 @@ User Enters Invalid Data To Import CockroachDB Provider Account
 
 Provider Account Import Success
     Application Navigates To Provider Account Import Success Screen
-    Filter Imported Provider Account On DBaaS Inventory
+    Imported Provider Account Avaialble On DBaaS Inventory Screen
     Imported Provider Account Available on Database Access Screen
 
 Application Navigates To Provider Account Import Success Screen
@@ -124,7 +128,7 @@ Application Navigates To Provider Account Import Success Screen
     Element Should Be Visible    ${btnViewProviderAcc}
     Click Element    ${btnViewProviderAcc}
 
-Filter Imported Provider Account On DBaaS Inventory
+Imported Provider Account Avaialble On DBaaS Inventory Screen
     Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
     Filter ${provaccname} On DBaaS Inventory
     ${elemDbaasInvStatusUpd}=    Replace String    ${elemDbaasInvStatus}    <<paname>>    ${provaccname}
@@ -137,7 +141,6 @@ Imported Provider Account Available on Database Access Screen
     ${elemProvAccUpd}=    Replace String    ${elemProvAcc}    <<paname>>    ${provaccname}
     ${updProvAcc}=    Replace String    ${elemDBProvider}    <<paname>>    ${provaccname}
     ${isvName}=    Fetch From Left    ${isv}    ${SPACE}
-    Log To Console    ${isvName}
     ${elemDBProviderUpd}=    Replace String    ${updProvAcc}    <<isvname>>    ${isvName}
     Element Should Be Visible    ${elemProvAccUpd}
     Element Should Be Visible    ${elemDBProviderUpd}
@@ -167,13 +170,24 @@ Check Status Of Invalid Provider Account
     ${elemDbaasInvStatusUpd}=    Replace String    ${elemDbaasInvStatus}    <<paname>>    ${provaccname}
     Page Should Not Contain Element    ${elemDbaasInvStatusUpd}
 
-User Imports ${databaseProvider} Provider Account
-    Run Keyword If    "${provaccname}" == "${EMPTY}"
-    ...    Create ${databaseProvider} Provider Account
-    ...  ELSE
-    ...    Log To Console    Provider Account ${provaccname} Exists
+User Imports Invalid ${databaseProvider} Provider Account
+    User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
+    User Navigates To Import Database Provider Account Screen From Database Access Page
+    Run Keyword If    "Mongo" in """${databaseProvider}"""
+    ...    User Enters Invalid Data To Import MongoDB Database Provider Account
+    ...  ELSE IF    "Crunchy" in """${databaseProvider}"""
+    ...    User Enters Invalid Data To Import CrunchyDB Provider Account
+    ...  ELSE IF    "Cockroach" in """${databaseProvider}"""
+    ...    User Enters Invalid Data To Import CockroachDB Provider Account
+    Provider Account Import Failure
 
-Create ${databaseProvider} Provider Account
+User Imports Valid ${databaseProvider} Provider Account
+    Run Keyword If    "${provaccname}" == "${EMPTY}"
+    ...    Import ${databaseProvider} Provider Account
+    ...  ELSE
+    ...    Log     Provider Account ${provaccname} Exists    console=yes
+
+Import ${databaseProvider} Provider Account
     User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
     User Navigates To Import Database Provider Account Screen From Database Access Page
     Run Keyword If    "Mongo" in """${databaseProvider}"""

@@ -11,4 +11,5 @@ ${lnkProvAcc}               //a[contains(.,"OpenShift Database Access Operator")
 ${btnLastUpdatedHeader}     //th[contains(@data-label,"Last updated")]
 ${btnInventoryFilterType}   //button[contains(@data-test-id,"dropdown-button")]
 ${btnInventoryFilterName}   id:NAME-Link
-${txtBxSearchByName}        //input[@aria-label="Search by name"]
+${txtBxSearchByName}        //input[contains(@aria-label,"Search by name")]
+

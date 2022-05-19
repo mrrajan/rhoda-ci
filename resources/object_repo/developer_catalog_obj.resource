@@ -25,3 +25,6 @@ ${btnTopologyView}              //button[@data-test-id="topology-switcher-view" 
 ${elemTopInstancePan}           //a[contains(.,"<<instance>>")]
 ${txtTopListInstance}           //span[contains(.,"DBaaS")]/parent::div[contains(.,"<<instance>>")]
 ${txtBxDisplayOptions}          //span[contains(.,"Display options")]
+${hdrTopBindInstr}              //h1[contains(.,"Topology View Binding Instructions")]
+${btnTopBindClose}              //button[@aria-label="Close"]
+${btnTopBindContinue}           //button[contains(.,"Continue")]
