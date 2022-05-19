@@ -3,7 +3,7 @@ Documentation       To Verify Database Provisioning From Developers view
 Metadata            Version    0.0.1
 
 Library             SeleniumLibrary
-Resource            ../resources/keywords/create_provider_account.resource
+Resource            ../resources/keywords/deploy_instance_dev.resource
 
 Suite Setup         Set Library Search Order    SeleniumLibrary
 Suite Teardown      Tear Down The Test Suite
@@ -15,13 +15,13 @@ Test Teardown       Close Browser
 Scenario: Verify error message for invalid credentials on CockroachDB
     [Tags]    smoke
     When User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
-    And User Navigates To Create Provider Account Screen From Database Access Page
-    And User Enters Invalid Data To Create CockroachDB Provider Account
-    Then Provider Account Creation Failure
+    And User Navigates To Import Database Provider Account Screen From Database Access Page
+    And User Enters Invalid Data To Import CockroachDB Provider Account
+    Then Provider Account Import Failure
 
-Scenario: Create Cockroach Provider Account From Administrator View
+Scenario: Import Cockroach Provider Account From Administrator View
     [Tags]    smoke
     When User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
-    And User Navigates To Create Provider Account Screen From Database Access Page
-    And User Enters Data To Create CockroachDB Provider Account
-    Then Provider Account Creation Success
+    And User Navigates To Import Database Provider Account Screen From Database Access Page
+    And User Enters Data To Import CockroachDB Provider Account
+    Then Provider Account Import Success
