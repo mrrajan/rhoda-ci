@@ -245,8 +245,7 @@ class OpenshiftClusterManager:
             data = yaml.safe_load(fh)
         console_url = self.get_osd_cluster_console_url()
         data["OCP_CONSOLE_URL"] = console_url
-        cluster_api_url = self.get_osd_cluster_api_url(console_url)
-        data["OCP_API_URL"] = cluster_api_url
+        data["OCP_API_URL"] = self.get_osd_cluster_api_url(console_url)
         cluster_version = self.get_osd_cluster_version()
         data["CLUSTER_VERSION"] = cluster_version
         data["OCP_ADMIN_USER"] = {}
@@ -258,6 +257,7 @@ class OpenshiftClusterManager:
         log.info("success!")
 
     def get_osd_cluster_api_url(self, console_url):
+        """Updates osd cluster api url from console url"""
         cluster_api_url = console_url.replace("console-openshift-console.apps", "api")
         cluster_api_url = re.sub(r"/$", "", cluster_api_url) + ":6443"
         return cluster_api_url
