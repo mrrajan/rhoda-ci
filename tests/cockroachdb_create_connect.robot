@@ -1,5 +1,5 @@
 *** Settings ***
-Documentation       To Verify Database Provisioning From Developers view
+Documentation       To Verify Provisioning of CockroachDB Provider Account and deployment of Database Instance
 Metadata            Version    0.0.1
 
 Library             SeleniumLibrary
