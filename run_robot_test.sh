@@ -27,6 +27,7 @@ handle_inputs() {
             ;;
             e) # Specify excluded tags
                 TEST_EXCLUDE_TAG=$OPTARG
+                EXTRA_ROBOT_ARGS="${EXTRA_ROBOT_ARGS} -e ${TEST_EXCLUDE_TAG}"
             ;;
             f) # Specify the test variable file
                 TEST_VARIABLES_FILE=$OPTARG
@@ -38,9 +39,10 @@ handle_inputs() {
             i) # Specify included tags
                # Example: sanityANDinstall sanityORinstall installNOTsanity
                 TEST_INCLUDE_TAG=$OPTARG
+                EXTRA_ROBOT_ARGS="${EXTRA_ROBOT_ARGS} -i ${TEST_INCLUDE_TAG}"
             ;;
             r) # Additional arguments to pass to the robot cli
-                EXTRA_ROBOT_ARGS=$OPTARG
+                EXTRA_ROBOT_ARGS="${EXTRA_ROBOT_ARGS} $OPTARG"
             ;;
             s) # Skip the pip install during the execution of this script
                 SKIP_PIP_INSTALL=1
@@ -166,6 +168,6 @@ case "$(uname -s)" in
 esac
 
 
-./venv/bin/robot ${TEST_EXCLUDE_TAG} ${TEST_INCLUDE_TAG} -d ${TEST_ARTIFACT_DIR} -x xunit_test_result.xml -r test_report.html ${TEST_VARIABLES} --variablefile ${TEST_VARIABLES_FILE} --exclude TBC ${EXTRA_ROBOT_ARGS} ${TEST_CASE_FILE}
+./venv/bin/robot  -d "${TEST_ARTIFACT_DIR}" -x xunit_test_result.xml -r test_report.html ${TEST_VARIABLES} --variablefile ${TEST_VARIABLES_FILE} ${EXTRA_ROBOT_ARGS} ${TEST_CASE_FILE}
 
 echo "------------- END ${0}"

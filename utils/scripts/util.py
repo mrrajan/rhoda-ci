@@ -117,3 +117,7 @@ def get_provider_account_name(string_suffix: string = "DBAAS", invalid=None):
 
 def get_project_name(string_name: list):
     return str(time.time())[-4:] + "-" + ("-".join(string_name)).lower()
+
+
+def get_instance_name(view: string):
+    return view.lower() + "-inst-" + str(time.time())[-4:]
