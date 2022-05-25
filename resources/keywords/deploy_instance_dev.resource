@@ -1,5 +1,5 @@
 *** Settings ***
-Resource    ../keywords/create_provider_account.resource
+Resource    ../keywords/import_provider_account.resource
 Resource    ../object_repo/developer_catalog_obj.resource
 Resource    ../object_repo/provision_dbinstance_obj.resource
 
@@ -40,38 +40,38 @@ Set Project Namespace To ${proj}
 
 User Navigates To Connect ${databaseProvider} Screen On Developers View
     User Selects Developer View
-    User Closes Welcome Message
     User Selects A Project For Database Connection
     User Navigates To Developers Catalog Add Screen
-    User Clicks On Connected Database Menu
-    User Selects ${databaseProvider} Tile Under Connected Database
-    Click Element    ${btnDBProviderConnect}
+    User Clicks On Cloud Hosted Database Menu
+    User Selects ${databaseProvider} Tile Under Cloud Hosted Database
+    Click Element    ${btnDBProvAddTopology}
 
 User Navigates To Developers Catalog Add Screen
     Wait Until Page Contains Element    ${lnkAdd}
     Click Element    ${lnkAdd}
 
-User Clicks On Connected Database Menu
-    Wait Until Page Contains Element    ${lnkConnectedDBMenu}
-    Click Element    ${lnkConnectedDBMenu}
-    Wait Until Page Contains Element    ${hdrConnectedDBScreen}     timeout=10s
+User Clicks On Cloud Hosted Database Menu
+    Wait Until Page Contains Element    ${lnkCloudHostMenu}
+    Click Element    ${lnkCloudHostMenu}
+    Wait Until Page Contains Element    ${hdrCloudHostDBScreen}     timeout=10s
 
-User Selects ${databaseProvider} Tile Under Connected Database
+User Selects ${databaseProvider} Tile Under Cloud Hosted Database
     ${lnkDBProviderTileUpd}=    Replace String    ${lnkDBProviderTile}    <<dbprovider>>    ${databaseProvider}
     Wait Until Page Contains Element    ${lnkDBProviderTileUpd}
     Click Element    ${lnkDBProviderTileUpd}
     ${hdrDBProviderModalUpd}=   Replace String    ${hdrDBProviderModal}    <<dbprovider>>    ${databaseProvider}
-    Element Should Be Visible    ${hdrConnectedDBScreen}
+    Element Should Be Visible    ${hdrCloudHostDBScreen}
 
 User Selects Database Instance For The Provider Account
-    Wait Until Page Contains Element    ${drpDwnDevCatProvAcc}     timeout=10s
-    Select From List By Label    ${drpDwnDevCatProvAcc}     ${provaccname}
-    ${instanceName}=    Select Database Instance    ${tableDevCatDatabaseInstance}    ${btnDevCatDBInstanceConnect}    ${txtAlreadyExists}
+    Wait Until Page Contains Element    ${drpDwnDevProvAccount}     timeout=10s
+    Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
+    ${instanceName}=    Select Database Instance    ${tblDevDBInstance}    ${btnDevDBInstanceConnect}    ${txtAlreadyExists}
+    User Clicks Continue On Topoloy Binding Instructions
     Set Suite Variable    ${instanceName}
 
 User Filters And Selects The Created Database Instance
-    Wait Until Page Contains Element    ${drpDwnDevCatProvAcc}     timeout=10s
-    Select From List By Label    ${drpDwnDevCatProvAcc}     ${provaccname}
+    Wait Until Page Contains Element    ${drpDwnDevProvAccount}     timeout=10s
+    Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
     Element Should Be Visible    ${txtBxSearchByName}
     Input Text    ${txtBxSearchByName}    ${instanceName}
     ${elemInstanceRadioUpd}=    Replace String    ${elemInstanceRadio}    <<inst-name>>    ${instanceName}
@@ -81,10 +81,10 @@ User Filters And Selects The Created Database Instance
     Click Button    ${btnConnectInst}
 
 Set ${type} View On Topology View
-    Wait Until Page Contains Element    ${btnDevTopologyViewSwitch}     timeout=10s
-    ${currentView}=     Get Element Attribute    ${btnDevTopologyViewSwitch}    aria-label
+    Wait Until Page Contains Element    ${btnDevTopViewSwitch}     timeout=10s
+    ${currentView}=     Get Element Attribute    ${btnDevTopViewSwitch}    aria-label
     Run Keyword If    "${type}" in """${currentView}"""
-    ...    Click Element    ${btnDevTopologyViewSwitch}
+    ...    Click Element    ${btnDevTopViewSwitch}
     ${btnTopologyViewUpd}=    Replace String    ${btnTopologyView}    <<type>>    ${type}
     Element Should Not Be Visible    ${btnTopologyViewUpd}
 
@@ -92,19 +92,23 @@ DBSC Instance Deployed On Developer Topology Graph View
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${txtBxDisplayOptions}
     Set Graph View On Topology View
     ${instance}=    Get Substring    ${instanceName}    0   6
-    ${elemDBInstanceTopologyUpd}=       Replace String    ${elemDBInstanceTopology}    <<instance>>    ${instance}
-    Wait Until Page Contains Element    ${elemDBInstanceTopologyUpd}    timeout=10s
-    Click Element    ${elemDBInstanceTopologyUpd}
+    ${elemDBInstTopologyUpd}=       Replace String    ${elemDBInstTopology}    <<instance>>    ${instance}
+    Wait Until Page Contains Element    ${elemDBInstTopologyUpd}    timeout=10s
+    Click Element    ${elemDBInstTopologyUpd}
     DBSC Instance Pan Displays
 
 DBSC Instance Deployed On Developer Topology List View
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${txtBxDisplayOptions}
     Set List View On Topology View
-    ${txtTopologyListInstanceUpd}=       Replace String    ${txtTopologyListInstance}    <<instance>>    ${instanceName}
-    Wait Until Page Contains Element    ${txtTopologyListInstanceUpd}  timeout=10s
-    Click Element    ${txtTopologyListInstanceUpd}
+    ${txtTopListInstanceUpd}=       Replace String    ${txtTopListInstance}    <<instance>>    ${instanceName}
+    Wait Until Page Contains Element    ${txtTopListInstanceUpd}  timeout=10s
+    Click Element    ${txtTopListInstanceUpd}
     DBSC Instance Pan Displays
 
 DBSC Instance Pan Displays
-    ${elemTopologyInstancePanUpd}=     Replace String    ${elemTopologyInstancePan}    <<instance>>    ${instanceName}
-    Wait Until Page Contains Element    ${elemTopologyInstancePanUpd}    timeout=15s
+    ${elemTopInstancePanUpd}=     Replace String    ${elemTopInstancePan}    <<instance>>    ${instanceName}
+    Wait Until Page Contains Element    ${elemTopInstancePanUpd}    timeout=10s
+
+User Clicks Continue On Topoloy Binding Instructions
+    Wait Until Page Contains Element    ${hdrTopBindInstr}      timeout=10s
+    Click Element    ${btnTopBindContinue}

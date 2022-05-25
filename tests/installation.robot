@@ -3,7 +3,7 @@ Documentation       Test to verify installed operators screen for RHODA
 Metadata            Version    0.0.1
 
 Library             SeleniumLibrary
-Resource            ../resources/keywords/create_provider_account.resource
+Resource            ../resources/keywords/import_provider_account.resource
 
 Suite Setup         Set Library Search Order    SeleniumLibrary
 Suite Teardown      Tear Down The Test Suite
@@ -24,8 +24,8 @@ Scenario: Redhat Dbaas Operator Namespace Created For RHODA Installation
     And User Filters redhat-dbaas-operator Namespace On Project Dropdown
     Then Openshift Database Access Operator Filtered With Succeeded Status
 
-Scenario: Error Message To Select Valid Namespace For Provider Account Creation
+Scenario: Error Message To Select Valid Namespace To Import Provider Account
     [Tags]    smoke    RHOD-45
-    When User Selects Invalid Namespace For Provider Account Creation And Navigates To Database Access Page
-    And User Navigates To Create Provider Account Screen From Database Access Page
+    When User Selects Invalid Namespace To Import Database Provider Account And Navigates To Database Access Page
+    And User Navigates To Import Database Provider Account Screen From Database Access Page
     Then Application Navigate To Create Provider Account Page And Error Message Displayed For Invalid Namespace

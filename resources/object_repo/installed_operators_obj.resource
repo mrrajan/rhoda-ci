@@ -12,3 +12,4 @@ ${btnLastUpdatedHeader}     //th[contains(@data-label,"Last updated")]
 ${btnInventoryFilterType}   //button[contains(@data-test-id,"dropdown-button")]
 ${btnInventoryFilterName}   id:NAME-Link
 ${txtBxSearchByName}        //input[contains(@aria-label,"Search by name")]
+
