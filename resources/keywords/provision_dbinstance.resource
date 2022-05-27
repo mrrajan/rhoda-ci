@@ -9,14 +9,14 @@ Library     ../../utils/scripts/util.py
 User Navigates To Create Database Instance Screen From Database Access Page
     User Navigates To Database Access Under Data Services
     Wait Until Page Contains Element    ${titleDatabaseAccess}
-    Select Database Instance From Create Button DropDown
+    Select Create Database Instance From Configuration Button DropDown
 
 User Selects DBProvider And Provider Account
     [Arguments]    ${isv_name}=${isv}
     Wait Until Element Is Visible    ${drpDwnDBProvider}    timeout=20s
-    Wait Until Keyword Succeeds    10s    1s    Toggle Database Provider Drop Down ${isv_name}
-    Wait Until Page Contains Element    ${drpDwnDevCatProvAcc}     timeout=10s
-    Select From List By Label    ${drpDwnDevCatProvAcc}     ${provaccname}
+    Wait Until Keyword Succeeds    10    1s    Toggle Database Provider Drop Down ${isv_name}
+    Wait Until Page Contains Element    ${drpDwnDevProvAccount}     timeout=10s
+    Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
 
 Toggle Database Provider Drop Down ${isv_name}
     Select From List By Label    ${drpDwnDBProvider}    Select database provider
@@ -36,9 +36,9 @@ User Enters Data To Create CrunchyDB Database Instance On Dev
     ${instanceName}=    Get Instance Name   dev
     Set Test Variable    ${instanceName}
     Input Text    ${txtBxInstName}    ${instanceName}
-    Element Should Be Visible    ${btnCreateEnabled}
+    Element Should Be Visible    ${btnImportEnabled}
     Click Element    ${btnCreateEnabled}
-    Element Should Be Visible    ${txtCreatingDBInst}
+    Element Should Be Visible    ${btnCreateEnabled}
 
 DBSC Instance Provisioned And Deployed On Developer Topology Graph View
     DBSC Instance Provisioned Successfully
