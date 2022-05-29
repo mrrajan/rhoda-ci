@@ -245,6 +245,7 @@ class OpenshiftClusterManager:
             data = yaml.safe_load(fh)
         console_url = self.get_osd_cluster_console_url()
         data["OCP_CONSOLE_URL"] = console_url
+        data["OCP_API_URL"] = self.get_osd_cluster_api_url(console_url)
         cluster_version = self.get_osd_cluster_version()
         data["CLUSTER_VERSION"] = cluster_version
         data["OCP_ADMIN_USER"] = {}
@@ -254,6 +255,12 @@ class OpenshiftClusterManager:
         with open(config_file, "w") as yaml_file:
             yaml_file.write(yaml.dump(data, default_flow_style=False, sort_keys=False))
         log.info("success!")
+
+    def get_osd_cluster_api_url(self, console_url):
+        """Updates osd cluster api url from console url"""
+        cluster_api_url = console_url.replace("console-openshift-console.apps", "api")
+        cluster_api_url = re.sub(r"/$", "", cluster_api_url) + ":6443"
+        return cluster_api_url
 
     def update_osd_cluster_info(self, config_file="rhoda_config_file.yaml"):
         """Updates osd cluster information and stores in config file"""

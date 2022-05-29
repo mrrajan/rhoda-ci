@@ -30,6 +30,7 @@ setup(
         "robotframework-requests",
         "escapism",
         "semver>=2,<3",
+        "robotframework-openshift==1.0.0",
     ],
     zip_safe=True,
     include_package_data=True,

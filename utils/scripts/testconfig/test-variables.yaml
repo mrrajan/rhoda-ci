@@ -3,6 +3,7 @@ BROWSER:
   # List of Chrome options - https://peter.sh/experiments/chromium-command-line-switches/
   OPTIONS: add_argument("--ignore-certificate-errors");add_argument("window-size=1920,1024");add_argument('--headless');add_argument('--no-sandbox');add_argument('--disable-gpu')
 OCP_CONSOLE_URL: OPENSHIFT_CONSOLE_URL
+OCP_API_URL: OCP_API_URL
 OCP_ADMIN_USER:
   AUTH_TYPE: OCP_ADMIN_USER_AUTH_TYPE
   USERNAME: OCP_ADMIN_USER_USERNAME

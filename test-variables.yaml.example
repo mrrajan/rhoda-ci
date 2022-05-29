@@ -4,6 +4,7 @@ BROWSER:
   # --disable-dev-shm-usage  and --no-sandbox are required for running chromedriver in a container
   OPTIONS: add_argument("--ignore-certificate-errors");add_argument("window-size=1920,1024");add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox")
 OCP_CONSOLE_URL: "http://console-openshift-console.apps.my-cluster.test.redhat.com/"
+OCP_API_URL: "http://api.my-cluster.test.redhat.com/"
 OCP_ADMIN_USER:
   AUTH_TYPE: "kube:admin"
   USERNAME: kubeadmin
