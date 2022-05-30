@@ -61,7 +61,7 @@ DBSC Instance Available On DataBase Access Page
     Element Should Be Visible    ${elemInstProvNameUpd}
 
 DBSC Instance For ${databaseProvider} Deployed Successfully
-    User Navigates Add ${databaseProvider} To Topology Screen
+    User Navigates To Add ${databaseProvider} To Topology Screen
     User Filters And Selects The Created Database Instance
     DBSC Instance Deployed On Developer Topology Graph View
 

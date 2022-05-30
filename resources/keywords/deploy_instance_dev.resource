@@ -38,7 +38,7 @@ Set Project Namespace To ${proj}
     Click Element    ${btnProjectSelectUpd}
     Element Should Be Visible    ${lblProjectSelectUpd}
 
-User Navigates Add ${databaseProvider} To Topology Screen
+User Navigates To Add ${databaseProvider} To Topology Screen
     User Selects Developer View
     User Selects A Project For Database Connection
     User Navigates To Developers Catalog Add Screen
@@ -63,7 +63,7 @@ User Selects ${databaseProvider} Tile Under Cloud Hosted Database
     Element Should Be Visible    ${hdrCloudHostDBScreen}
 
 User Selects Database Instance For The Provider Account
-    Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${drpDwnDevProvAccount}
+    Wait Until Keyword Succeeds     5x     1s      Wait Until Page Contains Element    ${drpDwnDevProvAccount}
     Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
     ${instanceName}=    Select Database Instance    ${tblDevDBInstance}    ${btnDevDBInstanceConnect}    ${txtAlreadyExists}
     User Clicks Continue On Topoloy Binding Instructions
