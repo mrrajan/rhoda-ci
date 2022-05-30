@@ -51,7 +51,7 @@ DBSC Instance Provisioned Successfully
     Click Button    ${btnViewInst}
 
 DBSC Instance Available On DataBase Access Page
-    Wait Until Keyword Succeeds     10x     2s    ${titleDatabaseAccess}
+    Wait Until Keyword Succeeds     5x     2s   Wait Until Page Contains Element    ${titleDatabaseAccess}
     Element Should Be Visible    ${txtBxSearchByName}
     Input Text    ${txtBxSearchByName}    ${instanceName}
     ${elemInstanceNameUpd}=    Replace String    ${elemInstanceName}    <<inst-name>>    ${instanceName}
