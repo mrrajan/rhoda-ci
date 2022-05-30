@@ -23,5 +23,5 @@ Scenario: Provision CrunchyDB Database Instance from Administrator View
     [Tags]    smoke    RHOD-57
     When User Imports Valid CrunchyDB Provider Account
     And User Navigates To Create Database Instance Screen From Database Access Page
-    And User Enters Data To Create CrunchyDB Database Instance On Admin View
-    Then DBSC Instance Provisioned And Deployed On Developer Topology Graph View
+    And User Enters Data To Create Database Instance On Admin View
+    Then Crunchy DBSC Instance Provisioned And Deployed On Developer Topology Graph View

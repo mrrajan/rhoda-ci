@@ -129,7 +129,7 @@ Application Navigates To Provider Account Import Success Screen
     Click Element    ${btnViewProviderAcc}
 
 Imported Provider Account Avaialble On DBaaS Inventory Screen
-    Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
+    Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element        ${titleDbaasInventories}
     Filter ${provaccname} On DBaaS Inventory
     ${elemDbaasInvStatusUpd}=    Replace String    ${elemDbaasInvStatus}    <<paname>>    ${provaccname}
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${elemDbaasInvStatusUpd}

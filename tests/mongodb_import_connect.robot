@@ -29,6 +29,6 @@ Scenario: Deploy MongoDB DBSC For MongoDB Provider Account
     [Tags]    smoke    RHOD-50
     Skip If    "${PREV_TEST_STATUS}" == "FAIL"
     When User Imports Valid MongoDB Provider Account
-    And User Navigates To Connect MongoDB Atlas Cloud Database Service Screen On Developers View
+    And User Navigates To Add MongoDB To Topology Screen
     And User Selects Database Instance For The Provider Account
     Then DBSC Instance Deployed On Developer Topology Graph View

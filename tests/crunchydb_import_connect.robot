@@ -30,6 +30,6 @@ Scenario: Deploy CrunchyDB Database Instance
     [Tags]    smoke    RHOD-51
     Skip If    "${PREV_TEST_STATUS}" == "FAIL"
     When User Imports Valid CrunchyDB Provider Account
-    And User Navigates To Connect Crunchy Bridge Screen On Developers View
+    And User Navigates To Add Crunchy Bridge To Topology Screen
     And User Selects Database Instance For The Provider Account
     Then DBSC Instance Deployed On Developer Topology Graph View
