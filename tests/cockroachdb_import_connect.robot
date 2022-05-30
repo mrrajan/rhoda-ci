@@ -30,6 +30,6 @@ Scenario: Deploy CockroachDB Database Instance
     [Tags]    smoke    RHOD-60
     Skip If    "${PREV_TEST_STATUS}" == "FAIL"
     When User Imports Valid CockroachDB Provider Account
-    And User Navigates To Connect CockroachDB Screen On Developers View
+    And User Navigates Add CockroachDB To Topology Screen
     And User Selects Database Instance For The Provider Account
     Then DBSC Instance Deployed On Developer Topology Graph View

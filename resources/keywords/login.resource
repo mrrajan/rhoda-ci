@@ -39,7 +39,7 @@ User Selects ${perspective} View
     Click Element    ${elemPerspectiveOptUpd}
 
 User Closes Welcome Message
-    ${welcomeTile}=     Run Keyword And Return Status    Element Should Be Visible    ${elemWelcomeTile}
+    ${welcomeTile}=     Run Keyword And Return Status    Wait Until Page Contains Element    ${elemWelcomeTile}     timeout=10s
     Run Keyword If    ${welcomeTile}
     ...    Click Element    ${btnWelcomTileClose}
 
