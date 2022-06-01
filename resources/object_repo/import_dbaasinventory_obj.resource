@@ -24,6 +24,9 @@ ${tblInstanceTable}             id:instance-table
 ${btnMenuDropDown}              //button[contains(.,"<<menu>>")]
 ${btnMenuOptDropDown}           //a[contains(.,"<<menuopt>>")]
 ${tblDBProviderAcc}             id:instance-connection-status-table
-${lblDBInstFailure}             //h2[contains(.,"Database instances") and contains(.,"failed")]
+${lblDBInstFailure}             //h2[.="Database instances retrieval failed"]
 ${txtInvCred}                   //div[contains(.,"Invalid credentials")]
-${btnEditProvAcc}               //button[contains(.,"Edit Provider") and @aria-disabled="false"]
+${btnEditProvAcc}               //button[(.="Edit Provider Account") and @aria-disabled="false"]
+${txtProvNoDBInst}              //div[contains(.,"The Provider Account resource has been created but the database instances could not be fetched.")]
+${txtErrNoDBInst}               //div[.="No database instance in this Provider Account"]
+${btnClose}                     //button[contains(.,"Close") and @aria-disabled="false"]

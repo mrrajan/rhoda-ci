@@ -40,9 +40,10 @@ User Selects ${perspective} View
     ${elemPerspectiveOptUpd}=    Replace String    ${elemPerspectiveOpt}    <<option>>    ${perspective}
     Wait Until Keyword Succeeds    6x    2s    Wait Until Page Contains Element  ${elemPerspectiveOptUpd}
     Click Element    ${elemPerspectiveOptUpd}
+    Set Test Variable    ${perspective}
 
 User Closes Welcome Message
-    ${welcomeTile}=     Run Keyword And Return Status    Wait Until Page Contains Element    ${elemWelcomeTile}     timeout=10s
+    ${welcomeTile}=     Run Keyword And Return Status    Wait Until Page Contains Element    ${elemWelcomeTile}     timeout=15s
     Run Keyword If    ${welcomeTile}
     ...    Click Element    ${btnWelcomTileClose}
 

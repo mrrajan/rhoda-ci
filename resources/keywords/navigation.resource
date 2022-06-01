@@ -2,6 +2,7 @@
 Library     String
 Resource    ../keywords/login.resource
 Resource    ../object_repo/login_obj.resource
+Resource    ../object_repo/installed_operators_obj.resource
 
 
 *** Keywords ***
@@ -33,3 +34,12 @@ User Navigates To Database Access Page
     Click Element    ${elemDataServiceNav}
     Element Should Be Visible    ${elemDataAccessNav}
     Click Element    ${elemDataAccessNav}
+
+User Navigates To DBaaS Inventories Screen
+    [Arguments]    ${PROJECT}=redhat-dbaas-operator
+    User Navigates To Installed Operators Under Operators
+    User Filters ${PROJECT} Namespace On Project Dropdown
+    Wait Until Page Contains Element    ${elemDbaasStatus}    timeout=15s
+    Page Should Contain Element    ${lnkProvAcc}
+    Click Element    ${lnkProvAcc}
+    Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
