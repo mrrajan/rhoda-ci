@@ -4,8 +4,7 @@ Resource    ../object_repo/import_dbaasinventory_obj.resource
 Resource    ../object_repo/database_access_obj.resource
 Resource    ../object_repo/installed_operators_obj.resource
 Library     ../../utils/scripts/util.py
-Library     ../../utils/scripts/dbaas_connection.py
-
+Library     ../../utils/scripts/dbaas_utils.py
 
 
 *** Variables ***
@@ -32,7 +31,7 @@ User Navigates To Import Database Provider Account Screen From Database Access P
 
 Select ${option} From ${menu} Button DropDown
     ${btnMenuDropDownUpd}=    Replace String    ${btnMenuDropDown}    <<menu>>    ${menu}
-    Element Should Be Visible    ${btnMenuDropDownUpd}
+    Wait Until Keyword Succeeds    10s    1s    Wait Until Element Is Visible    ${btnMenuDropDownUpd}
     Click Element    ${btnMenuDropDownUpd}
     ${btnMenuOptDropDownUpd}=    Replace String    ${btnMenuOptDropDown}    <<menuopt>>    ${option}
     Element Should Be Visible    ${btnMenuOptDropDownUpd}
@@ -52,7 +51,7 @@ User Filters Project ${PROJECT} On Project DropDown And Navigates To Database Ac
 User Enters Provider Account Name And Selects Database Provider
     [Arguments]    ${invalid}=${False}
     ${dbprovider}=    Set Variable    ${isv}
-    Wait Until Page Contains Element    ${drpDwnDBProvider}    timeout=20s
+    Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${drpDwnDBProvider}
     ${paname}=    Get Provider Account Name    ${dbprovider}    ${invalid}
     Set Test Variable    ${provaccname}    ${paname}
     Input Text    ${txtBxName}    ${provaccname}

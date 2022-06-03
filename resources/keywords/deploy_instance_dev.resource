@@ -22,12 +22,12 @@ Create New Project
     Click Element    ${btnCreateProject}
     Wait Until Page Contains Element    ${hdrCreateProject}
     ${newProject}=     Get Project Name    ${TEST TAGS}
-    Set Suite Variable    ${newProject}
     Input Text    ${txtBxProjectName}    ${newProject}
     Click Element    ${btnConfirmCreate}
     ${lblProjectSelectUpd}=     Replace String    ${lblProjectSelect}    <<project>>    ${newProject}
     Element Should Not Be Visible    ${txtProjectCreateError}
     Wait Until Page Contains Element    ${lblProjectSelectUpd}
+    Set Suite Variable    ${newProject}
 
 Set Project Namespace To ${proj}
     Wait Until Page Contains Element    ${drpDwnProjectSelect}    timeout=15s
@@ -65,6 +65,7 @@ User Selects ${databaseProvider} Tile Under Cloud Hosted Database
 User Selects Database Instance For The Provider Account
     Wait Until Keyword Succeeds     5x     1s      Wait Until Page Contains Element    ${drpDwnDevProvAccount}
     Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
+    Wait Until Keyword Succeeds     3x     1s      Wait Until Page Contains Element     ${tblDevDBInstance}
     ${instanceName}=    Select Database Instance    ${tblDevDBInstance}    ${btnDevDBInstanceConnect}    ${txtAlreadyExists}
     User Clicks Continue On Topoloy Binding Instructions
     Set Suite Variable    ${instanceName}
@@ -95,7 +96,8 @@ DBSC Instance Deployed On Developer Topology Graph View
     ${elemDBInstTopologyUpd}=       Replace String    ${elemDBInstTopology}    <<instance>>    ${instance}
     Wait Until Page Contains Element    ${elemDBInstTopologyUpd}    timeout=10s
     Click Element    ${elemDBInstTopologyUpd}
-    DBSC Instance Pan Displays
+    Instance Pan Displays
+    Update Instance Name With Unique Identifier
 
 DBSC Instance Deployed On Developer Topology List View
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${txtBxDisplayOptions}
@@ -103,12 +105,31 @@ DBSC Instance Deployed On Developer Topology List View
     ${txtTopListInstanceUpd}=       Replace String    ${txtTopListInstance}    <<instance>>    ${instanceName}
     Wait Until Page Contains Element    ${txtTopListInstanceUpd}  timeout=10s
     Click Element    ${txtTopListInstanceUpd}
-    DBSC Instance Pan Displays
+    Instance Pan Displays
 
-DBSC Instance Pan Displays
-    ${elemTopInstancePanUpd}=     Replace String    ${elemTopInstancePan}    <<instance>>    ${instanceName}
+Instance Pan Displays
+    [Arguments]     ${panHeader}=${instanceName}
+    ${elemTopInstancePanUpd}=     Replace String    ${elemTopInstancePan}    <<instance>>    ${panHeader}
     Wait Until Page Contains Element    ${elemTopInstancePanUpd}    timeout=10s
 
+User Deploys ${databaseProvider} Database Instance On Developer Topology Screen
+    Run Keyword If    "${instanceName}" == "${EMPTY}"
+    ...    Deploy ${databaseProvider} Database Instance
+    ...  ELSE    Run Keywords
+    ...    Log  Database instance ${instanceName} exists
+    ...    AND    User Selects Developer View
+    ...    AND    User Selects A Project For Database Connection
+
+Deploy ${databaseProvider} Database Instance
+    User Imports Valid ${databaseProvider} Provider Account
+    User Navigates To Add ${databaseProvider} To Topology Screen
+    User Selects Database Instance For The Provider Account
+    DBSC Instance Deployed On Developer Topology Graph View
+
 User Clicks Continue On Topoloy Binding Instructions
-    Wait Until Page Contains Element    ${hdrTopBindInstr}      timeout=10s
+    Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${hdrTopBindInstr}
     Click Element    ${btnTopBindContinue}
+
+Update Instance Name With Unique Identifier
+    ${instanceUUID}=    Get Element Attribute    ${lnkPanInstance}    innerText
+    Set Test Variable    ${instanceUUID}

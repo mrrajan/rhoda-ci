@@ -2,13 +2,13 @@
 Documentation       To Verify Provisioning of MongoDB Provider Account and deployment of Database Instance
 Metadata            Version    0.0.1
 
-Resource            ../resources/keywords/deploy_instance_dev.resource
+Resource            ../resources/keywords/deploy_application.resource
 
 Suite Setup         Set Library Search Order    SeleniumLibrary
 Suite Teardown      Tear Down The Test Suite
 Test Setup          Given The Browser Is On Openshift Home Screen
 Test Teardown       Close Browser
-Force Tags          Mongo
+
 
 *** Test Cases ***
 Scenario: Verify error message for invalid credentials on MongoDB
@@ -32,3 +32,11 @@ Scenario: Deploy MongoDB DBSC For MongoDB Provider Account
     And User Navigates To Add MongoDB To Topology Screen
     And User Selects Database Instance For The Provider Account
     Then DBSC Instance Deployed On Developer Topology Graph View
+
+Scenario: Connect MongoDB DBSC With An Openshift Application
+    [Tags]    smoke    RHOD-64
+    When User Deploys MongoDB Database Instance On Developer Topology Screen
+    And User Imports Openshift mongo Application From YAML
+    And User Creates Service Binding Between mongo DBSC Instance And Imported Openshift Application
+    Then The Application Accesses The Connected Mongo Database Instance
+

@@ -1,0 +1,17 @@
+apiVersion: binding.operators.coreos.com/v1alpha1
+kind: ServiceBinding
+metadata:
+  name: bindname
+  namespace: namespace
+spec:
+  application:
+    name: fruit-shop
+    group: apps
+    version: v1
+    resource: deployments
+  services:
+  - group: dbaas.redhat.com
+    version: v1alpha1
+    kind: DBaaSConnection
+    name: namespace
+  detectBindingResources: true
