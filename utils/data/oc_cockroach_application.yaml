@@ -1,0 +1,5 @@
+{kind: Deployment,apiVersion: apps/v1,metadata:{name: crdb-go-quickstart},spec:{replicas: 1,selector:{matchLabels:{app: crdb-go-quickstart}},template:{metadata:{labels:{app: crdb-go-quickstart,deploymentconfig: crdb-go-quickstart}},spec:{containers:[{name: crdb-go-quickstart,image: quay.io/myeung/crdb-go-quickstart:v0.0.1,imagePullPolicy: Always,ports:[{containerPort: 8080,protocol: TCP}]}],restartPolicy: Always}}}}
+---
+{kind: Service,apiVersion: v1,metadata:{name: crdb-go-quickstart,labels:{app: crdb-go-quickstart}},spec:{ports:[{port: 8080,protocol: TCP,targetPort: 8080}],selector:{app: crdb-go-quickstart,deploymentconfig: crdb-go-quickstart},type: ClusterIP}}
+---
+{kind: Route,apiVersion: route.openshift.io/v1,metadata:{name: crdb-go-quickstart,labels:{app: crdb-go-quickstart}},spec:{to:{kind: Service,name: crdb-go-quickstart}}}

@@ -1,9 +1,9 @@
 import argparse
 import os
-import requests
 import shutil
 import sys
 
+import requests
 from python_terraform import *
 
 dir_path = os.path.dirname(os.path.abspath(__file__))

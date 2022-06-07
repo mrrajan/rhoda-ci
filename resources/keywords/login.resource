@@ -2,6 +2,8 @@
 Library     SeleniumLibrary
 Library     BuiltIn
 Library     String
+Library     OpenShiftLibrary
+Library    ../../utils/scripts/dbaas_utils.py
 Resource    ../object_repo/login_obj.resource
 
 
@@ -11,6 +13,7 @@ The Browser Is On Openshift Home Screen
     Open Browser    ${OCP_CONSOLE_URL}    browser=${BROWSER.NAME}    options=${BROWSER.OPTIONS}
     Select Login Authentication Type    ${OCP_ADMIN_USER.AUTH_TYPE}
     Login To Openshift
+    Oc Login    ${OCP_API_URL}    ${OCP_ADMIN_USER.USERNAME}     ${OCP_ADMIN_USER.PASSWORD}
 
 Select Login Authentication Type
     [Arguments]    ${auth_type}

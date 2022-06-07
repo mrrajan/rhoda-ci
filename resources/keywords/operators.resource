@@ -22,7 +22,7 @@ User Filters ${projectName} Namespace On Project Dropdown
     Wait Until Page Contains Element    ${lblProjectSelect}    timeout=15s
 
 User Filters ${operatorName} Operator On Filter TextBox
-    Wait Until Page Contains Element    ${txtBxFilter}    timeout=15s
+    Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${txtBxFilter}    timeout=15s
     Input Text    ${txtBxFilter}    ${operatorName}
     Wait Until Page Contains Element    ${elemDatabaseAccessTile}
 
@@ -35,5 +35,5 @@ Openshift Database Access Operator Filtered With Succeeded Status
 
 Filter ${provaccname} On DBaaS Inventory
     Wait Until Page Contains Element    ${btnInventoryFilterType}   timeout=10s
-    Element Should Be Visible    ${txtBxSearchByName}
+    Wait Until Page Contains Element    ${txtBxSearchByName}   timeout=10s
     Input Text    ${txtBxSearchByName}    ${provaccname}

@@ -13,7 +13,7 @@ User Navigates To Create Database Instance Screen From Database Access Page
 
 User Selects DBProvider And Provider Account
     [Arguments]    ${isv_name}=${isv}
-    Wait Until Element Is Visible    ${drpDwnDBProvider}    timeout=20s
+    Wait Until Keyword Succeeds    5x    2s    Wait Until Element Is Visible    ${drpDwnDBProvider}
     Wait Until Keyword Succeeds    10s    1s    Toggle Database Provider Drop Down ${isv_name}
     Wait Until Page Contains Element    ${drpDwnDevProvAccount}     timeout=10s
     Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
@@ -45,7 +45,7 @@ ${databaseProvider} DBSC Instance Provisioned And Deployed On Developer Topology
     DBSC Instance For ${databaseProvider} Deployed Successfully
 
 DBSC Instance Provisioned Successfully
-    Wait Until Keyword Succeeds     10x     3s      Wait Until Page Contains Element    ${txtInstCreated}
+    Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${txtInstCreated}
     Element Should Be Visible    ${txtCreationInfo}
     Element Should Be Visible    ${btnViewInst}
     Click Button    ${btnViewInst}
