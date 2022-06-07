@@ -79,10 +79,10 @@ Load Data To ${database} Database From Application
     ...    Load Data To Mongo Application
 
 Load Data To Mongo Application
-    ${appStatus}=    Run Keyword And Return Status    Element Should Be Visible    ${hdrFruitApp}
+    ${appStatus}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrFruitApp}
     Run Keyword If    not ${appStatus}
     ...    Reload Page
-    Run Keyword And Return Status    Element Should Be Visible    ${hdrFruitApp}
+    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrFruitApp}
     ${fruitname}=   Random String
     Input Text    ${txtBxFruitName}    ${fruitname}
     ${description}=     Random String
