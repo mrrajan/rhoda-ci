@@ -3,7 +3,7 @@ Documentation       To Verify Provisioning of CockroachDB Provider Account and d
 Metadata            Version    0.0.1
 
 Library             SeleniumLibrary
-Resource            ../resources/keywords/deploy_instance_dev.resource
+Resource            ../resources/keywords/deploy_application.resource
 
 Suite Setup         Set Library Search Order    SeleniumLibrary
 Suite Teardown      Tear Down The Test Suite
@@ -33,3 +33,10 @@ Scenario: Deploy CockroachDB Database Instance
     And User Navigates To Add CockroachDB To Topology Screen
     And User Selects Database Instance For The Provider Account
     Then DBSC Instance Deployed On Developer Topology Graph View
+
+Scenario: Connect CockroachDB DBSC With An Openshift Application
+    [Tags]    smoke    RHOD-68
+    When User Deploys CockroachDB Database Instance On Developer Topology Screen
+    And User Imports Openshift cockroach Application From YAML
+    And User Creates Service Binding Between cockroach DBSC Instance And Imported Openshift Application
+    Then The Application Accesses The Connected cockroach Database Instance

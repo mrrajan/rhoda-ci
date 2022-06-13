@@ -44,4 +44,5 @@ ${elemSrvcBindArrow}            //*[name()="g" and @data-type="service-binding"]
 ${lnkPanInstance}               //a[contains(@href,"DBaaSConnection")]
 ${txtAppPodStatus}              //span[contains(.,"<<appname>>")]//following-sibling::span//span[@data-test="status-text" and (.="Running")]
 ${btnClosePan}                  //button[@data-test-id="sidebar-close-button"]
-${txtApplication}               //*[.="fruit-shop"]/parent::*[name()="g"]
+${txtApplication}               //*[.="<<appname>>"]/parent::*[name()="g"]
+${lnkAppRoute}                  //h2[.="Routes"]/following::div/a

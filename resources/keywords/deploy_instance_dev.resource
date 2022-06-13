@@ -16,6 +16,7 @@ User Selects A Project For Database Connection
     ...    AND    Set Project Namespace To ${newProject}
 
 Create New Project
+    User Closes Welcome Message
     Wait Until Page Contains Element    ${drpDwnProjectSelect}    timeout=15s
     Click Element    ${drpDwnProjectSelect}
     Wait Until Page Contains Element    ${btnCreateProject}
@@ -25,7 +26,6 @@ Create New Project
     Input Text    ${txtBxProjectName}    ${newProject}
     Click Element    ${btnConfirmCreate}
     ${lblProjectSelectUpd}=     Replace String    ${lblProjectSelect}    <<project>>    ${newProject}
-    Element Should Not Be Visible    ${txtProjectCreateError}
     Wait Until Page Contains Element    ${lblProjectSelectUpd}
     Set Suite Variable    ${newProject}
 
@@ -132,4 +132,4 @@ User Clicks Continue On Topoloy Binding Instructions
 
 Update Instance Name With Unique Identifier
     ${instanceUUID}=    Get Element Attribute    ${lnkPanInstance}    innerText
-    Set Test Variable    ${instanceUUID}
+    Set Suite Variable    ${instanceUUID}
