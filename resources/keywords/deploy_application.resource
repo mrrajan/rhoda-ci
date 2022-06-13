@@ -81,7 +81,7 @@ Load Data To Mongo Application
     ${appStatus}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrFruitApp}
     Run Keyword If    not ${appStatus}
     ...    Reload Page
-    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrFruitApp}
+    Wait Until Element Is Visible    ${hdrFruitApp}
     ${fruitname}=   Random String
     Input Text    ${txtBxFruitName}    ${fruitname}
     ${description}=     Random String
@@ -111,7 +111,7 @@ Load Data To Application
     ${appStatus}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrCRUDApp}
     Run Keyword If    not ${appStatus}
     ...    Reload Page
-    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrCRUDApp}
+    Wait Until Element Is Visible    ${hdrCRUDApp}
     ${fruitname}=   Random String
     Input Text    ${txtBxFruitName}    ${fruitname}
     Click Element    ${btnSave}
