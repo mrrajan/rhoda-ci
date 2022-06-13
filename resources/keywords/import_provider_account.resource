@@ -21,8 +21,8 @@ User Selects Invalid Namespace To Import Database Provider Account And Navigates
 
 User Navigates To Import Database Provider Account Screen From Database Access Page
     ${status}=    Run Keyword And Return Status    Wait Until Page Contains Element    ${tblDBProviderAcc}    timeout=10s
-    Run Keyword If    ${status}
-    ...    Log To Console    No Database Provider Accounts Already Imported
+    Run Keyword If    not ${status}
+    ...    Log    No Database Provider Account Imported on this Cluster
     Select Import Database Provider Account From Configuration Button DropDown
     Sleep    8s
     Comment    [known issue] Auto Page Refresh - Blind Sleep provided for mitigation
@@ -50,6 +50,7 @@ User Filters Project ${PROJECT} On Project DropDown And Navigates To Database Ac
 
 User Enters Provider Account Name And Selects Database Provider
     [Arguments]    ${invalid}=${False}
+    Set Test Variable    ${invalid}
     ${dbprovider}=    Set Variable    ${isv}
     Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${drpDwnDBProvider}
     ${paname}=    Get Provider Account Name    ${dbprovider}    ${invalid}
@@ -118,9 +119,23 @@ User Enters Invalid Data To Import CockroachDB Provider Account
     Click Element    ${btnImportEnabled}
 
 Provider Account Import Success
+    ${no_dbinstance}=    Run Keyword And Return Status    Success Screen For A Provider Account With No DB Instances
+    Run Keyword If    ${no_dbinstance}    Run Keywords
+    ...    User Navigates To DBaaS Inventories Screen
+    ...    AND    Imported Provider Account Avaialble On DBaaS Inventory Screen
+    ...    ELSE
+    ...    Import Success For Provider Account With Exisiting DB Instance
+
+Import Success For Provider Account With Exisiting DB Instance
     Application Navigates To Provider Account Import Success Screen
     Imported Provider Account Avaialble On DBaaS Inventory Screen
-    Imported Provider Account Available on Database Access Screen
+    Imported Provider Account Available On Database Access Screen
+
+Success Screen For A Provider Account With No DB Instances
+    Provider Account Import Failure Screen
+    Element Should Be Visible    ${txtProvNoDBInst}
+    Element Should Be Visible    ${txtErrNoDBInst}
+    Element Should Be Visible    ${btnClose}
 
 Application Navigates To Provider Account Import Success Screen
     Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${lblDBInstSuccess}
@@ -134,7 +149,7 @@ Imported Provider Account Avaialble On DBaaS Inventory Screen
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${elemDbaasInvStatusUpd}
     Set Suite Variable    ${provaccname}
 
-Imported Provider Account Available on Database Access Screen
+Imported Provider Account Available On Database Access Screen
     User Navigates To Database Access Under Data Services
     Wait Until Page Contains Element    ${titleDatabaseAccess}
     ${elemProvAccUpd}=    Replace String    ${elemProvAcc}    <<paname>>    ${provaccname}
@@ -150,18 +165,9 @@ Provider Account Import Failure
     Check Status Of Invalid Provider Account
 
 Provider Account Import Failure Screen
-    Wait Until Page Contains Element    ${titleImportProviderAcc}    timeout=15s
-    Wait Until Page Contains Element     ${lblDBInstFailure}    timeout=20s
+    Wait Until Keyword Succeeds    3x    1s    Element Should Be Visible    ${titleImportProviderAcc}
+    Wait Until Keyword Succeeds    5x    1s    Element Should Be Visible    ${lblDBInstFailure}
     Page Should Contain Button    ${btnEditProvAcc}
-
-User Navigates To DBaaS Inventories Screen
-    [Arguments]    ${PROJECT}=redhat-dbaas-operator
-    User Navigates To Installed Operators Under Operators
-    User Filters ${PROJECT} Namespace On Project Dropdown
-    Wait Until Page Contains Element    ${elemDbaasStatus}    timeout=15s
-    Page Should Contain Element    ${lnkProvAcc}
-    Click Element    ${lnkProvAcc}
-    Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
 
 Check Status Of Invalid Provider Account
     Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
@@ -170,6 +176,7 @@ Check Status Of Invalid Provider Account
     Page Should Not Contain Element    ${elemDbaasInvStatusUpd}
 
 User Imports Invalid ${databaseProvider} Provider Account
+    Set Test Variable    ${DBProvider}    ${databaseProvider}
     User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
     User Navigates To Import Database Provider Account Screen From Database Access Page
     Run Keyword If    "Mongo" in """${databaseProvider}"""
@@ -181,10 +188,11 @@ User Imports Invalid ${databaseProvider} Provider Account
     Provider Account Import Failure
 
 User Imports Valid ${databaseProvider} Provider Account
+    Set Test Variable    ${DBProvider}    ${databaseProvider}
     Run Keyword If    "${provaccname}" == "${EMPTY}"
     ...    Import ${databaseProvider} Provider Account
     ...  ELSE
-    ...    Log     Provider Account ${provaccname} Exists    console=yes
+    ...    Log     Provider Account ${provaccname} Exists
 
 Import ${databaseProvider} Provider Account
     User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page

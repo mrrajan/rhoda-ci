@@ -12,7 +12,7 @@ User Selects A Project For Database Connection
     Run Keyword If    '${newProject}'=='${EMPTY}'
     ...    Create New Project
     ...  ELSE    Run Keywords
-    ...    Log To Console    Project ${newProject} exists
+    ...    Log    Project ${newProject} exists
     ...    AND    Set Project Namespace To ${newProject}
 
 Create New Project
@@ -71,15 +71,24 @@ User Selects Database Instance For The Provider Account
     Set Suite Variable    ${instanceName}
 
 User Filters And Selects The Created Database Instance
-    Wait Until Page Contains Element    ${drpDwnDevProvAccount}     timeout=10s
+    Wait Until Keyword Succeeds    5x    2s    Instance Is Available In Selection Table
+    Scroll Element Into View    ${btnAddToTplgy}
+    Click Button    ${btnAddToTplgy}
+    User Clicks Continue On Topoloy Binding Instructions
+
+Instance Is Available In Selection Table
+    ${instFound}=    Run Keyword And Return Status    Instance Can Be Selected
+    Run Keyword If    not ${instFound}
+    ...    Reload Page
+
+Instance Can Be Selected
+    Wait Until Keyword Succeeds    4x    1s    Element Should Be Visible    ${drpDwnDevProvAccount}
     Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
     Element Should Be Visible    ${txtBxSearchByName}
     Input Text    ${txtBxSearchByName}    ${instanceName}
     ${elemInstanceRadioUpd}=    Replace String    ${elemInstanceRadio}    <<inst-name>>    ${instanceName}
     Element Should Be Visible    ${elemInstanceRadioUpd}
     Click Element    ${elemInstanceRadioUpd}
-    Scroll Element Into View    ${btnConnectInst}
-    Click Button    ${btnConnectInst}
 
 Set ${type} View On Topology View
     Wait Until Page Contains Element    ${btnDevTopViewSwitch}     timeout=10s
