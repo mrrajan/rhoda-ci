@@ -4,14 +4,17 @@ Object Repository for Create Database Instance Screen
 
 *** Variables ***
 ${txtBxInstName}                 //input[@id="instance-name"]
+${txtBxProjName}                 //input[@id="project-name"]
 ${elemInstanceRadio}             (//td[contains(.,"<<inst-name>>")]/parent::tr//input)[1]
-${btnConnectInst}                //button[@id='instance-select-button']
+${btnAddToTplgy}                 //button[@id='instance-select-button']
 ${txtCreatingDBInst}             //h3[contains(.,"Creating Database Instance...")]
 ${txtInstCreated}                //h2[contains(.,"Database instance creation started")]
-${txtCreationInfo}               //div[contains(.,"The database instance is being created")]
-${btnViewInst}                   //button[contains(.,"View Instances") and @aria-disabled="false"]
-${txtInstFailHead}               //h2[contains(.,"Provider account information retrieval failed")]
-${txtInstFailMsg}                //div[contains(.,"Please try again")]
+${txtCreationInfo}               //div[.="The database instance is being created, please click the button below to view it."]
+${btnViewDBInst}                 //button[(.="View Database Instances") and @aria-disabled="false"]
+${txtProvFailHead}               //h2[.="Provider account information retrieval failed"]
+${txtProvFailMsg}                //div[.="Provider account information could not be retrieved. Please try again."]
+${txtInstFailHead}               //h2[.="Database instances retrieval failed"]
+${txtInstRtrvFail}               //div[.="Database instances could not be retrieved. Please try again."]
 ${btnTryAgain}                   //button[contains(.,"Try Again") and @aria-disabled="false"]
-${btnClose}                      //button[contains(.,"Close") and @aria-disabled="false"]
 ${drpDwnProvAccOptn}             //select[contains(@aria-label,"Provider Account")]/option
+${lnkCreateDBInst}               //a[contains(.,"Create New Database Instance")]
