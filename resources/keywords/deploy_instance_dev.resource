@@ -16,7 +16,6 @@ User Selects A Project For Database Connection
     ...    AND    Set Project Namespace To ${newProject}
 
 Create New Project
-    User Closes Welcome Message
     Wait Until Page Contains Element    ${drpDwnProjectSelect}    timeout=15s
     Click Element    ${drpDwnProjectSelect}
     Wait Until Page Contains Element    ${btnCreateProject}
