@@ -25,7 +25,6 @@ Create New Project
     Input Text    ${txtBxProjectName}    ${newProject}
     Click Element    ${btnConfirmCreate}
     ${lblProjectSelectUpd}=     Replace String    ${lblProjectSelect}    <<project>>    ${newProject}
-    Element Should Not Be Visible    ${txtProjectCreateError}
     Wait Until Page Contains Element    ${lblProjectSelectUpd}
     Set Suite Variable    ${newProject}
 
@@ -141,4 +140,4 @@ User Clicks Continue On Topoloy Binding Instructions
 
 Update Instance Name With Unique Identifier
     ${instanceUUID}=    Get Element Attribute    ${lnkPanInstance}    innerText
-    Set Test Variable    ${instanceUUID}
+    Set Suite Variable    ${instanceUUID}

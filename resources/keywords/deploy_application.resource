@@ -30,7 +30,7 @@ User Creates Service Binding Between ${databaseProvider} DBSC Instance And Impor
     ${bindName}=    Update Service Binding    ${newProject}    ${instanceUUID}    ${appname}
     Set Test Variable    ${bindName}
     Create Service Binding      ${newProject}
-    Wait Until Keyword Succeeds    3x    2s     Wait Until Page Contains Element    ${elemSrvcBindArrow}
+    Wait Until Keyword Succeeds    3x    1s     Wait Until Page Contains Element    ${elemSrvcBindArrow}
     Click Element   ${elemSrvcBindArrow}
     ${elemIconDeploymentUpd}=       Replace String    ${elemIconDeployment}    <<appname>>    ${appname}
     Instance Pan Displays   ${bindName}
@@ -53,7 +53,7 @@ Application Pod Loads With ${given} Status
 
 The Application Accesses The Connected ${database} Database Instance
     Application Pod In Running Status
-    Access Data From Connected ${database} Instance
+    Load Data To ${database} Database From Application
 
 Application Pod In Running Status
      Close Topology Pan
@@ -67,22 +67,21 @@ Close Topology Pan
     Run Keyword If    ${status}
     ...    Click Element    ${btnClosePan}
 
-Access Data From Connected ${database} Instance
-    ${linkName}=    Catenate    SEPARATOR=-     ${appname}      ${newProject}
-    ${Application_URL}=     Get Quarkus Application URL   ${OCP_CONSOLE_URL}      ${linkName}
-    Execute Javascript      window.open("${Application_URL}")
-    Switch Window   url:${Application_URL}
-    Load Data To ${database} Database From Application
-
 Load Data To ${database} Database From Application
     Run Keyword If    "Mongo" in """${database}"""
-    ...    Load Data To Mongo Application
+    ...    Run Keywords
+    ...    Open Mongo Application
+    ...    AND  Load Data To Mongo Application
+    ...  ELSE
+    ...    Run Keywords
+    ...    Open Application
+    ...    AND  Load Data To Application
 
 Load Data To Mongo Application
     ${appStatus}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrFruitApp}
     Run Keyword If    not ${appStatus}
     ...    Reload Page
-    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrFruitApp}
+    Wait Until Element Is Visible    ${hdrFruitApp}
     ${fruitname}=   Random String
     Input Text    ${txtBxFruitName}    ${fruitname}
     ${description}=     Random String
@@ -95,4 +94,27 @@ Load Data To Mongo Application
     ...     Log   Connection Loads Data As Expected
     ...  ELSE
     ...    Log  Connection Failed! Check IP Configuration For the Mongo DB Instance on ISV   WARN
+
+Open Mongo Application
+    ${linkName}=    Catenate    SEPARATOR=-     ${appname}      ${newProject}
+    ${appLink}=     Get Quarkus Application URL   ${OCP_CONSOLE_URL}      ${linkName}
+    Execute Javascript      window.open("${appLink}")
+    Switch Window   url:${appLink}
+
+Open Application
+    Element Should Be Visible    ${lnkAppRoute}
+    ${appLink}=     Get Element Attribute    ${lnkAppRoute}    href
+    Click Element    ${lnkAppRoute}
+    Switch Window   url:${appLink}
+
+Load Data To Application
+    ${appStatus}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrCRUDApp}
+    Run Keyword If    not ${appStatus}
+    ...    Reload Page
+    Wait Until Element Is Visible    ${hdrCRUDApp}
+    ${fruitname}=   Random String
+    Input Text    ${txtBxFruitName}    ${fruitname}
+    Click Element    ${btnSave}
+    ${txtFruitUpd}=     Replace String    ${txtFruit}    <<fruit>>    ${fruitname}
+    Wait Until Page Contains Element    ${txtFruitUpd}  timeout=5s
 

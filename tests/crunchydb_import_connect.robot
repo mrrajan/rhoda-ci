@@ -3,7 +3,7 @@ Documentation       To Verify Provisioning of CrunchyDB Provider Account and dep
 Metadata            Version    0.0.1
 
 Library             SeleniumLibrary
-Resource            ../resources/keywords/deploy_instance_dev.resource
+Resource            ../resources/keywords/deploy_application.resource
 
 Suite Setup         Set Library Search Order    SeleniumLibrary
 Suite Teardown      Tear Down The Test Suite
@@ -33,3 +33,10 @@ Scenario: Deploy CrunchyDB Database Instance
     And User Navigates To Add Crunchy Bridge To Topology Screen
     And User Selects Database Instance For The Provider Account
     Then DBSC Instance Deployed On Developer Topology Graph View
+
+Scenario: Connect CrunchyDB DBSC With An Openshift Application
+    [Tags]    smoke    RHOD-67
+    When User Deploys Crunchy Database Instance On Developer Topology Screen
+    And User Imports Openshift crunchy Application From YAML
+    And User Creates Service Binding Between crunchy DBSC Instance And Imported Openshift Application
+    Then The Application Accesses The Connected crunchy Database Instance

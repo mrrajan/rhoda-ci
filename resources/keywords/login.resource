@@ -34,13 +34,13 @@ Login To Openshift
     User Selects Administrator View
 
 User Selects ${perspective} View
-    User Closes Welcome Message
     Wait Until Page Contains Element    ${btnPerspective}   timeout=15s
     Click Element    ${btnPerspective}
     ${elemPerspectiveOptUpd}=    Replace String    ${elemPerspectiveOpt}    <<option>>    ${perspective}
     Wait Until Keyword Succeeds    6x    2s    Wait Until Page Contains Element  ${elemPerspectiveOptUpd}
     Click Element    ${elemPerspectiveOptUpd}
     Set Test Variable    ${perspective}
+    User Closes Welcome Message
 
 User Closes Welcome Message
     ${welcomeTile}=     Run Keyword And Return Status    Wait Until Page Contains Element    ${elemWelcomeTile}     timeout=15s

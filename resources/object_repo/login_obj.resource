@@ -20,6 +20,6 @@ ${elemDataServiceNav}       //li[starts-with(.,"Data Services") and contains(@cl
 ${elemDataAccessNav}        //li[starts-with(.,"Data Services") and contains(@class,"nav")]/section//li[contains(.,"Database Access")]
 ${btnPerspective}           (//div[@id="page-sidebar"]//button)[1]
 ${elemPerspectiveOpt}       //h2[.="<<option>>"]/parent::a
-${elemWelcomeTile}          id:guided-tour-modal
-${btnWelcomTileClose}       //div[@id="guided-tour-modal"]/button
+${elemWelcomeTile}          //b[contains(.,"Welcome to the Developer Perspective!")]
+${btnWelcomTileClose}       //button[contains(@aria-label,"Close")]
 
