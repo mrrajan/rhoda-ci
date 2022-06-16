@@ -78,7 +78,8 @@ User Filters And Selects The Created Database Instance
 Instance Is Available In Selection Table
     ${instFound}=    Run Keyword And Return Status    Instance Can Be Selected
     Run Keyword If    not ${instFound}
-    ...    Reload Page
+    ...    Run Keywords
+    ...    Reload Page    AND    Fail
 
 Instance Can Be Selected
     Wait Until Keyword Succeeds    4x    1s    Element Should Be Visible    ${drpDwnDevProvAccount}

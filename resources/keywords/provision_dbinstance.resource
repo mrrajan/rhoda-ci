@@ -72,14 +72,23 @@ DBSC Instance Provisioned Successfully
     Click Button    ${btnViewDBInst}
 
 DBSC Instance Available On DataBase Access Page
-    Wait Until Keyword Succeeds     5x     2s   Wait Until Page Contains Element    ${titleDatabaseAccess}
+    Wait Until Keyword Succeeds     5x     2s   Filter DBSC Instance Until Success
+
+Filter DBSC Instance On Database Access Inventory Table
+    Wait Until Page Contains Element    ${titleDatabaseAccess}
     Element Should Be Visible    ${txtBxSearchByName}
     Input Text    ${txtBxSearchByName}    ${instanceName}
     ${elemInstanceNameUpd}=    Replace String    ${elemInstanceName}    <<inst-name>>    ${instanceName}
     ${elemInstProvNameUpd}=    Replace String    ${elemInstProvName}    <<inst-name>>    ${instanceName}
     ${elemInstProvNameUpd}=    Replace String    ${elemInstProvNameUpd}    <<paname>>    ${provaccname}
-    Element Should Be Visible    ${elemInstanceNameUpd}
+    Wait Until Element Is Visible    ${elemInstanceNameUpd}
     Element Should Be Visible    ${elemInstProvNameUpd}
+
+Filter DBSC Instance Until Success
+    ${instFound}=    Run Keyword And Return Status    Filter DBSC Instance On Database Access Inventory Table
+    Run Keyword If    not ${instFound}
+    ...    Run Keywords
+    ...    Reload Page    AND    Fail
 
 DBSC Instance For ${databaseProvider} Deployed Successfully
     User Filters And Selects The Created Database Instance

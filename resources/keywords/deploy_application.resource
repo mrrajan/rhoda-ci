@@ -108,13 +108,12 @@ Open Application
     Switch Window   url:${appLink}
 
 Load Data To Application
-    ${appStatus}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrCRUDApp}
+    ${appStatus}=    Run Keyword And Return Status    Wait Until Element Is Visible    ${hdrAddFruit}
     Run Keyword If    not ${appStatus}
     ...    Reload Page
-    Wait Until Element Is Visible    ${hdrCRUDApp}
+    Wait Until Element Is Visible    ${hdrAddFruit}
     ${fruitname}=   Random String
     Input Text    ${txtBxFruitName}    ${fruitname}
     Click Element    ${btnSave}
     ${txtFruitUpd}=     Replace String    ${txtFruit}    <<fruit>>    ${fruitname}
     Wait Until Page Contains Element    ${txtFruitUpd}  timeout=5s
-
