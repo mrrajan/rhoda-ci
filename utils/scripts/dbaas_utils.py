@@ -1,6 +1,8 @@
 import os
 import re
 import string
+import time
+import util
 
 import yaml
 from logger import log
@@ -102,10 +104,76 @@ def create_service_binding(namespace):
 
 def get_quarkus_application_url(console_url, connection):
     """To return application connection URL from console URL"""
-    print(console_url)
-    print(connection)
     application_url = console_url.replace("console-openshift-console", connection)
-    print(console_url)
     application_url = re.sub(r"/$", "", application_url) + "/fruits.html"
     log.info(application_url)
     return application_url.replace("https", "http")
+
+
+def create_secret_yaml(isv_lower, namespace):
+    """ To configure secrets yaml template parameters basis
+        input ISV(Database Provider) """
+    secret_temp = "./utils/data/oc_secrets.yaml"
+    test_variables = "./test-variables.yaml"
+    with open(secret_temp, "r") as sf:
+        data = yaml.safe_load(sf)
+    with open(test_variables, "r") as sf2:
+        variables = yaml.safe_load(sf2)
+    global secret_name
+    secret_name = str(data["metadata"]["name"]) + "-" + isv_lower + "-" + str(time.time_ns())[-10:]
+    data["metadata"]["name"] = secret_name
+    data["metadata"]["namespace"] = namespace
+    if "mongo" in isv_lower:
+        data["metadata"]["labels"]["atlas.mongodb.com/type"] = "credentials"
+        data["stringData"] = variables["MONGO"]
+    elif "crunchy" in isv_lower:
+        data["stringData"] = variables["CRUNCHY"]
+        data["metadata"]["labels"]["db-operator/type"] = "credentials"
+    elif "cockroach" in isv_lower:
+        data["stringData"] = variables["COCKROACH"]
+        data["metadata"]["labels"]["db-operator/type"] = "credentials"
+    return yaml.dump(data, sort_keys=False)
+
+
+def create_secret_cli(isv, namespace="redhat-dbaas-operator"):
+    """ To create the Secret Credentials Resource using the secrets yaml"""
+    oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
+    kind = "Secret"
+    src = create_secret_yaml(isv.lower(), namespace)
+    api_version = "v1"
+    oc_cli.oc_apply(kind, src, api_version)
+    log.info("Secret Created successfully!")
+    BuiltIn().set_suite_variable("\${SECRET_NAME}", secret_name)
+
+
+def create_provider_account_yaml(isv_lower, namespace):
+    """ To configure provider account yaml template parameters basis
+        input ISV(Database Provider) """
+    pa_yaml_temp = "./utils/data/oc_provider_account.yaml"
+    with open(pa_yaml_temp, "r") as sf:
+        data = yaml.safe_load(sf)
+    global prov_acc_name
+    prov_acc_name = util.get_provider_account_name(isv_lower)
+    data["metadata"]["name"] = prov_acc_name
+    data["metadata"]["namespace"] = namespace
+    data["spec"]["credentialsRef"]["name"] = secret_name
+    if "mongo" in isv_lower:
+        data["spec"]["providerRef"]["name"] = "mongodb-atlas-registration"
+    elif "crunchy" in isv_lower:
+        data["spec"]["providerRef"]["name"] = "crunchy-bridge-registration"
+    elif "cockroach" in isv_lower:
+        data["spec"]["providerRef"]["name"] = "cockroachdb-cloud-registration"
+    return yaml.dump(data, sort_keys=False)
+
+
+def import_provider_account_cli(isv, namespace="redhat-dbaas-operator"):
+    """ To import a Provider Account using the configured
+        Provider Account yaml """
+    oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
+    kind = "DBaaSInventory"
+    src = create_provider_account_yaml(isv.lower(), namespace)
+    api_version = "dbaas.redhat.com/v1alpha1"
+    oc_cli.oc_apply(kind, src, api_version)
+    log.info("Provider Account Imported!")
+    BuiltIn().set_suite_variable("\${provaccname}", prov_acc_name)
+

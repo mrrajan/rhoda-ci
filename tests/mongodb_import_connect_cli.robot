@@ -1,0 +1,19 @@
+*** Settings ***
+Documentation       To Verify Provisioning of MongoDB Provider Account and deployment of Database Instance Using OC CLI
+Metadata            Version    0.0.1
+
+Resource            ../resources/keywords/deploy_application.resource
+
+Suite Setup         Set Library Search Order    OpenShiftLibrary
+Suite Teardown      Tear Down The Test Suite
+Test Setup          Given Login To OpenShift CLI
+Test Teardown       Logout Of OpenShift CLI
+
+
+*** Test Cases ***
+Scenario: Import MongoDB Provider Account Using OC CLI
+    [Tags]    smoke    RHOD-460    cli
+    When User Creates MongoDB Secret Credentials
+    And User Imports MongoDB Provider Account Using CLI
+    Then Provider Account Imported Successfully Using CLI
+
