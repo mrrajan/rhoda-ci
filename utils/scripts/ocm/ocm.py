@@ -287,15 +287,15 @@ class OpenshiftClusterManager:
         with open(config_file, "r") as fh:
             data = yaml.safe_load(fh)
         data["MONGO"] = {}
-        data["MONGO"]["ORG_ID"] = self.mongo_org_id
-        data["MONGO"]["PUB_KEY"] = self.mongo_pub_key
-        data["MONGO"]["PRI_KEY"] = self.mongo_pri_key
-        data["CRUNCHY"]["PUB_KEY"] = self.crunchy_pub_key
-        data["CRUNCHY"]["PRI_KEY"] = self.crunchy_pri_key
-        data["COCKROACH"]["API_KEY"] = self.crdb_api_key
+        data["MONGO"]["orgId"] = self.mongo_org_id
+        data["MONGO"]["publicApiKey"] = self.mongo_pub_key
+        data["MONGO"]["privateApiKey"] = self.mongo_pri_key
+        data["CRUNCHY"]["publicApiKey"] = self.crunchy_pub_key
+        data["CRUNCHY"]["privateApiSecret"] = self.crunchy_pri_key
+        data["COCKROACH"]["apiSecretKey"] = self.crdb_api_key
         with open(config_file, "w") as yaml_file:
             yaml_file.write(yaml.dump(data, default_flow_style=False, sort_keys=False))
-        log.info("update isv infromation success!")
+        log.info("update isv information success!")
 
     def wait_for_osd_cluster_to_be_ready(self, timeout=7200):
         """Waits for cluster to be in ready state"""

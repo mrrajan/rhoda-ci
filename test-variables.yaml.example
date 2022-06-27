@@ -10,11 +10,11 @@ OCP_ADMIN_USER:
   USERNAME: kubeadmin
   PASSWORD: abc123XYZ!
 MONGO:
-  ORG_ID: xxxx
-  PUB_KEY: xxxx
-  PRI_KEY: xxxx
+  orgId: xxxx
+  publicApiKey: xxxx
+  privateApiKey: xxxx
 CRUNCHY:
-  PUB_KEY: xxxx
-  PRI_KEY: xxxx
+  publicApiKey: xxxx
+  privateApiSecret: xxxx
 COCKROACH:
-  API_KEY: xxxx
+  apiSecretKey: xxxx

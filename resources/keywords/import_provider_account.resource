@@ -54,7 +54,10 @@ User Enters Provider Account Name And Selects Database Provider
     ${dbprovider}=    Set Variable    ${isv}
     Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${drpDwnDBProvider}
     ${paname}=    Get Provider Account Name    ${dbprovider}    ${invalid}
-    Set Test Variable    ${provaccname}    ${paname}
+    Run Keyword If    ${invalid}
+    ...    Set Test Variable    ${provaccname}    ${paname}
+    ...  ELSE
+    ...    Set Suite Variable    ${provaccname}    ${paname}
     Input Text    ${txtBxName}    ${provaccname}
     Select From List By Label    ${drpDwnDBProvider}    ${dbprovider}
 
@@ -63,9 +66,9 @@ User Enters Data To Import MongoDB Provider Account
     Set Suite Variable    ${isv}
     User Enters Provider Account Name And Selects Database Provider
     Wait Until Page Contains Element    ${txtBxMongoDBOrgID}    timeout=10s
-    Input Text    ${txtBxMongoDBOrgID}    ${MONGO.ORG_ID}
-    Input Text    ${txtBxMongoDBPubAPI}    ${MONGO.PUB_KEY}
-    Input Text    ${txtBxMongoDBPrivAPI}    ${MONGO.PRI_KEY}
+    Input Text    ${txtBxMongoDBOrgID}    ${MONGO.orgId}
+    Input Text    ${txtBxMongoDBPubAPI}    ${MONGO.publicApiKey}
+    Input Text    ${txtBxMongoDBPrivAPI}    ${MONGO.privateApiKey}
     Element Should Be Visible    ${btnImportEnabled}
     Click Element    ${btnImportEnabled}
 
@@ -85,8 +88,8 @@ User Enters Data To Import CrunchyDB Provider Account
     Set Suite Variable    ${isv}
     User Enters Provider Account Name And Selects Database Provider
     Wait Until Page Contains Element    ${txtBxCrunchyPubAPI}    timeout=10s
-    Input Text    ${txtBxCrunchyPubAPI}    ${CRUNCHY.PUB_KEY}
-    Input Text    ${txtBxCrunchyPrivAPI}    ${CRUNCHY.PRI_KEY}
+    Input Text    ${txtBxCrunchyPubAPI}    ${CRUNCHY.publicApiKey}
+    Input Text    ${txtBxCrunchyPrivAPI}    ${CRUNCHY.privateApiSecret}
     Element Should Be Visible    ${btnImportEnabled}
     Click Element    ${btnImportEnabled}
 
@@ -105,7 +108,7 @@ User Enters Data To Import CockroachDB Provider Account
     set Suite Variable    ${isv}
     User Enters Provider Account Name And Selects Database Provider
     Wait Until Page Contains Element    ${txtBxCockroachAPI}    timeout=10s
-    Input Text    ${txtBxCockroachAPI}    ${COCKROACH.API_KEY}
+    Input Text    ${txtBxCockroachAPI}    ${COCKROACH.apiSecretKey}
     Element Should Be Visible    ${btnImportEnabled}
     Click Element    ${btnImportEnabled}
 
@@ -204,3 +207,24 @@ Import ${databaseProvider} Provider Account
     ...  ELSE IF    "Cockroach" in """${databaseProvider}"""
     ...    User Enters Data To Import CockroachDB Provider Account
     Provider Account Import Success
+
+User Creates ${isv} Secret Credentials
+    Create Secret CLI    ${isv}
+    ${cmd}    Set Variable    oc describe Secret/${SECRET_NAME}
+    ${stdout} =    Execute Command    ${cmd}    True
+    ${stdout_str} =    Convert To String    ${stdout}
+    Should Contain    ${stdout_str}    ${SECRET_NAME}    ignore_case=True    strip_spaces=True
+    Should Not Contain Any    ${stdout_str}    Error    NotFound
+
+User Imports ${isv} Provider Account Using CLI
+    Import Provider Account CLI    ${isv}
+
+Provider Account Imported Successfully Using CLI
+    Wait Until Keyword Succeeds    4x    5s    Describe Provider Account Using OC CLI
+
+Describe Provider Account Using OC CLI
+    ${cmd}    Set Variable    oc describe DbaaSInventory/${provaccname}
+    ${stdout} =    Execute Command    ${cmd}    True
+    ${stdout_str} =    Convert To String    ${stdout}
+    Should Contain X Times    ${stdout_str}    True 	2    ignore_case=True    strip_spaces=True
+

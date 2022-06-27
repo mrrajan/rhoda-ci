@@ -3,7 +3,8 @@ Library     SeleniumLibrary
 Library     BuiltIn
 Library     String
 Library     OpenShiftLibrary
-Library    ../../utils/scripts/dbaas_utils.py
+Library     ../../utils/scripts/dbaas_utils.py
+Library     ../../utils/scripts/util.py
 Resource    ../object_repo/login_obj.resource
 
 
@@ -14,6 +15,17 @@ The Browser Is On Openshift Home Screen
     Select Login Authentication Type    ${OCP_ADMIN_USER.AUTH_TYPE}
     Login To Openshift
     Oc Login    ${OCP_API_URL}    ${OCP_ADMIN_USER.USERNAME}     ${OCP_ADMIN_USER.PASSWORD}
+
+Login To OpenShift CLI
+    Oc Login    ${OCP_API_URL}    ${OCP_ADMIN_USER.USERNAME}     ${OCP_ADMIN_USER.PASSWORD}
+    ${cmd_login}    Set Variable    oc login ${OCP_API_URL} -u ${OCP_ADMIN_USER.USERNAME} -p ${OCP_ADMIN_USER.PASSWORD}
+    ${stdout} =    Execute Command    ${cmd_login}    True
+    ${cmd}    Set Variable    oc project redhat-dbaas-operator
+    ${stdout} =    Execute Command    ${cmd}    True
+
+Logout Of OpenShift CLI
+    ${cmd}    Set Variable    oc logout
+    ${stdout} =    Execute Command    ${cmd}    True
 
 Select Login Authentication Type
     [Arguments]    ${auth_type}
