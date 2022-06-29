@@ -30,3 +30,4 @@ ${btnEditProvAcc}               //button[(.="Edit Provider Account") and @aria-d
 ${txtProvNoDBInst}              //div[contains(.,"The Provider Account resource has been created but the database instances could not be fetched.")]
 ${txtErrNoDBInst}               //div[.="No database instance in this Provider Account"]
 ${btnClose}                     //button[contains(.,"Close") and @aria-disabled="false"]
+${lblDuplProvAccName}           //div[@aria-label="Danger Alert"]/div[contains(.,"already exists")]

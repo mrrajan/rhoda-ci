@@ -61,6 +61,12 @@ User Enters Provider Account Name And Selects Database Provider
     Input Text    ${txtBxName}    ${provaccname}
     Select From List By Label    ${drpDwnDBProvider}    ${dbprovider}
 
+User Enters An Existing Provider Account Name And Selects Database Provider
+    ${dbprovider}=    Set Variable    ${isv}
+    Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${drpDwnDBProvider}
+    Input Text    ${txtBxName}    ${provaccname}
+    Select From List By Label    ${drpDwnDBProvider}    ${dbprovider}
+
 User Enters Data To Import MongoDB Provider Account
     [Arguments]    ${isv}=MongoDB Atlas Cloud Database Service
     Set Suite Variable    ${isv}
@@ -107,6 +113,15 @@ User Enters Data To Import CockroachDB Provider Account
     [Arguments]    ${isv}=CockroachDB Cloud
     set Suite Variable    ${isv}
     User Enters Provider Account Name And Selects Database Provider
+    Wait Until Page Contains Element    ${txtBxCockroachAPI}    timeout=10s
+    Input Text    ${txtBxCockroachAPI}    ${COCKROACH.apiSecretKey}
+    Element Should Be Visible    ${btnImportEnabled}
+    Click Element    ${btnImportEnabled}
+
+User Enters Data To Import Duplicate CockroachDB Provider Account
+    [Arguments]    ${isv}=CockroachDB Cloud
+    set Suite Variable    ${isv}
+    User Enters An Existing Provider Account Name And Selects Database Provider
     Wait Until Page Contains Element    ${txtBxCockroachAPI}    timeout=10s
     Input Text    ${txtBxCockroachAPI}    ${COCKROACH.apiSecretKey}
     Element Should Be Visible    ${btnImportEnabled}
@@ -227,4 +242,7 @@ Describe Provider Account Using OC CLI
     ${stdout} =    Execute Command    ${cmd}    True
     ${stdout_str} =    Convert To String    ${stdout}
     Should Contain X Times    ${stdout_str}    True 	2    ignore_case=True    strip_spaces=True
+
+Duplicate Provider Account Name Error Message Appears
+    Element Should Be Visible    ${lblDuplProvAccName}
 
