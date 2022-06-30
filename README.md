@@ -35,5 +35,13 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md)
 # RHODA-CI Container Image
 See build [README](build/README.md) on how you can build a container to run RHODA-CI automation in OpenShift.
 
+# Github Workflows
+## Mergify
+It is a GitHub application that automates merge action workflow based on the
+below conditions set in the project
+
+- Requires minimum of two approvals from peers
+- Must not either labels 'DNM' and/or 'WIP'
+
 # License
 This project is open sourced under MIT License.
