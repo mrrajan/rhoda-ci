@@ -11,7 +11,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-ROBOT_LIBRARY_VERSION = "0.3"
+ROBOT_LIBRARY_VERSION = "0.4"
 
 
 def select_database_instance(
@@ -110,9 +110,9 @@ def get_quarkus_application_url(console_url, connection):
     return application_url.replace("https", "http")
 
 
-def create_secret_yaml(isv_lower, namespace):
-    """ To configure secrets yaml template parameters basis
-        input ISV(Database Provider) """
+def create_secret_yaml(isv_lower, valid, namespace):
+    """To configure secrets yaml template parameters basis
+    input ISV(Database Provider)"""
     secret_temp = "./utils/data/oc_secrets.yaml"
     test_variables = "./test-variables.yaml"
     with open(secret_temp, "r") as sf:
@@ -120,7 +120,13 @@ def create_secret_yaml(isv_lower, namespace):
     with open(test_variables, "r") as sf2:
         variables = yaml.safe_load(sf2)
     global secret_name
-    secret_name = str(data["metadata"]["name"]) + "-" + isv_lower + "-" + str(time.time_ns())[-10:]
+    secret_name = (
+        str(data["metadata"]["name"])
+        + "-"
+        + isv_lower
+        + "-"
+        + str(time.time_ns())[-10:]
+    )
     data["metadata"]["name"] = secret_name
     data["metadata"]["namespace"] = namespace
     if "mongo" in isv_lower:
@@ -132,14 +138,17 @@ def create_secret_yaml(isv_lower, namespace):
     elif "cockroach" in isv_lower:
         data["stringData"] = variables["COCKROACH"]
         data["metadata"]["labels"]["db-operator/type"] = "credentials"
+    if valid == "False":
+        last_key = list(data["stringData"].keys())[-1]
+        data["stringData"][last_key] = "invalidData"
     return yaml.dump(data, sort_keys=False)
 
 
-def create_secret_cli(isv, namespace="redhat-dbaas-operator"):
-    """ To create the Secret Credentials Resource using the secrets yaml"""
+def create_secret_cli(isv, valid, namespace="redhat-dbaas-operator"):
+    """To create the Secret Credentials Resource using the secrets yaml"""
     oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
     kind = "Secret"
-    src = create_secret_yaml(isv.lower(), namespace)
+    src = create_secret_yaml(isv.lower(), valid, namespace)
     api_version = "v1"
     oc_cli.oc_apply(kind, src, api_version)
     log.info("Secret Created successfully!")
@@ -147,8 +156,8 @@ def create_secret_cli(isv, namespace="redhat-dbaas-operator"):
 
 
 def create_provider_account_yaml(isv_lower, namespace):
-    """ To configure provider account yaml template parameters basis
-        input ISV(Database Provider) """
+    """To configure provider account yaml template parameters basis
+    input ISV(Database Provider)"""
     pa_yaml_temp = "./utils/data/oc_provider_account.yaml"
     with open(pa_yaml_temp, "r") as sf:
         data = yaml.safe_load(sf)
@@ -167,8 +176,8 @@ def create_provider_account_yaml(isv_lower, namespace):
 
 
 def import_provider_account_cli(isv, namespace="redhat-dbaas-operator"):
-    """ To import a Provider Account using the configured
-        Provider Account yaml """
+    """To import a Provider Account using the configured
+    Provider Account yaml"""
     oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
     kind = "DBaaSInventory"
     src = create_provider_account_yaml(isv.lower(), namespace)
@@ -176,4 +185,3 @@ def import_provider_account_cli(isv, namespace="redhat-dbaas-operator"):
     oc_cli.oc_apply(kind, src, api_version)
     log.info("Provider Account Imported!")
     BuiltIn().set_suite_variable("\${provaccname}", prov_acc_name)
-
