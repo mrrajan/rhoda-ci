@@ -17,6 +17,6 @@ pull_request_rules:
     actions:
       comment:
         message: >
-          "This pull request now has conflicts with the target branch.
-           Please resolve conflicts."
+          This pull request now has conflicts with the target branch. Please 
+          resolve conflicts.
 
