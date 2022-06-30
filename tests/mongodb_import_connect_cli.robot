@@ -17,3 +17,8 @@ Scenario: Import MongoDB Provider Account Using OC CLI
     And User Imports MongoDB Provider Account Using CLI
     Then Provider Account Imported Successfully Using CLI
 
+Scenario: Verify Error Message For Invalid Credentials On MongoDB Using OC CLI
+    [Tags]    smoke    RHOD-470    cli
+    When User Creates MongoDB Secret With Invalid Credentials
+    And User Imports MongoDB Provider Account Using CLI
+    Then Provider Account Import Failure Using CLI

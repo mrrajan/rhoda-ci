@@ -12,6 +12,7 @@ ${provaccname}        ${EMPTY}
 ${INV_ORG_ID}         invalid_org_id
 ${INV_PUB_KEY}        invalid_pub_key
 ${INV_PRI_KEY}        invalid_private_key
+${VALID_SECRET}       True
 
 *** Keywords ***
 User Selects Invalid Namespace To Import Database Provider Account And Navigates To Database Access Page
@@ -224,7 +225,7 @@ Import ${databaseProvider} Provider Account
     Provider Account Import Success
 
 User Creates ${isv} Secret Credentials
-    Create Secret CLI    ${isv}
+    Create Secret CLI    ${isv}    ${VALID_SECRET}
     ${cmd}    Set Variable    oc describe Secret/${SECRET_NAME}
     ${stdout} =    Execute Command    ${cmd}    True
     ${stdout_str} =    Convert To String    ${stdout}
@@ -238,11 +239,18 @@ Provider Account Imported Successfully Using CLI
     Wait Until Keyword Succeeds    4x    5s    Describe Provider Account Using OC CLI
 
 Describe Provider Account Using OC CLI
+    [Arguments]     ${status}=True
     ${cmd}    Set Variable    oc describe DbaaSInventory/${provaccname}
     ${stdout} =    Execute Command    ${cmd}    True
     ${stdout_str} =    Convert To String    ${stdout}
-    Should Contain X Times    ${stdout_str}    True 	2    ignore_case=True    strip_spaces=True
+    Should Contain X Times    ${stdout_str}    ${status} 	2    ignore_case=True    strip_spaces=True
+
+User Creates ${isv} Secret With Invalid Credentials
+    Set Test Variable   ${VALID_SECRET}     False
+    User Creates ${isv} Secret Credentials
+
+Provider Account Import Failure Using CLI
+    Wait Until Keyword Succeeds    4x    5s    Describe Provider Account Using OC CLI    False
 
 Duplicate Provider Account Name Error Message Appears
     Element Should Be Visible    ${lblDuplProvAccName}
-
