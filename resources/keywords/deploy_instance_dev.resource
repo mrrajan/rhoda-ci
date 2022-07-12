@@ -6,6 +6,7 @@ Resource    ../object_repo/provision_dbinstance_obj.resource
 *** Variables ***
 ${newProject}        ${EMPTY}
 ${instanceName}      ${EMPTY}
+${instanceID}        ${EMPTY}
 
 *** Keywords ***
 User Selects A Project For Database Connection
@@ -142,3 +143,9 @@ User Clicks Continue On Topoloy Binding Instructions
 Update Instance Name With Unique Identifier
     ${instanceUUID}=    Get Element Attribute    ${lnkPanInstance}    innerText
     Set Suite Variable    ${instanceUUID}
+
+User Deploys MongoDB Instance Using CLI
+    Deploy Db Instance Cli    Mongo    ${TEST TAGS}
+
+DBSC Instance Deployed Successfully Using CLI
+    Check DBSC Connection    ${newProject}      ${instanceID}

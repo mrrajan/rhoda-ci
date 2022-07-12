@@ -2,16 +2,16 @@ import os
 import re
 import string
 import time
-import util
+from typing import List
 
+import util
 import yaml
 from logger import log
-from OpenShiftLibrary import OpenShiftLibrary
 from robot.libraries.BuiltIn import BuiltIn
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-ROBOT_LIBRARY_VERSION = "0.4"
+ROBOT_LIBRARY_VERSION = "0.6"
 
 
 def select_database_instance(
@@ -185,3 +185,119 @@ def import_provider_account_cli(isv, namespace="redhat-dbaas-operator"):
     oc_cli.oc_apply(kind, src, api_version)
     log.info("Provider Account Imported!")
     BuiltIn().set_suite_variable("\${provaccname}", prov_acc_name)
+
+
+def deploy_db_instance_cli(isv, project, namespace="redhat-dbaas-operator"):
+    """To deploy a DB instance on given namespace for the
+    imported provider account"""
+    instance_list = retrieve_instances(isv, namespace)
+    create_new_project(project)
+    project_name = BuiltIn().get_variable_value(r"\${newProject}")
+    deploy_instance(project_name, instance_list)
+
+
+def retrieve_instances(isv, namespace):
+    """To retrieve DB instances for Imported Provider Account"""
+    inst_list = []
+    provider_account = BuiltIn().get_variable_value(r"\${provaccname}")
+    if provider_account == "":
+        create_secret_cli(isv, "true")
+        import_provider_account_cli(isv)
+        provider_account = BuiltIn().get_variable_value(r"\${provaccname}")
+    cmd = "oc describe DBaaSInventory/{} -n {}".format(provider_account, namespace)
+    while True:
+        try:
+            result = util.execute_command(cmd)
+            res = yaml.safe_load(result)
+            if res["Status"]["Conditions"]["Reason"] == "ProviderReconcileInprogress":
+                continue
+            for instance in result.split("\n"):
+                if "Instance ID" in instance:
+                    inst_list.append(instance.split(":")[1].strip())
+            log.info("Provider account Instances retrieved successfully!")
+            return inst_list
+        except KeyError:
+            continue
+
+
+def create_new_project(project_name):
+    """To create new project to deploy provider account"""
+    project_name = util.get_project_name(project_name)
+    oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
+    oc_cli.new_project(project_name)
+    BuiltIn().set_suite_variable(r"\${newProject}", project_name)
+    log.info("Project Created Successfully")
+
+
+def deploy_instance(project, instance_list: List[str]):
+    """To deploy instance to given project"""
+    oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
+    kind = "DBaaSConnection"
+    api_version = "dbaas.redhat.com/v1alpha1"
+    for instance_id in instance_list:
+        src = create_deploy_instance_yaml(project, instance_id)
+        oc_cli.oc_apply(kind, src, api_version)
+        counter = 0
+        while counter < 5:
+            try:
+                counter += 1
+                instance = BuiltIn().get_variable_value(r"\${instanceName}")
+                cmd = "oc describe DBaaSConnection/{} -n {}".format(instance, project)
+                result = util.execute_command(cmd)
+                res = yaml.safe_load(result)
+                if res["Status"]["Conditions"]["Reason"] == "Ready":
+                    log.info(
+                        "Deployed DBSC Instance Available in Ready Status for Binding"
+                    )
+                    break
+                else:
+                    continue
+            except:
+                continue
+        break
+    else:
+        BuiltIn().fail("Instance Deployment failed")
+
+
+def create_deploy_instance_yaml(project, instance_id):
+    """To create deploy instance yaml"""
+    yaml_deploy_instance = "./utils/data/oc_deploy_instance.yaml"
+    with open(yaml_deploy_instance, "r") as di:
+        data = yaml.safe_load(di)
+    global instance_name
+    instance_name = util.get_instance_name("cli")
+    data["metadata"]["name"] = instance_name
+    data["metadata"]["namespace"] = project
+    data["spec"]["inventoryRef"]["name"] = BuiltIn().get_variable_value(
+        r"\${provaccname}"
+    )
+    data["spec"]["instanceID"] = instance_id
+    BuiltIn().set_suite_variable(r"\${instanceID}", instance_id)
+    BuiltIn().set_suite_variable(r"\${instanceName}", instance_name)
+    return yaml.dump(data, sort_keys=False)
+
+
+def check_dbsc_connection(project, instance_id):
+    """To verify project contains instance deployed"""
+    if instance_id == "" or project == "":
+        BuiltIn().fail("Instance Id and Project should present")
+    cmd = "oc get DBaaSConnections -n {}".format(project)
+    dbsc = util.execute_command(cmd)
+    conn_list = []
+    for conn in dbsc.split("\n"):
+        if not conn.startswith("NAME") and conn != "":
+            conn_list.append(conn.split(" ")[0].strip())
+    if len(conn_list) > 0:
+        for dbsc_inst in conn_list:
+            cmd = "oc describe DBaaSConnections/{} -n {}".format(dbsc_inst, project)
+            result = util.execute_command(cmd)
+            response = yaml.safe_load(result)
+            if response["Spec"]["Instance ID"] == instance_id:
+                log.info("Given Instance Available on Project Namespace")
+                break
+        else:
+            BuiltIn().fail(
+                "Instance not available on the DBSC Connections on the Project namespace"
+            )
+    else:
+        BuiltIn().fail("DBSC Connections are not present for the project: " + project)
