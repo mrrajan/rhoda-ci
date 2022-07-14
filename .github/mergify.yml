@@ -1,0 +1,22 @@
+---
+pull_request_rules:
+  - 
+    name: automatic merge
+    conditions:
+      - label!=DNM
+      - label!=WIP
+      - base=master
+      - "#approved-reviews-by>=2"
+    actions:
+      merge:
+        method: merge
+  -
+    name: resolve conflict
+    conditions:
+      - conflict
+    actions:
+      comment:
+        message: >
+          This pull request now has conflicts with the target branch. Please 
+          resolve conflicts.
+

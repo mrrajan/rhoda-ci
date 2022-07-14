@@ -1,0 +1,10 @@
+apiVersion: dbaas.redhat.com/v1alpha1
+kind: DBaaSConnection
+metadata:
+  name: connection_name
+  namespace: target_namespace
+spec:
+  inventoryRef:
+    name: provider_account
+    namespace: redhat-dbaas-operator
+  instanceID: instance_id

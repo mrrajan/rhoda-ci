@@ -121,9 +121,16 @@ create_artifact_dir() {
             TEST_ARTIFACT_DIR="${TEST_ARTIFACT_DIR}/rhoda-${JENKINS_BUILD_NUMBER}-$(date +%Y-%m-%d-%M%S)"
             ;;
     esac
-    mkdir -p "${TEST_ARTIFACT_DIR}"
+    mkdir -p "${TEST_ARTIFACT_DIR}/results"
+    mkdir -p "${TEST_ARTIFACT_DIR}/attachments"
+    RP_PAYLOAD_RESULT_DIR="${TEST_ARTIFACT_DIR}/results"
+    RP_PAYLOAD_ATTACH_DIR="${TEST_ARTIFACT_DIR}/attachments"
 }
 
+post_run_action(){
+    # To Categorize the output results for Report portal
+    cp ${RP_PAYLOAD_ATTACH_DIR}/xunit_test_result.xml   ${RP_PAYLOAD_RESULT_DIR}
+}
 
 echo "------------- STARTING ${0}"
 handle_inputs "$@"
@@ -166,6 +173,9 @@ case "$(uname -s)" in
 esac
 
 set +e
-./venv/bin/robot  ${EXTRA_ROBOT_ARGS} -d ${TEST_ARTIFACT_DIR} -x xunit_test_result.xml -r test_report.html ${TEST_VARIABLES} --variablefile ${TEST_VARIABLES_FILE} ${TEST_CASE_FILE}
+./venv/bin/robot  ${EXTRA_ROBOT_ARGS} -d ${RP_PAYLOAD_ATTACH_DIR} -x xunit_test_result.xml -r test_report.html ${TEST_VARIABLES} --variablefile ${TEST_VARIABLES_FILE} ${TEST_CASE_FILE}
+
+set -e
+post_run_action
 
 echo "------------- END ${0}"
