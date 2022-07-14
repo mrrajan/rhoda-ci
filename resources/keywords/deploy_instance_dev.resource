@@ -8,6 +8,7 @@ ${newProject}        ${EMPTY}
 ${instanceName}      ${EMPTY}
 ${instanceID}        ${EMPTY}
 
+
 *** Keywords ***
 User Selects A Project For Database Connection
     Run Keyword If    '${newProject}'=='${EMPTY}'
@@ -143,6 +144,14 @@ User Clicks Continue On Topoloy Binding Instructions
 Update Instance Name With Unique Identifier
     ${instanceUUID}=    Get Element Attribute    ${lnkPanInstance}    innerText
     Set Suite Variable    ${instanceUUID}
+
+
+User Selects Provider Account With No Instances
+    Wait Until Keyword Succeeds     5x     1s      Wait Until Page Contains Element    ${drpDwnDevProvAccount}
+    Select From List By Label    ${drpDwnDevProvAccount}     ${provaccname}
+
+Text Message For A provider Account With No DB Instances Appears
+    Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${txtNoDBInstExist}
 
 User Deploys MongoDB Instance Using CLI
     Deploy Db Instance Cli    Mongo    ${TEST TAGS}
