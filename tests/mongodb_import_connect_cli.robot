@@ -22,3 +22,8 @@ Scenario: Verify Error Message For Invalid Credentials On MongoDB Using OC CLI
     When User Creates MongoDB Secret With Invalid Credentials
     And User Imports MongoDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
+
+Scenario: Deploy MongoDB Provider Account Using OC CLI
+    [Tags]    smoke    RHOD-480     cli
+    When User Deploys MongoDB Instance Using CLI
+    Then DBSC Instance Deployed Successfully Using CLI

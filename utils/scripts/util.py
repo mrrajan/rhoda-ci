@@ -110,14 +110,16 @@ def random_string():
 def get_provider_account_name(string_suffix: string = "DBAAS", invalid=None):
     isvname = string_suffix.lower().split(" ")[0]
     if invalid:
-        return str(time.time())[-4:] + "-" + isvname + "-inv"
+        return str(time.time())[-4:].replace(".", "") + "-" + isvname + "-inv"
     else:
-        return str(time.time())[-4:] + "-" + isvname + "-test"
+        return str(time.time())[-4:].replace(".", "") + "-" + isvname + "-test"
 
 
 def get_project_name(string_name: list):
-    return str(time.time())[-4:] + "-" + ("-".join(string_name)).lower()
+    return (
+        str(time.time())[-4:].replace(".", "") + "-" + ("-".join(string_name)).lower()
+    )
 
 
 def get_instance_name(view: string):
-    return view.lower() + "-inst-" + str(time.time())[-4:]
+    return view.lower() + "-inst-" + str(time.time())[-4:].replace(".", "")
