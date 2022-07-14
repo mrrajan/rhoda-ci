@@ -46,3 +46,5 @@ ${txtAppPodStatus}              //span[contains(.,"<<appname>>")]//following-sib
 ${btnClosePan}                  //button[@data-test-id="sidebar-close-button"]
 ${txtApplication}               //*[.="<<appname>>"]/parent::*[name()="g"]
 ${lnkAppRoute}                  //h2[.="Routes"]/following::div/a
+${txtNoDBInstExist}             //div[contains(@class,"pf-c-empty-state__content")]
+
