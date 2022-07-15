@@ -130,6 +130,7 @@ create_artifact_dir() {
 post_run_action(){
     # To Categorize the output results for Report portal
     cp ${RP_PAYLOAD_ATTACH_DIR}/xunit_test_result.xml   ${RP_PAYLOAD_RESULT_DIR}
+    export RESULT_DIR=${TEST_ARTIFACT_DIR}
 }
 
 echo "------------- STARTING ${0}"
