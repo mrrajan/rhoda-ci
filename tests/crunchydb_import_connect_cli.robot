@@ -23,3 +23,8 @@ Scenario: Verify Error Message For Invalid Credentials On CrunchyDB Using OC CLI
     And User Imports CrunchyDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
 
+Scenario: Deploy CrunchyDB Instance using OC CLI
+    [Tags]    smoke    RHOD-561    cli
+    When User Deploys CrunchyDB Instance using CLI
+    Then DBSC Instance Deployed Successfully Using CLI
+
