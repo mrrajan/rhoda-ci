@@ -156,5 +156,11 @@ Text Message For A provider Account With No DB Instances Appears
 User Deploys MongoDB Instance Using CLI
     Deploy Db Instance Cli    Mongo    ${TEST TAGS}
 
+User Deploys CockroachDB Instance using CLI
+    Deploy Db Instance Cli    Cockroach    ${TEST TAGS}
+
+User Deploys CrunchyDB Instance using CLI
+    Deploy Db Instance Cli    crunchy    ${TEST TAGS}
+
 DBSC Instance Deployed Successfully Using CLI
     Check DBSC Connection    ${newProject}      ${instanceID}
