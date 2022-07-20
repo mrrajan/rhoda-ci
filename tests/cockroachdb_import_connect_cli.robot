@@ -23,3 +23,7 @@ Scenario: Verify Error Message For Invalid Credentials On CockroachDB Using OC C
     And User Imports CockroachDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
 
+Scenario: Deploy CockroachDB Provider Account Using OC CLI
+    [Tags]    smoke    RHOD-570     cli
+    When User Deploys CockroachDB Instance Using CLI
+    Then DBSC Instance Deployed Successfully Using CLI
