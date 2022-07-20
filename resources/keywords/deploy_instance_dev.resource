@@ -153,8 +153,8 @@ User Selects Provider Account With No Instances
 Text Message For A provider Account With No DB Instances Appears
     Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${txtNoDBInstExist}
 
-User Deploys MongoDB Instance Using CLI
-    Deploy Db Instance Cli    Mongo    ${TEST TAGS}
+User Deploys ${isv_name} Instance Using CLI
+    Deploy Db Instance Cli    ${isv_name}    ${TEST TAGS}
 
 DBSC Instance Deployed Successfully Using CLI
     Check DBSC Connection    ${newProject}      ${instanceID}
