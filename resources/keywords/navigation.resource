@@ -20,6 +20,7 @@ User Expands ${sideNavBarMenu}
 User Selects ${subMenuOption} On ${sideNavBarMenu}
     ${elemNavChildMenuUpd}=    Replace String    ${elemNavChildMenu}    <<menu>>    ${sideNavBarMenu}
     ${elemNavChildMenuUpd}=    Replace String    ${elemNavChildMenuUpd}    <<submenu>>    ${subMenuOption}
+    Scroll Element Into View    ${elemNavChildMenuUpd}
     Wait Until Element Is Visible    ${elemNavChildMenuUpd}    timeout=3s
     Click Element    ${elemNavChildMenuUpd}
     ${lblChildPageHeader}=    Replace String    ${lblChildPageHeader}    <<submenu>>    ${subMenuOption}
@@ -37,6 +38,7 @@ User Navigates To Database Access Page
 
 User Navigates To DBaaS Inventories Screen
     [Arguments]    ${PROJECT}=redhat-dbaas-operator
+    User Selects Administrator View
     User Navigates To Installed Operators Under Operators
     User Filters ${PROJECT} Namespace On Project Dropdown
     Wait Until Page Contains Element    ${elemDbaasStatus}    timeout=15s
