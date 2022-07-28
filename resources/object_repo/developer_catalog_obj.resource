@@ -47,4 +47,6 @@ ${btnClosePan}                  //button[@data-test-id="sidebar-close-button"]
 ${txtApplication}               //*[.="<<appname>>"]/parent::*[name()="g"]
 ${lnkAppRoute}                  //h2[.="Routes"]/following::div/a
 ${txtNoDBInstExist}             //div[contains(@class,"pf-c-empty-state__content")]
+${txtNoDBInstance}              //h2[contains(.,"No Database Instances")]
+${lnkImportProvAcc}             //a[contains(.,"Import a Provider Account")]
 

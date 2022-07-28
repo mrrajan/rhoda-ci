@@ -1,5 +1,6 @@
 *** Settings ***
 Resource    ../keywords/operators.resource
+Resource    ../keywords/deploy_instance_dev.resource
 Resource    ../object_repo/import_dbaasinventory_obj.resource
 Resource    ../object_repo/database_access_obj.resource
 Resource    ../object_repo/installed_operators_obj.resource
@@ -169,6 +170,7 @@ Imported Provider Account Avaialble On DBaaS Inventory Screen
     Set Suite Variable    ${provaccname}
 
 Imported Provider Account Available On Database Access Screen
+    User Selects Administrator View
     User Navigates To Database Access Under Data Services
     Wait Until Page Contains Element    ${titleDatabaseAccess}
     ${elemProvAccUpd}=    Replace String    ${elemProvAcc}    <<paname>>    ${provaccname}
@@ -254,4 +256,19 @@ Provider Account Import Failure Using CLI
 
 Duplicate Provider Account Name Error Message Appears
     Element Should Be Visible    ${lblDuplProvAccName}
+
+User Navigates To Add ${databaseProvider} Topology Screen From Developer View
+    User Selects Developer View
+    User Filters redhat-dbaas-operator Namespace On Project Dropdown
+    User Navigates To Developers Catalog Add Screen
+    User Clicks On Cloud Hosted Database Menu
+    User Selects ${databaseProvider} Tile Under Cloud Hosted Database
+    Click Element    ${btnDBProvAddTopology}
+
+User Navigates To Import Provider Account Screen From Developer View
+    Element Should Be Visible    ${txtNoDBInstance}     message=Imported Provider Account Available
+    Element Should Be Visible    ${lnkImportProvAcc}
+    Click Element    ${lnkImportProvAcc}
+    Switch Window   NEW
+
 

@@ -11,6 +11,13 @@ Test Teardown       Close Browser
 
 
 *** Test Cases ***
+Scenario: Import MongoDB Provider Account From Developer View
+    [Tags]    smoke    RHOD-10
+    When User Navigates To Add MongoDB Topology Screen From Developer View
+    And User Navigates To Import Provider Account Screen From Developer View
+    And User Enters Data To Import MongoDB Provider Account
+    Then Provider Account Import Success
+
 Scenario: Verify error message for invalid credentials on MongoDB
     [Tags]    smoke    RHOD-49-1
     When User Filters Project redhat-dbaas-operator On Project DropDown And Navigates To Database Access Page
