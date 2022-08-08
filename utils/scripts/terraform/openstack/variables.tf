@@ -45,6 +45,6 @@ variable "network_name" {
 variable "ocm_bin" {
   type = string
   description = "value"
-  default = "https://github.com/openshift-online/ocm-cli/releases/download/v0.1.62/ocm-linux-arm64"
+  default = "https://github.com/openshift-online/ocm-cli/releases/download/v0.1.62/ocm-linux-amd64"
 }
 

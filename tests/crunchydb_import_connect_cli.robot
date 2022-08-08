@@ -11,17 +11,17 @@ Test Teardown       Logout Of OpenShift CLI
 
 
 *** Test Cases ***
-Scenario: Import CrunchyDB Provider Account Using OC CLI
-    [Tags]    smoke    RHOD-461    cli
-    When User Creates CrunchyDB Secret Credentials
-    And User Imports CrunchyDB Provider Account Using CLI
-    Then Provider Account Imported Successfully Using CLI
-
 Scenario: Verify Error Message For Invalid Credentials On CrunchyDB Using OC CLI
     [Tags]    smoke    RHOD-471    cli
     When User Creates CrunchyDB Secret With Invalid Credentials
     And User Imports CrunchyDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
+
+Scenario: Import CrunchyDB Provider Account Using OC CLI
+    [Tags]    smoke    RHOD-461    cli
+    When User Creates CrunchyDB Secret Credentials
+    And User Imports CrunchyDB Provider Account Using CLI
+    Then Provider Account Imported Successfully Using CLI
 
 Scenario: Deploy CrunchyDB Provider Account Using OC CLI
     [Tags]    smoke    RHOD-560     cli

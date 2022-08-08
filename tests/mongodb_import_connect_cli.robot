@@ -11,17 +11,17 @@ Test Teardown       Logout Of OpenShift CLI
 
 
 *** Test Cases ***
-Scenario: Import MongoDB Provider Account Using OC CLI
-    [Tags]    smoke    RHOD-460    cli
-    When User Creates MongoDB Secret Credentials
-    And User Imports MongoDB Provider Account Using CLI
-    Then Provider Account Imported Successfully Using CLI
-
 Scenario: Verify Error Message For Invalid Credentials On MongoDB Using OC CLI
     [Tags]    smoke    RHOD-470    cli
     When User Creates MongoDB Secret With Invalid Credentials
     And User Imports MongoDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
+
+Scenario: Import MongoDB Provider Account Using OC CLI
+    [Tags]    smoke    RHOD-460    cli
+    When User Creates MongoDB Secret Credentials
+    And User Imports MongoDB Provider Account Using CLI
+    Then Provider Account Imported Successfully Using CLI
 
 Scenario: Deploy MongoDB Provider Account Using OC CLI
     [Tags]    smoke    RHOD-480     cli
