@@ -11,7 +11,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-ROBOT_LIBRARY_VERSION = "0.6"
+ROBOT_LIBRARY_VERSION = "0.7"
 
 
 def select_database_instance(
@@ -202,7 +202,7 @@ def retrieve_instances(isv, namespace):
     provider_account = BuiltIn().get_variable_value(r"\${provaccname}")
     if provider_account == "":
         create_secret_cli(isv, "true")
-        import_provider_account_cli(isv)
+        import_provider_account_cli(isv, namespace)
         provider_account = BuiltIn().get_variable_value(r"\${provaccname}")
     cmd = "oc describe DBaaSInventory/{} -n {}".format(provider_account, namespace)
     while True:
@@ -301,3 +301,43 @@ def check_dbsc_connection(project, instance_id):
             )
     else:
         BuiltIn().fail("DBSC Connections are not present for the project: " + project)
+
+
+def provision_db_instance(isv, deploy_view, default_pa_ns="Yes"):
+    """To Provision New DB Instance Under Provider Account.
+    Arguments deploy_view and default_pa_ns defines the target namespaces to
+    deploy database instance and import provider account respectively"""
+    prov_acc_ns = "redhat-dbaas-operator"
+    deploy_instance_ns = "redhat-dbaas-operator"
+    create_new_project(BuiltIn().get_variable_value(r"\${TEST TAGS}"))
+    if default_pa_ns != "Yes":
+        prov_acc_ns = BuiltIn().get_variable_value(r"\${newProject}")
+    retrieve_instances(isv, prov_acc_ns)
+    if "user" in deploy_view.lower():
+        deploy_instance_ns = BuiltIn().get_variable_value(r"\${newProject}")
+    src = create_provision_instance_yaml(isv, prov_acc_ns, deploy_instance_ns)
+    oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
+    kind = "DBaaSInstance"
+    api_version = "dbaas.redhat.com/v1alpha1"
+    oc_cli.oc_apply(kind, src, api_version)
+    log.info("DB Instance " + BuiltIn().get_variable_value(r"\${instanceName}")
+             + "provisioned successfully!")
+
+
+def create_provision_instance_yaml(isv, prov_acc_ns, deploy_instance_ns):
+    """To create provision instance yaml"""
+    instance = util.get_instance_name("cli")
+    BuiltIn().set_suite_variable(r"\${instanceName}", instance)
+    yaml_deploy_instance = "./utils/data/oc_dbaas_instance.yaml"
+    with open(yaml_deploy_instance, "r") as provision:
+        data = yaml.safe_load(provision)
+    data["metadata"]["name"] = instance
+    data["metadata"]["namespace"] = deploy_instance_ns
+    data["spec"]["name"] = instance
+    data["spec"]["inventoryRef"]["name"] = BuiltIn().get_variable_value(r"\${provaccname}")
+    data["spec"]["inventoryRef"]["namespace"] = prov_acc_ns
+    if "mongo" in isv.lower():
+        data["spec"]["otherInstanceParams"]["projectName"] = instance
+    print(data)
+    return yaml.dump(data, sort_keys=False)
+
