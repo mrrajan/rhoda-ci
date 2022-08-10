@@ -16,6 +16,11 @@ ${txtBxMongoDBPrivAPI}          id:mongodb-atlas-registration-privateApiKey
 ${txtBxCrunchyPubAPI}           id:crunchy-bridge-registration-publicApiKey
 ${txtBxCrunchyPrivAPI}          id:crunchy-bridge-registration-privateApiSecret
 ${txtBxCockroachAPI}            id:cockroachdb-cloud-registration-apiSecretKey
+${txtBxRdsAwsAccsKeyID}         //input[@id='rds-registration-AWS_ACCESS_KEY_ID']
+${txtBoxRdsAwsSecKeyID}         //input[@id='rds-registration-AWS_SECRET_ACCESS_KEY']
+${txtBoxRdsAwsRegion}           //input[@id='rds-registration-AWS_REGION']
+${txtBoxAckResrceTags}          //input[@id='rds-registration-ACK_RESOURCE_TAGS']
+${txtBoxAckLogLvl}              //input[@id='rds-registration-ACK_LOG_LEVEL']
 ${btnImportEnabled}             //button[contains(.,"Import") and @aria-disabled="false"]
 ${btnCreateEnabled}             //button[contains(.,"Create") and @aria-disabled="false"]
 ${lblDBInstSuccess}             //h2[contains(.,"Database instances") and contains(.,"successful")]

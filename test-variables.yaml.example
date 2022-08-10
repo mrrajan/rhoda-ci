@@ -18,3 +18,8 @@ CRUNCHY:
   privateApiSecret: xxxx
 COCKROACH:
   apiSecretKey: xxxx
+RDS:
+  awsAccessKeyId: xxxx
+  awsSecretAccessKeyId: xxxx
+  awsRegion: xxxx
+
