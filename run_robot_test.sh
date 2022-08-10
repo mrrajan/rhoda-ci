@@ -96,7 +96,7 @@ setup_venv() {
     # This check is to ensure we are not creating/updating the virtualenv everytime we run a test
     echo "--------- Setting up Python VirtualEnv ----------"
     VENV_ROOT=${PWD}/venv
-    cmd="${VENV_ROOT}/bin/python --version"
+    cmd="${VENV_ROOT}/bin/python3 --version"
 
     if (! $cmd &> /dev/null) || [[ $SKIP_VENV_CREATE -ne 0 ]]; then
         echo "Creating/Updating VirtualEnv"
@@ -105,8 +105,8 @@ setup_venv() {
     fi
 
     if [[ $SKIP_PIP_INSTALL -eq 0 ]]; then
-        "${VENV_ROOT}"/bin/pip install --upgrade pip
-        "${VENV_ROOT}"/bin/pip install -r requirements.txt
+        "${VENV_ROOT}"/bin/pip3 install --upgrade pip
+        "${VENV_ROOT}"/bin/pip3 install -r requirements.txt
     fi
 }
 

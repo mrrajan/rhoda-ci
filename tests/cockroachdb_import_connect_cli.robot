@@ -11,17 +11,17 @@ Test Teardown       Logout Of OpenShift CLI
 
 
 *** Test Cases ***
-Scenario: Import CockroachDB Provider Account Using OC CLI
-    [Tags]    smoke    RHOD-462    cli
-    When User Creates CockroachDB Secret Credentials
-    And User Imports CockroachDB Provider Account Using CLI
-    Then Provider Account Imported Successfully Using CLI
-
 Scenario: Verify Error Message For Invalid Credentials On CockroachDB Using OC CLI
     [Tags]    smoke    RHOD-472    cli
     When User Creates CockroachDB Secret With Invalid Credentials
     And User Imports CockroachDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
+
+Scenario: Import CockroachDB Provider Account Using OC CLI
+    [Tags]    smoke    RHOD-462    cli
+    When User Creates CockroachDB Secret Credentials
+    And User Imports CockroachDB Provider Account Using CLI
+    Then Provider Account Imported Successfully Using CLI
 
 Scenario: Deploy CockroachDB Provider Account Using OC CLI
     [Tags]    smoke    RHOD-570     cli
