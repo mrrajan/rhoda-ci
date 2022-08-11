@@ -107,3 +107,29 @@ DBSC Instance Retrieval Failed On Dev View
     Element Should Be Visible    ${btnTryAgain}
     Element Should Be Visible    ${btnClose}
     Click Button    ${btnClose}
+
+User Provisions New ${databaseProvider} Instance On ${ns_type} Namespace Using OC CLI
+    Provision DB Instance    ${databaseProvider}    ${ns_type}
+
+DB Instance Provisioned Successfully On ${ns_type} Namespace Using OC CLI
+    ${targetNS}     Set Variable    ${newProject}
+    IF  '${ns_type}' == 'Default'
+         ${targetNS}     Set Variable    redhat-dbaas-operator
+    END
+    ${cmd}  Set Variable    oc get DBaaSInstance/${instanceName} -n ${targetNS} -o custom-columns=:.status
+    Wait Until Keyword Succeeds    10x    2s    Instance Available Without Error ${cmd}
+    ${cmd_instance}  Set Variable    oc get DBaaSInstance/${instanceName} -n ${targetNS} -o custom-columns=:.status.instanceID | grep -v '^$'
+    Retrieve Instance ID ${cmd_instance}
+
+Instance Available Without Error ${cmd}
+    ${stdout} =    Execute Command    ${cmd}    True
+    ${stdout_str} =    Convert To String    ${stdout}
+    ${stdout_str} =    Convert To Lower Case    ${stdout_str}
+    Should Contain    ${stdout_str}    type:provisionready
+    Should Not Contain Any    ${stdout_str}     error   notfound
+
+Retrieve Instance ID ${cmd_instance}
+    ${stdout} =    Execute Command    ${cmd_instance}    True
+    ${stdout_str} =    Convert To String    ${stdout}[0]
+    Should Not Contain Any    ${stdout_str}    None
+    Set Suite Variable  ${instanceID}   ${stdout_str}

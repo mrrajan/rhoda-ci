@@ -1,0 +1,12 @@
+apiVersion: dbaas.redhat.com/v1alpha1
+kind: DBaaSInstance
+metadata:
+  name: instance_name
+  namespace: deploy_instance_ns
+spec:
+  name: instance_name
+  inventoryRef:
+    name: provider_account
+    namespace: prov_acc_ns
+  otherInstanceParams:
+    {}
