@@ -70,6 +70,7 @@ DBSC Instance Provisioned Successfully
     Element Should Be Visible    ${txtCreationInfo}
     Element Should Be Visible    ${btnViewDBInst}
     Click Button    ${btnViewDBInst}
+    Set Suite Variable    ${instanceName}
 
 DBSC Instance Available On DataBase Access Page
     Wait Until Keyword Succeeds     5x     2s   Filter DBSC Instance Until Success

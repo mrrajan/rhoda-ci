@@ -1,47 +1,61 @@
 *** Settings ***
-Library     SeleniumLibrary
-Library     BuiltIn
-Library     String
-Library     OpenShiftLibrary
-Library     ../../utils/scripts/dbaas_utils.py
-Library     ../../utils/scripts/util.py
-Library    OpenShiftCLI
-Resource    ../object_repo/login_obj.resource
-Resource    login.resource
+Resource    ../keywords/login.resource
 
 
 *** Keywords ***
-Tear Down The Test Suite
-    Log    Test Suite Test Down
-    Login To OpenShift CLI
-    Remove Existing DBaaSNamespaces
-    Remove Existing DBaaSProviderAccounts
+Remove Provisioned DBaaSInstances
+    IF    "${instanceName}" != "${EMPTY}"
+        ${cmd_instances} =    Catenate    oc delete DBaaSInstance/${instanceName}
+        ...    --wait=true --timeout=10s --ignore-not-found
+        IF    """dev""" in """${instanceName}""" and "${newProject}" != "${EMPTY}"
+             ${cmd_instances} =    Catenate    ${cmd_instances}    -n ${newProject}
+        END
+        ${stdout} =   Execute Command    ${cmd_instances}    True
+        Set Suite Variable    ${instanceName}    ${EMPTY}
+    END
 
-Tear Down The Test
-    Remove Existing DBaaSInstances
-    Logout Of OpenShift CLI
+    Sleep    7s
+    Comment    Blind Sleep provided to let DB Cluster get deleted on the ISV Side
+    ...        before the associated DBaaSInventory is deleted from RHODA
+    ...        If the associated DBaaSInventory(Provider Account) is deleted from RHODA
+    ...        before the database cluster gets deleted from ISV side, the concerned
+    ...        DBaaSInstance CRD will eventually get deleted but the DB Cluster will not
+    ...        get removed on ISV side
+
+Remove Created Namespaces
+    IF    "${newProject}" != "${EMPTY}"
+        ${cmd_namespaces} =    Catenate    oc delete ns/${newProject} --wait=True --timeout=10s --ignore-not-found
+        ...    && echo "Namespace deleted within timeout" || echo "Could not delete Namespace, will be force deleted"
+        ${stdout} =    Execute Command    ${cmd_namespaces}    True
+        Set Suite Variable    ${newProject}    ${EMPTY}
+    END
+
+Remove Imported Provider Accounts
+    IF    "${provaccname}" != "${EMPTY}"
+        ${cmd_provider_account} =   Set Variable    oc delete DBaaSInventory/${provaccname} -n redhat-dbaas-operator --wait=true
+        ${stdout} =    Execute Command    ${cmd_provider_account}    True
+        Set Suite Variable      ${provaccname}    ${EMPTY}
+    END
+
+Force Delete Terminating Namespaces
+    ${cmd_oc_proxy} =    Set Variable    oc proxy &> /dev/null &
+    ${stdout} =    Execute Command    ${cmd_oc_proxy}     True
+    ${cmd_force_ns} =    Catenate    oc get namespace | awk '/Term/{print $1}' |
+    ...    xargs -I{} echo "oc get ns {} -o json | jq '.spec.finalizers=[]' |
+    ...    curl -H "Content-Type: application/json" -X PUT
+    ...    http://127.0.0.1:8001/api/v1/namespaces/{}/finalize --data-binary @-" | xargs -I{} bash -c "{}"
+    ${stdout} =    Execute Command    ${cmd_force_ns}    True
+
+Tear Down The Test Case
+    Log    Test Case Tear Down
     Close Browser
+    Run Keyword If    "${instanceName}" == "${EMPTY}"
+    ...    Remove Created Namespaces
 
-Remove Existing DBaaSInstances
-    IF  '${instanceName}' != '${EMPTY}'
-       ${cmd_instances}    Set Variable    oc delete -A DBaaSInstance/${instanceName} -n ${newProject} --wait=true
-       ${stdout} =    Execute Command    ${cmd_instances}    True
-    ELSE
-       Log     No DB Instance ${instanceName} found
-    END
-
-Remove Existing DBaaSNamespaces
-    IF  '${newProject}' != '${EMPTY}'
-       ${cmd_namespaces}   Set Variable    oc delete -A Project/${newProject} --wait=true
-       ${stdout} =    Execute Command    ${cmd_namespaces}    True
-    ELSE
-       Log     No DB Namespace ${newProject} found
-    END
-
- Remove Existing DBaaSProviderAccounts
-    IF  '${provaccname}' != '${EMPTY}'
-       ${cmd_provider_account} =   Set Variable    oc delete -A DBaaSInventory/${provaccname} -n ${newProject} --wait=true
-       ${stdout} =    Execute Command    ${cmd_provider_account}    True
-    ELSE
-       Log     No DB Provider Account ${provaccname} found
-    END
+Tear Down The Test Suite
+    Log    Test Suite Tear Down
+    Remove Provisioned DBaaSInstances
+    Remove Imported Provider Accounts
+    Remove Created Namespaces
+    Force Delete Terminating Namespaces
+    Logout Of OpenShift CLI
