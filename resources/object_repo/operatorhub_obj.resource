@@ -7,6 +7,6 @@ ${drpDwnProjectSelect}          //div[contains(@data-test-id,"namespace-bar-drop
 ${txtBxProjectSelect}           //input[contains(@data-test,"dropdown-text-filter")]
 ${btnProjectSelect}             //span[.="<<project>>"]/parent::button
 ${lblProjectSelect}             //span[.="Project: <<project>>"]
-${txtBxFilter}                  //input[@data-test="search-operatorhub"]
+${txtBxFilter}                  //input[contains(@aria-label,"Filter by keyword")]
 ${elemDatabaseAccessTile}       //a[contains(@class, "co-catalog-tile") and contains(@href,"redhat-dbaas-operator")]
 ${elemDatabaseAccessStatus}     //a[contains(@href,"redhat-dbaas-operator")]/div[contains(@class,"footer")]/span
