@@ -25,7 +25,7 @@ def select_database_instance(
     if not count:
         log.error("No Database Instances Available for Selected Account")
     for elem_iter in range(1, len(count) + 1):
-        target = "(" + instance_elem + "/td[1]/input)[" + str(elem_iter) + "]"
+        target = "(" + instance_elem + "/td[1]//input)[" + str(elem_iter) + "]"
         instance_name = "(" + instance_elem + "/td[2])[" + str(elem_iter) + "]"
         sl.find_element(target).click()
         element_attribute = sl.find_element(instance_name).get_attribute("innerHTML")
