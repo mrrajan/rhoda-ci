@@ -138,6 +138,19 @@ User Enters Invalid Data To Import CockroachDB Provider Account
     Element Should Be Visible    ${btnImportEnabled}
     Click Element    ${btnImportEnabled}
 
+User Enters Data To Import RDS Provider Account
+    [Arguments]    ${isv}=Amazon Relational Database Service
+    set Suite Variable    ${isv}
+    User Enters Provider Account Name And Selects Database Provider
+    Wait Until Page Contains Element    ${txtBxRdsAwsAccsKeyID}    timeout=10s
+    Input Text    ${txtBxRdsAwsAccsKeyID}    ${RDS.awsAccessKeyId}
+    Input Text    ${txtBoxRdsAwsSecKeyID}    ${RDS.awsSecretAccessKeyId}
+    Input Text    ${txtBoxRdsAwsRegion}    ${RDS.awsRegion}
+    Input Text    ${txtBoxAckResrceTags}    ${RESOURCE_TAGS_EMPTY}
+    Input Text    ${txtBoxAckLogLvl}    ${ACK_LOG_LEVEL_EMPTY}
+    Element Should Be Visible    ${btnImportEnabled}
+    Click Element    ${btnImportEnabled}
+
 Provider Account Import Success
     ${no_dbinstance}=    Run Keyword And Return Status    Success Screen For A Provider Account With No DB Instances
     Run Keyword If    ${no_dbinstance}    Run Keywords
@@ -224,6 +237,8 @@ Import ${databaseProvider} Provider Account
     ...    User Enters Data To Import CrunchyDB Provider Account
     ...  ELSE IF    "Cockroach" in """${databaseProvider}"""
     ...    User Enters Data To Import CockroachDB Provider Account
+    ...  ELSE IF    "RDS" in """${databaseProvider}"""
+    ...    User Enters Data To Import RDS Provider Account
     Provider Account Import Success
 
 User Creates ${isv} Secret Credentials
@@ -270,5 +285,4 @@ User Navigates To Import Provider Account Screen From Developer View
     Element Should Be Visible    ${lnkImportProvAcc}
     Click Element    ${lnkImportProvAcc}
     Switch Window   NEW
-
 
