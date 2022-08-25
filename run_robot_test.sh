@@ -16,9 +16,17 @@ JENKINS_BUILD_NUMBER=${BUILD_NUMBER:-666}
 
 # -------- functions -------------
 
+override_url_variables() {
+    # Overrides Openshift URL variables with Current Openshift URL values
+    echo "Retrieving Openshift Console & API Server URL Values"
+    console_url=$(oc whoami --show-console)
+    api_server=$(oc whoami --show-server)
+    TEST_VARIABLES="${TEST_VARIABLES} --variable OCP_CONSOLE_URL:${console_url} --variable OCP_API_URL:${api_server}"
+}
+
 handle_inputs() {
     SPECIFIED_INPUTS=$@
-    OPTSTR="d:e:f:hi:r:st:uv:"
+    OPTSTR="d:e:f:hi:r:st:uv:x"
     while getopts $OPTSTR flag; do
         case "$flag" in
             d) # Specify directory to store artifacts and reports from each test run
@@ -55,6 +63,9 @@ handle_inputs() {
             v) # Override/Add global variables specified in the test variables file
                 TEST_VARIABLES="${TEST_VARIABLES} --variable $OPTARG"
             ;;
+            x) # Override variable file
+                override_url_variables
+            ;;
             *)
                 echo "Invalid Input"
                 disp_usage $OPTSTR
@@ -76,7 +87,7 @@ handle_inputs() {
 disp_usage() {
     echo
     echo "Usage:    $0 [$1]"
-    echo "Possible inputs: -d -e -f [-h] -i -r [-s] -t -u -v"
+    echo "Possible inputs: -d -e -f [-h] -i -r [-s] -t -u -v -x"
     echo "Specified Inputs: $SPECIFIED_INPUTS"
     echo "Explanation of inputs "
     echo "      -d <TEST_ARTIFACT_DIR>: Specify directory to store artifacts and reports from each test run"
@@ -89,7 +100,9 @@ disp_usage() {
     echo "      -t <TEST_CASE_FILE>: Specify test case to run, should be present under tests directory"
     echo "      -u: Update/Create Python VirtualEnv"
     echo "      -v <>: Override/Add global variables specified in the test variables file"
+    echo "      -x: Overrides Openshift URL Values with Hosting Openshift"
 }
+
 
 
 setup_venv() {
