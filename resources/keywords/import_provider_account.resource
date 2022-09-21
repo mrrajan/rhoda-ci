@@ -143,9 +143,9 @@ User Enters Data To Import RDS Provider Account
     set Suite Variable    ${isv}
     User Enters Provider Account Name And Selects Database Provider
     Wait Until Page Contains Element    ${txtBxRdsAwsAccsKeyID}    timeout=10s
-    Input Text    ${txtBxRdsAwsAccsKeyID}    ${RDS.awsAccessKeyId}
-    Input Text    ${txtBoxRdsAwsSecKeyID}    ${RDS.awsSecretAccessKeyId}
-    Input Text    ${txtBoxRdsAwsRegion}    ${RDS.awsRegion}
+    Input Text    ${txtBxRdsAwsAccsKeyID}    ${RDS.AWS_ACCESS_KEY_ID}
+    Input Text    ${txtBoxRdsAwsSecKeyID}    ${RDS.AWS_SECRET_ACCESS_KEY}
+    Input Text    ${txtBoxRdsAwsRegion}    ${RDS.AWS_REGION}
     Input Text    ${txtBoxAckResrceTags}    ${RESOURCE_TAGS_EMPTY}
     Input Text    ${txtBoxAckLogLvl}    ${ACK_LOG_LEVEL_EMPTY}
     Element Should Be Visible    ${btnImportEnabled}
