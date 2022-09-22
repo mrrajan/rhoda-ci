@@ -4,6 +4,7 @@ Metadata            Version    0.0.1
 
 Library             SeleniumLibrary
 Resource            ../resources/keywords/deploy_application.resource
+Resource            ../resources/keywords/suite_and_test_teardown.resource
 
 Suite Setup         Set Library Search Order    SeleniumLibrary
 Suite Teardown      Tear Down The Test Suite
