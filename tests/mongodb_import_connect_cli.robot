@@ -3,9 +3,10 @@ Documentation       To Verify Provisioning of MongoDB Provider Account and deplo
 Metadata            Version    0.0.1
 
 Resource            ../resources/keywords/deploy_application.resource
-Resource            ../resources/keywords/suite_and_test_teardown.resource
 
-Suite Setup         Set Library Search Order    OpenShiftLibrary
+Suite Setup         Run Keywords
+...                 Set Library Search Order    OpenShiftLibrary
+...                 AND    Skip If    ${DBaaSPolicyEnabled}
 Suite Teardown      Tear Down The Test Suite
 Test Setup          Given Login To OpenShift CLI
 Test Teardown       Tear Down The Test Case
@@ -13,18 +14,18 @@ Test Teardown       Tear Down The Test Case
 
 *** Test Cases ***
 Scenario: Verify Error Message For Invalid Credentials On MongoDB Using OC CLI
-    [Tags]    smoke    RHOD-470    cli
+    [Tags]    smoke    RHOD-470    mongo    cli
     When User Creates MongoDB Secret With Invalid Credentials
     And User Imports MongoDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
 
 Scenario: Import MongoDB Provider Account Using OC CLI
-    [Tags]    smoke    RHOD-460    cli
+    [Tags]    smoke    RHOD-460    mongo    cli
     When User Creates MongoDB Secret Credentials
     And User Imports MongoDB Provider Account Using CLI
     Then Provider Account Imported Successfully Using CLI
 
 Scenario: Deploy MongoDB Provider Account Using OC CLI
-    [Tags]    smoke    RHOD-480     cli
+    [Tags]    smoke    RHOD-480     mongo    cli
     When User Deploys MongoDB Instance Using CLI
     Then DBSC Instance Deployed Successfully Using CLI

@@ -3,9 +3,10 @@ Documentation       To Verify Provisioning of RDS Provider Account and deploymen
 Metadata            Version    0.0.1
 
 Resource            ../resources/keywords/deploy_application.resource
-Resource            ../resources/keywords/suite_and_test_teardown.resource
 
-Suite Setup         Set Library Search Order    OpenShiftLibrary
+Suite Setup         Run Keywords
+...                 Set Library Search Order    OpenShiftLibrary
+...                 AND    Skip If    ${DBaaSPolicyEnabled}
 Test Setup          Given Login To OpenShift CLI
 Test Teardown       Tear Down The Test Suite
 
