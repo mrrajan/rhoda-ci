@@ -115,7 +115,7 @@ User Provisions New ${databaseProvider} Instance On ${ns_type} Namespace Using O
 DB Instance Provisioned Successfully On ${ns_type} Namespace Using OC CLI
     ${targetNS}     Set Variable    ${newProject}
     IF  '${ns_type}' == 'Default'
-         ${targetNS}     Set Variable    redhat-dbaas-operator
+         ${targetNS}     Set Variable    ${operatorNamespace}
     END
     ${cmd}  Set Variable    oc get DBaaSInstance/${instanceName} -n ${targetNS} -o custom-columns=:.status
     Wait Until Keyword Succeeds    10x    2s    Instance Available Without Error ${cmd}

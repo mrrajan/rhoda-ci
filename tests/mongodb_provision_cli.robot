@@ -3,9 +3,10 @@ Documentation       Provision and Deploy MongoDB Database Instance from Develope
 Metadata            Version    0.0.1
 
 Resource            ../resources/keywords/provision_dbinstance.resource
-Resource            ../resources/keywords/suite_and_test_teardown.resource
 
-Suite Setup         Set Library Search Order    SeleniumLibrary
+Suite Setup         Run Keywords
+...                 Set Library Search Order    OpenShiftLibrary
+...                 AND    Skip If    ${DBaaSPolicyEnabled}
 Suite Teardown      Tear Down The Test Suite
 Test Setup          Given Login To OpenShift CLI
 Test Teardown       Tear Down The Test Case
@@ -13,11 +14,11 @@ Test Teardown       Tear Down The Test Case
 
 *** Test Cases ***
 Scenario: Provision MongoDB Database Instance On Default Namespace Using OC CLI
-    [Tags]    smoke    RHOD-61-adm
+    [Tags]    smoke    RHOD-61-adm    mongo    cli
     When User Provisions New MongoDB Instance On Default Namespace Using OC CLI
     Then DB Instance Provisioned Successfully On Default Namespace Using OC CLI
 
 Scenario: Provision MongoDB Database Instance On User Defined Namespace Using OC CLI
-    [Tags]    smoke    RHOD-61-dev
+    [Tags]    smoke    RHOD-61-dev    mongo    cli
     When User Provisions New MongoDB Instance On User Defined Namespace Using OC CLI
     Then DB Instance Provisioned Successfully On User Defined Namespace Using OC CLI
