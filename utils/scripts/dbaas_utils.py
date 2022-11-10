@@ -11,7 +11,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-ROBOT_LIBRARY_VERSION = "0.7"
+ROBOT_LIBRARY_VERSION = "0.8"
 
 
 def select_database_instance(
@@ -26,9 +26,9 @@ def select_database_instance(
         log.error("No Database Instances Available for Selected Account")
     for elem_iter in range(1, len(count) + 1):
         target = "(" + instance_elem + "/td[1]//input)[" + str(elem_iter) + "]"
-        instance_name = "(" + instance_elem + "/td[2])[" + str(elem_iter) + "]"
+        instance = "(" + instance_elem + "/td[2])[" + str(elem_iter) + "]"
         sl.find_element(target).click()
-        element_attribute = sl.find_element(instance_name).get_attribute("innerHTML")
+        element_attribute = sl.find_element(instance).get_attribute("innerHTML")
         sl.scroll_element_into_view(click_elem)
         sl.click_element(click_elem)
         try:
@@ -73,7 +73,7 @@ def get_import_application_name(isv: string):
             for data in yaml.load_all(f, Loader=yaml.FullLoader):
                 return data["metadata"]["name"]
     except yaml.YAMLError as e:
-        log.error("Error while parsing data file: " + str(e.context))
+        log.error("Error while parsing data file: " + str(e))
 
 
 def update_service_binding(project_name, pa_name, app_name):
@@ -147,15 +147,17 @@ def create_secret_yaml(isv_lower, valid, namespace):
     return yaml.dump(data, sort_keys=False)
 
 
-def create_secret_cli(isv, valid, namespace=BuiltIn().get_variable_value(r"\${operatorNamespace}")):
+def create_secret_cli(isv, valid, namespace=""):
     """To create the Secret Credentials Resource using the secrets yaml"""
+    if namespace == "":
+        namespace = BuiltIn().get_variable_value(r"\${operatorNamespace}")
     oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
     kind = "Secret"
     src = create_secret_yaml(isv.lower(), valid, namespace)
     api_version = "v1"
     oc_cli.oc_apply(kind, src, api_version)
     log.info("Secret Created successfully!")
-    BuiltIn().set_suite_variable("\${SECRET_NAME}", secret_name)
+    BuiltIn().set_suite_variable(r"\${SECRET_NAME}", secret_name)
 
 
 def create_provider_account_yaml(isv_lower, namespace):
@@ -180,21 +182,25 @@ def create_provider_account_yaml(isv_lower, namespace):
     return yaml.dump(data, sort_keys=False)
 
 
-def import_provider_account_cli(isv, namespace=BuiltIn().get_variable_value(r"\${operatorNamespace}")):
+def import_provider_account_cli(isv, namespace=""):
     """To import a Provider Account using the configured
     Provider Account yaml"""
+    if namespace == "":
+        namespace = BuiltIn().get_variable_value(r"\${operatorNamespace}")
     oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
     kind = "DBaaSInventory"
     src = create_provider_account_yaml(isv.lower(), namespace)
     api_version = "dbaas.redhat.com/v1alpha1"
     oc_cli.oc_apply(kind, src, api_version)
     log.info("Provider Account Imported!")
-    BuiltIn().set_suite_variable("\${provaccname}", prov_acc_name)
+    BuiltIn().set_suite_variable(r"\${provaccname}", prov_acc_name)
 
 
-def deploy_db_instance_cli(isv, project, namespace=BuiltIn().get_variable_value(r"\${operatorNamespace}")):
+def deploy_db_instance_cli(isv, project, namespace=""):
     """To deploy a DB instance on given namespace for the
     imported provider account"""
+    if namespace == "":
+        namespace = BuiltIn().get_variable_value(r"\${operatorNamespace}")
     instance_list = retrieve_instances(isv, namespace)
     create_new_project(project)
     project_name = BuiltIn().get_variable_value(r"\${newProject}")
@@ -359,4 +365,52 @@ def create_provision_instance_yaml(isv, prov_acc_ns, deploy_instance_ns):
         data["spec"]["otherInstanceParams"]["projectName"] = instance
     print(data)
     return yaml.dump(data, sort_keys=False)
+
+
+def get_row_matching_target(row_elem, column_name, target_value):
+    """To retrieve the all Cell values on a Table row matching to given target"""
+    header_elem = row_elem + "//div[@role='columnheader']"
+    column_header = return_text_list_for_given_element(header_elem)
+    column_index = retrieve_column_row_index(header_elem, column_name)
+    tbl_content_elem = row_elem + "//div[@role='cell'][" + str(column_index) + "]"
+    row_index = retrieve_column_row_index(tbl_content_elem, target_value)
+    row_index = row_index + 1
+    cell_elem = row_elem + "[" + str(row_index) + "]//div[@role='cell']"
+    row_values = return_text_list_for_given_element(cell_elem)
+    cluster_info = dict(zip(column_header, row_values))
+    return cluster_info
+
+
+def retrieve_column_row_index(elem, target):
+    """To retrieve the column and row index values from the webtable matching to value"""
+    sl = BuiltIn().get_library_instance("SeleniumLibrary")
+    values = sl.find_elements(elem)
+    for index, value in enumerate(values, start=1):
+        if value.text == target:
+            return index
+    else:
+        raise Exception("Value " + values + " is not available on the table")
+
+
+def return_text_list_for_given_element(element):
+    """To retrieve and return text of webelements in a list"""
+    sl = BuiltIn().get_library_instance("SeleniumLibrary")
+    cells = sl.find_elements(element)
+    text_list = []
+    for cell in cells:
+        text_list.append(cell.text)
+    return text_list
+
+
+def compare_dict_values_on_another_dict(source_dict, target_dict):
+    """To compare the values of the one dictionary on another dictionary
+    Both should contain same keys and all values from source_dict should present
+    on target_dict, but not vice vera"""
+    for key in source_dict.keys():
+        if not source_dict[key] == target_dict[key]:
+            raise Exception("Column value :" + key + "mismatched" +
+                            "value from Grafana :" + target_dict[key] +
+                            "value from Openshift :" + source_dict[key])
+    else:
+        BuiltIn().log("All values from Openshift matches with Grafana")
 

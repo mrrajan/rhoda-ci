@@ -1,0 +1,4 @@
+cluster_version: "oc get clusterversion -o jsonpath='{.items[].status.history[].version}'"
+cluster_id: "oc get clusterversion -o jsonpath='{.items[].spec.clusterID}'"
+installed_dbaas_version: "oc get Subscription/addon-dbaas-operator -n redhat-dbaas-operator -o jsonpath='{.status.installedCSV}'"
+

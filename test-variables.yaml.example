@@ -5,6 +5,7 @@ BROWSER:
   OPTIONS: add_argument("--ignore-certificate-errors");add_argument("window-size=1920,1024");add_argument("--disable-dev-shm-usage");add_argument("--no-sandbox")
 OCP_CONSOLE_URL: "http://console-openshift-console.apps.my-cluster.test.redhat.com/"
 OCP_API_URL: "http://api.my-cluster.test.redhat.com/"
+GRAFANA_URL: "https://grafana-route-grafana-rhoda.apps.my-cluster.test.openshiftapps.com/"
 OCP_ADMIN_USER:
   AUTH_TYPE: "kube:admin"
   USERNAME: kubeadmin
@@ -13,6 +14,11 @@ OCP_LDAP_USER:
   AUTH_TYPE: "ldap-provider-qe"
   USERNAME: ldap_user
   PASSWORD: abc123XYZ!
+GRAFANA_USER:
+  AUTH_TYPE: "kube:admin"
+  USERNAME: kubeadmin
+  PASSWORD: abc123XYZ!
+  DASHBOARD_NAME: dashboard
 MONGO:
   orgId: xxxx
   publicApiKey: xxxx
@@ -30,3 +36,4 @@ DBAASPOLICY:
   ENABLED: FALSE
   PERSONA: cluster-adm
   NAMESPACE: redhat-dbaas-operator
+
