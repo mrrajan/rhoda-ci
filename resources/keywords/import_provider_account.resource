@@ -306,3 +306,5 @@ User Navigates To Import Provider Account Screen From Developer View
     Element Should Be Visible    ${lnkImportProvAcc}
     Click Element    ${lnkImportProvAcc}
 
+Import Provider Account Failure For DBaaS Policy
+    Wait Until Page Contains Element    ${errCreateDBaaSPolicy}     timeout=10s
