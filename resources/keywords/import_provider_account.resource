@@ -4,7 +4,7 @@ Resource    ../keywords/deploy_instance_dev.resource
 Resource    ../object_repo/import_dbaasinventory_obj.resource
 Resource    ../object_repo/database_access_obj.resource
 Resource    ../object_repo/installed_operators_obj.resource
-Resource    suite_and_test_teardown.resource
+Resource    ../keywords/suite_and_test_setup_teardown.resource
 Library     ../../utils/scripts/util.py
 Library     ../../utils/scripts/dbaas_utils.py
 

@@ -63,7 +63,7 @@ Tear Down The Test Suite
     Remove Created Namespaces
     Force Delete Terminating Namespaces
 
- Setup The Test Case
+Setup The Test Case
     The Browser Is On Openshift Home Screen
     Run Keyword If    not ${DBaaSPolicyConfigured} and ${DBaaSPolicyEnabled}    Run Keywords
     ...    Setup RHODA Persona Namespace
