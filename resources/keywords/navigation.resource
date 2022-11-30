@@ -47,20 +47,25 @@ User Navigates To DBaaS Inventories Screen
     Wait Until Page Contains Element    ${elemDbaasStatus}    timeout=15s
     Page Should Contain Element    ${lnkProvAcc}
     Click Element    ${lnkProvAcc}
-    Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
 
 User Navigates To DBaaSPolicy Screen
-    [Arguments]    ${project}=${operatorNamespace}
+    [Arguments]    ${PROJECT}=${operatorNamespace}
     User Selects Administrator View
     User Navigates To Installed Operators Under Operators
-    User Filters ${project} Namespace On Project Dropdown
+    User Filters ${PROJECT} Namespace On Project Dropdown
     Wait Until Page Contains Element    ${elemDbaasStatus}    timeout=15s
     Wait Until Keyword Succeeds    5x    3s    Run Keywords
     ...    User Navigates To Database Access Under Data Services
     ...    AND    User Navigates To Installed Operators Under Operators
     ...    AND    Element Should Be Visible    ${lnkDBaaSPolicy}    timeout=10s
     Click Element    ${lnkDBaaSPolicy}
-    Wait Until Page Contains Element    ${titleDbaasPolicies}    timeout=10s
+    ${version}=     Run Keyword And Return Status    Wait Until Page Contains Element    ${titleDbaasPolicies}    timeout=10s
+    IF  not ${version}
+        Element Should Be Visible    ${titleDbaasPolicys}
+        Log    Cluster version is 4.11, Known issue
+    ELSE
+        Fail    msg=DBaaSPolicy page not loaded
+    END
 
 User Filters ${projectName} Namespace On Projects Screen
     Wait Until Page Contains Element    ${txtProjects}    timeout=10s
@@ -68,3 +73,14 @@ User Filters ${projectName} Namespace On Projects Screen
     Input Text    ${txtBxSearchByName}    ${projectName}
     ${lnkProjectNameUpd} =    Replace String    ${lnkProjectName}    <<project>>    ${projectName}
     Wait Until Page Contains Element    ${lnkProjectNameUpd}    timeout=5s
+
+User Is On DBaaSInventory Screen
+   ${version_410}=     Run Keyword And Return Status    Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
+    IF  not ${version_410}
+        ${version_411}=     Run Keyword And Return Status    Wait Until Page Contains Element    ${titleDbaasInventorys}    timeout=10s
+        IF    ${version_411}
+            Log    Cluster version is 4.11, Known issue
+        ELSE
+            Fail    msg=DBaaSPolicy page not loaded
+        END
+    END

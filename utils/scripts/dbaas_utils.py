@@ -11,7 +11,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-ROBOT_LIBRARY_VERSION = "0.7"
+ROBOT_LIBRARY_VERSION = "0.8"
 
 
 def select_database_instance(
@@ -148,9 +148,9 @@ def create_secret_yaml(isv_lower, valid, namespace):
     return yaml.dump(data, sort_keys=False)
 
 
-def create_secret_cli(isv, valid, namespace=""):
+def create_secret_cli(isv, valid, namespace=None):
     """To create the Secret Credentials Resource using the secrets yaml"""
-    if namespace == "":
+    if namespace is None:
         namespace = BuiltIn().get_variable_value(r"\${operatorNamespace}")
     oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
     kind = "Secret"
@@ -183,10 +183,10 @@ def create_provider_account_yaml(isv_lower, namespace):
     return yaml.dump(data, sort_keys=False)
 
 
-def import_provider_account_cli(isv, namespace=""):
+def import_provider_account_cli(isv, namespace=None):
     """To import a Provider Account using the configured
     Provider Account yaml"""
-    if namespace == "":
+    if namespace is None:
         namespace = BuiltIn().get_variable_value(r"\${operatorNamespace}")
     oc_cli = BuiltIn().get_library_instance("OpenshiftLibrary")
     kind = "DBaaSInventory"
@@ -197,10 +197,10 @@ def import_provider_account_cli(isv, namespace=""):
     BuiltIn().set_suite_variable("\${provaccname}", prov_acc_name)
 
 
-def deploy_db_instance_cli(isv, project, namespace=""):
+def deploy_db_instance_cli(isv, project, namespace=None):
     """To deploy a DB instance on given namespace for the
     imported provider account"""
-    if namespace == "":
+    if namespace is None:
         namespace = BuiltIn().get_variable_value(r"\${operatorNamespace}")
     instance_list = retrieve_instances(isv, namespace)
     create_new_project(project)

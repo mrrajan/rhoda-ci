@@ -82,6 +82,7 @@ User Filters And Selects The Created Database Instance
     User Clicks Continue On Topoloy Binding Instructions
 
 Instance Is Available In Selection Table
+    Element Should Not Be Visible    ${txtFetchProvAcc}
     ${instFound}=    Run Keyword And Return Status    Instance Can Be Selected
     Run Keyword If    not ${instFound}
     ...    Run Keywords
