@@ -19,8 +19,8 @@ ${INV_ACCS_KEY}             invalid_access_key_id
 ${INV_SEC_ACCS_KEY}         invalid_secret_access_key_id
 ${RESOURCE_TAGS_EMPTY}      ${EMPTY}
 ${ACK_LOG_LEVEL_EMPTY}      ${EMPTY}
-
-
+${stdout_str}               ${EMPTY}
+${SECRET_NAME}              ${EMPTY}
 
 *** Keywords ***
 User Selects Invalid Namespace To Import Database Provider Account And Navigates To Database Access Page
@@ -191,12 +191,12 @@ Success Screen For A Provider Account With No DB Instances
     Element Should Be Visible    ${btnClose}
 
 Application Navigates To Provider Account Import Success Screen
-    Wait Until Keyword Succeeds     5x     2s      Wait Until Page Contains Element    ${lblDBInstSuccess}
+    Wait Until Keyword Succeeds     5x     1s      Wait Until Page Contains Element    ${lblDBInstSuccess}
     Element Should Be Visible    ${btnViewProviderAcc}
     Click Element    ${btnViewProviderAcc}
 
 Imported Provider Account Avaialble On DBaaS Inventory Screen
-    Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element        ${titleDbaasInventories}
+    User Is On DBaaSInventory Screen
     Filter ${provaccname} On DBaaS Inventory
     ${elemDbaasInvStatusUpd}=    Replace String    ${elemDbaasInvStatus}    <<paname>>    ${provaccname}
     Wait Until Keyword Succeeds     10x     2s      Wait Until Page Contains Element    ${elemDbaasInvStatusUpd}
@@ -224,7 +224,7 @@ Provider Account Import Failure Screen
     Page Should Contain Button    ${btnEditProvAcc}
 
 Check Status Of Invalid Provider Account
-    Wait Until Page Contains Element    ${titleDbaasInventories}    timeout=10s
+    User Is On DBaaSInventory Screen
     Filter ${provaccname} On DBaaS Inventory
     ${elemDbaasInvStatusUpd}=    Replace String    ${elemDbaasInvStatus}    <<paname>>    ${provaccname}
     Page Should Not Contain Element    ${elemDbaasInvStatusUpd}
@@ -265,11 +265,18 @@ Import ${databaseProvider} Provider Account
 
 User Creates ${isv} Secret Credentials
     Create Secret CLI    ${isv}    ${VALID_SECRET}
+    Wait Until Keyword Succeeds    5x    1s    Retrieve Secret Description
+    Should Contain    ${stdout_str}    ${SECRET_NAME}    ignore_case=True    strip_spaces=True
+    Should Not Contain Any    ${stdout_str}    Error    NotFound
+
+Retrieve Secret Description
     ${cmd}    Set Variable    oc describe Secret/${SECRET_NAME}
     ${stdout} =    Execute Command    ${cmd}    True
     ${stdout_str} =    Convert To String    ${stdout}
-    Should Contain    ${stdout_str}    ${SECRET_NAME}    ignore_case=True    strip_spaces=True
-    Should Not Contain Any    ${stdout_str}    Error    NotFound
+    IF    "None" in "${stdout_str}"
+        Fail    msg=Secret Information Not Retrieved
+    END
+    Set Test Variable    ${stdout_str}
 
 User Imports ${isv} Provider Account Using CLI
     Import Provider Account CLI    ${isv}
@@ -294,13 +301,16 @@ Provider Account Import Failure Using CLI
 Duplicate Provider Account Name Error Message Appears
     Element Should Be Visible    ${lblDuplProvAccName}
 
-User Navigates To Add ${databaseProvider} Topology Screen From Developer View
+User Navigates To Add Topology Screen From Developer View
+    [Arguments]     ${databaseProvider}     ${ns}=${operatorNamespace}      ${developer}=False
     User Selects Developer View
-    User Filters ${operatorNamespace} Namespace On Project Dropdown
+    User Filters ${ns} Namespace On Project Dropdown
     User Navigates To Developers Catalog Add Screen
-    User Clicks On Cloud Hosted Database Menu
-    User Selects ${databaseProvider} Tile Under Cloud Hosted Database
-    Click Element    ${btnDBProvAddTopology}
+    IF  "${developer}"=="False"
+        User Clicks On Cloud Hosted Database Menu
+        User Selects ${databaseProvider} Tile Under Cloud Hosted Database
+        Click Element    ${btnDBProvAddTopology}
+    END
 
 User Navigates To Import Provider Account Screen From Developer View
     Wait Until Page Contains Element    ${txtNoDBInstance}    timeout=15s
@@ -309,4 +319,11 @@ User Navigates To Import Provider Account Screen From Developer View
     Click Element    ${lnkImportProvAcc}
 
 Import Provider Account Failure For DBaaS Policy
-    Wait Until Page Contains Element    ${errCreateDBaaSPolicy}     timeout=10s
+    Wait Until Page Contains Element    ${errCreateDBaaSPolicy}     timeout=20s
+
+User Navigates To Import ${databaseProvider} Provider Account On Developer View
+    User Navigates To Add Topology Screen From Developer View      ${databaseProvider}      ${DBaaSTestNS}
+    User Navigates To Import Provider Account Screen From Developer View
+
+Cloud Hosted Database Tile Not Loaded Under Add Topology Screen
+    Wait Until Page Does Not Contain    ${lnkCloudHostMenu}

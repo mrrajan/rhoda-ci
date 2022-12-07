@@ -31,6 +31,14 @@ Remove Created Namespaces
         Set Suite Variable    ${newProject}    ${EMPTY}
     END
 
+Remove DBaaSPolicy
+     IF    "${policyName}" != "${EMPTY}"
+         ${cmd_policy} =    Catenate    oc delete DBaaSPolicy/${policyName} --wait=True --timeout=10s --ignore-not-found
+         ...    && echo "DBaaSPolicy deleted within timeout" || echo "Could not delete Namespace, will be force deleted"
+         ${stdout} =    Execute Command    ${cmd_policy}    True
+         Set Test Variable    ${policyName}    ${EMPTY}
+     END
+
 Remove Imported Provider Accounts
     IF    "${provaccname}" != "${EMPTY}"
         ${cmd_provider_account} =   Set Variable    oc delete DBaaSInventory/${provaccname} -n ${operatorNamespace} --wait=true
@@ -52,7 +60,7 @@ Tear Down The Test Case
     Close Browser
     Run Keyword If    "${instanceName}" == "${EMPTY}"
     ...    Remove Created Namespaces
-    Run Keyword If    """inv""" in """${provaccname}"""
+    Run Keyword If    """inv""" in """${provaccname}""" or """False""" in """${VALID_SECRET}"""
     ...    Remove Imported Provider Accounts
 
 Tear Down The RDS Test Case
@@ -66,6 +74,12 @@ Tear Down The RDS Test Case
            Set Suite Variable    ${newProject}   ${EMPTY}
     END
 
+Tear Down DBaaSPolicy Test Case
+    Log    DBaaSPolicy Test Case Tear Down
+    Close Browser
+    Remove Imported Provider Accounts
+    Remove DBaaSPolicy
+
 Tear Down The Test Suite
     Log    Test Suite Tear Down
     Login To OpenShift CLI As Cluster Admin
@@ -75,11 +89,14 @@ Tear Down The Test Suite
     Force Delete Terminating Namespaces
 
 Setup The Test Case
+    [Arguments]     ${DBaaSPersona}=${DBAASPOLICY.PERSONA}
     The Browser Is On Openshift Home Screen
-    Run Keyword If    not ${DBaaSPolicyConfigured} and ${DBaaSPolicyEnabled}    Run Keywords
-    ...    Setup RHODA Persona Namespace
+    IF    not ${DBaaSPolicyConfigured} and ${DBaaSPolicyEnabled}    Run Keywords
+    ...    Set Suite Variable   ${operatorNamespace}    ${DBAASPOLICY.NAMESPACE}
+    ...    AND    Setup RHODA Persona Namespace
     ...    AND    Align RBAC For ${OCP_LDAP_USER.USERNAME}
-    ...    AND    Setup DBaaSPolicy For ${operatorNamespace}
+    ...    AND    Setup DBaaSPolicy For ${operatorNamespace} as ${DBaaSPersona}
+    ...    AND    User Creates DBaaSPolicy For ${operatorNamespace} From Admin View As ${DBaaSPersona}
     ...    AND    Set Global Variable    ${DBaaSPolicyConfigured}    ${True}
 
 Configure DBaaS Policy Namespaces

@@ -314,10 +314,6 @@ class OpenshiftClusterManager:
         config_file = self.configrepo_dir + "test-variables.yaml"
         with open(config_file, "r") as file:
             data = yaml.safe_load(file)
-        data["DBAASPOLICY"] = {}
-        data["DBAASPOLICY"]["ENABLED"] = "True"
-        data["DBAASPOLICY"]["PERSONA"] = self.dbaas_persona
-        data["DBAASPOLICY"]["NAMESPACE"] = self.dbaas_persona + "-namespace"
 
         ldap_yaml_file = (
             os.path.abspath(os.path.dirname(__file__))
@@ -329,12 +325,24 @@ class OpenshiftClusterManager:
 
         ldap_password = base64.b64decode((ldap_data[1]["data"]["passwords"])).decode('utf-8').split(",")[0]
 
-        if "project" in self.dbaas_persona:
-            data["OCP_LDAP_USER"]["USERNAME"] = "ldap_project_adm1"
-            data["OCP_LDAP_USER"]["PASSWORD"] = ldap_password
-        elif "service" in self.dbaas_persona:
-            data["OCP_LDAP_USER"]["USERNAME"] = "ldap_service_adm1"
-            data["OCP_LDAP_USER"]["PASSWORD"] = ldap_password
+        if self.dbaas_persona is not None:
+            data["DBAASPOLICY"] = {}
+            data["DBAASPOLICY"]["ENABLED"] = "True"
+            data["DBAASPOLICY"]["PERSONA"] = self.dbaas_persona
+            data["DBAASPOLICY"]["NAMESPACE"] = self.dbaas_persona + "-namespace"
+            if "project" in self.dbaas_persona:
+                data["OCP_LDAP_USER"]["USERNAME"] = "ldap_project_adm1"
+                data["OCP_LDAP_USER"]["PASSWORD"] = ldap_password
+            elif "service" in self.dbaas_persona:
+                data["OCP_LDAP_USER"]["USERNAME"] = "ldap_service_adm1"
+                data["OCP_LDAP_USER"]["PASSWORD"] = ldap_password
+
+        data["OCP_LDAP_PROJECT_ADM"]["USERNAME"] = "ldap_project_adm1"
+        data["OCP_LDAP_PROJECT_ADM"]["PASSWORD"] = ldap_password
+        data["OCP_LDAP_SERVICE_ADM"]["USERNAME"] = "ldap_service_adm1"
+        data["OCP_LDAP_SERVICE_ADM"]["PASSWORD"] = ldap_password
+        data["OCP_LDAP_DEV"]["USERNAME"] = "ldap_dev1"
+        data["OCP_LDAP_DEV"]["PASSWORD"] = ldap_password
 
         with open(config_file, "w") as yaml_file:
             yaml_file.write(yaml.safe_dump(data, default_flow_style=False, default_style=False, sort_keys=False))
@@ -717,7 +725,6 @@ class OpenshiftClusterManager:
                 cmd = "oc adm policy add-role-to-user view {} -n redhat-dbaas-operator".format(user)
                 log.info("CMD: {}".format(cmd))
                 execute_command(cmd)
-
 
     def create_cluster(self):
         """
@@ -1373,7 +1380,7 @@ if __name__ == "__main__":
     # Argument parsers for configure_dbaaspolicy
     dbaaspolicy_parser = subparsers.add_parser(
         "configure_dbaaspolicy",
-        help=("Updates the Congifuration for DBaaSPolicy"),
+        help=("Updates the Configuration for DBaaSPolicy"),
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
     optional_dbaaspolicy_parser = dbaaspolicy_parser._action_groups.pop()
@@ -1389,7 +1396,7 @@ if __name__ == "__main__":
         dest="configrepo_dir",
         metavar="",
     )
-    required_dbaaspolicy_parser.add_argument(
+    optional_dbaaspolicy_parser.add_argument(
         "--persona",
         help="DBaaS Persona",
         action="store",

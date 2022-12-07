@@ -14,7 +14,7 @@ Force Tags          UI      mongo
 *** Test Cases ***
 Scenario: Import MongoDB Provider Account From Developer View
     [Tags]    smoke    RHOD-10
-    When User Navigates To Add MongoDB Topology Screen From Developer View
+    When User Navigates To Add Topology Screen From Developer View      MongoDB
     And User Navigates To Import Provider Account Screen From Developer View
     And User Enters Data To Import MongoDB Provider Account
     Then Provider Account Import Success

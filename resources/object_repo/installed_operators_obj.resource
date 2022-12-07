@@ -14,4 +14,6 @@ ${btnLastUpdatedHeader}     //th[contains(@data-label,"Last updated")]
 ${btnInventoryFilterType}   //button[contains(@data-test-id,"dropdown-button")]
 ${btnInventoryFilterName}   id:NAME-Link
 ${txtBxSearchByName}        //input[contains(@aria-label,"Search by name")]
-
+${txtFetchProvAcc}          //div[contains(.,"Fetching Provider Accounts")]
+${titleDbaasInventorys}    //h1[contains(.,"DBaaSInventorys")]
+${titleDbaasPolicys}       //h1[contains(.,"DBaaSPolicys")]

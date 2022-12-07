@@ -11,7 +11,7 @@ Variables   ../../test-variables.yaml
 
 
 *** Variables ***
-${operatorNamespace}        ${DBAASPOLICY.NAMESPACE}
+${operatorNamespace}        redhat-dbaas-operator
 ${DBaaSPolicyEnabled}       ${DBAASPOLICY.ENABLED}
 ${DBaaSPolicyConfigured}    ${False}
 ${rbacAligned}              ${False}
@@ -94,10 +94,10 @@ The User Logs In To Openshift As ${user}
     Set Selenium Implicit Wait    5s
     Open Browser    ${OCP_CONSOLE_URL}    browser=${BROWSER.NAME}    options=${BROWSER.OPTIONS}
     Select Login Authentication Type    ${${user}.AUTH_TYPE}
-    Login To Openshift As ${user}
+    Login To Openshift Console As ${user}
     Login To OpenShift CLI As LDAP User     ${${user}.USERNAME}     ${${user}.PASSWORD}     ${DBaaSTestNS}
 
-Login To Openshift As ${user}
+Login To Openshift Console As ${user}
     Wait Until Page Contains Element    ${titleLoginPage}    timeout=10s
     Element Should Be Visible    ${titleLoginPage}
     Element Should Be Visible    ${txtBxUserName}

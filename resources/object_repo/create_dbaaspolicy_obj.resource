@@ -12,3 +12,5 @@ ${btnToggleConnNS}              id:root_spec_connectionNamespaces_accordion-togg
 ${btnAddConnNS}                 id:root_spec_connectionNamespaces_add-btn
 ${txtBxConnNS}                  //input[contains(@id,"root_spec_connectionNamespaces")]
 ${lnkDBaaSPolicyName}           //a[contains(@href,"DBaaSPolicy") and (.="<<policyname>>")]
+${errDBaaSPolicyForbid}         //li[contains(.,"dbaaspolicies.dbaas.redhat.com is forbidden")]
+${radFormView}                  //label[contains(.,"Form view")]
