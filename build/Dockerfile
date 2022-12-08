@@ -29,7 +29,6 @@ COPY tests tests/
 COPY libs libs/
 COPY resources resources/
 COPY utils utils/
-COPY test-variables.yaml .
 COPY requirements.txt run_robot_test.sh setup.py .
 COPY run_robot_test.sh .
 RUN chmod +x run_robot_test.sh
@@ -42,4 +41,4 @@ RUN useradd -r -u 1001 -g rhoda-ci-users rhoda-ci-runner
 RUN chgrp -R 1001 $HOME/rhoda-ci && chown -R 1001 $HOME/rhoda-ci && chmod -R 744 $HOME/rhoda-ci
 USER 1001
 
-ENTRYPOINT ["./run_robot_test.sh","-s","-x"]
+ENTRYPOINT ["/bin/sh","-c","./run_robot_test.sh -s -f $RUN_SCRIPT_ARGS -x"]
