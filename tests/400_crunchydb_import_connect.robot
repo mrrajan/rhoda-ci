@@ -9,33 +9,34 @@ Suite Setup         Set Library Search Order    SeleniumLibrary
 Suite Teardown      Tear Down The Test Suite
 Test Setup          Given Setup The Test Case
 Test Teardown       Tear Down The Test Case
-Force Tags          UI     crunchy
+
+Force Tags          UI    crunchy
 
 
 *** Test Cases ***
 Scenario: Import CrunchyDB Provider Account From Developer View
-    [Tags]    smoke    RHOD-11
-    When User Navigates To Add Topology Screen From Developer View   Crunchy Bridge
+    [Tags]    RHODA-020    smoke
+    When User Navigates To Add Topology Screen From Developer View    Crunchy Bridge
     And User Navigates To Import Provider Account Screen From Developer View
     And User Enters Data To Import CrunchyDB Provider Account
     Then Provider Account Import Success
 
 Scenario: Verify error message for invalid credentials on CrunchyDB
-    [Tags]    smoke    RHOD-49-2
+    [Tags]    RHODA-021    smoke
     When User Filters Project ${operatorNamespace} On Project DropDown And Navigates To Database Access Page
     And User Navigates To Import Database Provider Account Screen From Database Access Page
     And User Enters Invalid Data To Import CrunchyDB Provider Account
     Then Provider Account Import Failure
 
 Scenario: Import CrunchyDB Provider Account From Administrator View
-    [Tags]    smoke    RHOD-47
+    [Tags]    RHODA-022
     When User Filters Project ${operatorNamespace} On Project DropDown And Navigates To Database Access Page
     And User Navigates To Import Database Provider Account Screen From Database Access Page
     And User Enters Data To Import CrunchyDB Provider Account
     Then Provider Account Import Success
 
 Scenario: Deploy CrunchyDB Database Instance
-    [Tags]    smoke    RHOD-51
+    [Tags]    RHODA-023
     Skip If    "${PREV_TEST_STATUS}" == "FAIL"
     When User Imports Valid Crunchy Bridge Provider Account
     And User Navigates To Add Crunchy Bridge To Topology Screen
@@ -43,7 +44,7 @@ Scenario: Deploy CrunchyDB Database Instance
     Then DBSC Instance Deployed On Developer Topology Graph View
 
 Scenario: Connect CrunchyDB DBSC With An Openshift Application
-    [Tags]    smoke    RHOD-67
+    [Tags]    RHODA-024    smoke
     Skip If    "${PREV_TEST_STATUS}" == "FAIL"
     When User Deploys Crunchy Database Instance On Developer Topology Screen
     And User Imports Openshift crunchy Application From YAML

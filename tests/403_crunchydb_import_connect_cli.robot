@@ -5,29 +5,30 @@ Metadata            Version    0.0.1
 Resource            ../resources/keywords/deploy_application.resource
 
 Suite Setup         Run Keywords
-...                 Set Library Search Order    OpenShiftLibrary
-...                 AND    Skip If    ${DBaaSPolicyEnabled}
+...                     Set Library Search Order    OpenShiftLibrary
+...                     AND    Skip If    ${DBaaSPolicyEnabled}
 Suite Teardown      Tear Down The Test Suite
 Test Setup          Given Login To OpenShift CLI
 Test Teardown       Tear Down The Test Case
-Force Tags          CLI     crunchy
+
+Force Tags          CLI    crunchy
 
 
 *** Test Cases ***
 Scenario: Verify Error Message For Invalid Credentials On CrunchyDB Using OC CLI
-    [Tags]    smoke    RHOD-471
+    [Tags]    RHODA-029    smoke
     When User Creates CrunchyDB Secret With Invalid Credentials
     And User Imports CrunchyDB Provider Account Using CLI
     Then Provider Account Import Failure Using CLI
 
 Scenario: Import CrunchyDB Provider Account Using OC CLI
-    [Tags]    smoke    RHOD-461
+    [Tags]    RHODA-030
     When User Creates CrunchyDB Secret Credentials
     And User Imports CrunchyDB Provider Account Using CLI
     Then Provider Account Imported Successfully Using CLI
 
 Scenario: Deploy CrunchyDB Provider Account Using OC CLI
-    [Tags]    smoke    RHOD-560
+    [Tags]    RHODA-031    smoke
     Skip If    "${PREV_TEST_STATUS}" == "FAIL"
     When User Deploys CrunchyDB Instance Using CLI
     Then DBSC Instance Deployed Successfully Using CLI
