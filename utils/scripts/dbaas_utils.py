@@ -372,3 +372,35 @@ def create_provision_instance_yaml(isv, prov_acc_ns, deploy_instance_ns):
         data["spec"]["otherInstanceParams"]["projectName"] = instance
     print(data)
     return yaml.dump(data, sort_keys=False)
+
+
+def add_policy_connection_namespaces(namespace: list):
+    """Adding Connection Namespace on DBaaSPolicy"""
+    sl = BuiltIn().get_library_instance("SeleniumLibrary")
+    btn_add_conn_xpath = "//button[@id='root_spec_connectionNamespaces_add-btn']"
+    if not namespace:
+        namespace = "*"
+    for i, ns in enumerate(namespace):
+        sl.click_element(btn_add_conn_xpath)
+        txtbx_value_xpath = "//input[@id='root_spec_connectionNamespaces_" + str(i) + "']"
+        sl.input_text(txtbx_value_xpath, ns)
+
+
+def add_policy_connection_nsselector(labelandconds: list):
+    """Adding connection Namespace Selector on DBaaSPolicy"""
+    sl = BuiltIn().get_library_instance("SeleniumLibrary")
+    btn_add_matchexp_xpath = "//button[@id='root_spec_connectionNsSelector_matchExpressions_add-btn']"
+    for i, labelAndCond in enumerate(labelandconds):
+        sl.click_element(btn_add_matchexp_xpath)
+        txtbx_key_xpath = "//input[@id='root_spec_connectionNsSelector_matchExpressions_" + str(i) + "_key']"
+        txtbx_oper_xpath = "//input[@id='root_spec_connectionNsSelector_matchExpressions_" + str(i) + "_operator']"
+        btn_values = "//button[@id='root_spec_connectionNsSelector_matchExpressions_" + str(i) + "_values_accordion-toggle']"
+        for cond in labelAndCond.split(","):
+            sl.input_text(txtbx_key_xpath, cond[0])
+            sl.input_text(txtbx_oper_xpath, cond[1])
+            sl.click_element(btn_values)
+            for j, value in enumerate(cond[2].split(";")):
+                btn_add_value = "//button[@id='root_spec_connectionNsSelector_matchExpressions_" + str(i) + "_values_add-btn']"
+                txtbx_value_xpath = "//button[@id='root_spec_connectionNsSelector_matchExpressions_" + str(i) + "_values_" + str(j) + "']"
+                sl.click_element(btn_add_value)
+                sl.input_text(txtbx_value_xpath)

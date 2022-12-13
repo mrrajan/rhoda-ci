@@ -207,3 +207,10 @@ Scenario: Create DBaaSPolicy As Service Admin From Error screen on Dev View And 
     Given The User Logs In To Openshift As OCP_LDAP_SERVICE_ADM
     When User Creates DBaaSPolicy For ${DBaaSTestNS} From Invalid Namespace Alert on Dev View As OCP_SERVICE_PROJECT_ADM
     Then User Is Able To Import RDS Provider Account For ${DBaaSTestNS}
+
+Scenario: Maximum DBaaSPolicy Quota Error
+    [Tags]    dbaas-test-33     smoke
+    Given The User Logs In To Openshift As OCP_LDAP_PROJECT_ADM
+    When User Creates DBaaSPolicy For ${DBaaSTestNS} From Admin View As OCP_LDAP_PROJECT_ADM
+    And User Creates DBaaSPolicy For OCP_LDAP_PROJECT_ADM
+    Then Max Quota Exceeded Error Displays

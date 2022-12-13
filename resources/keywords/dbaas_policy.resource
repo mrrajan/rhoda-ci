@@ -7,6 +7,9 @@ Resource    ../object_repo/import_dbaasinventory_obj.resource
 
 *** Variables ***
 ${policyName}       ${EMPTY}
+${nsAndLabel}       ${EMPTY}
+@{addNS}            ${EMPTY}
+@{addLabel}        ${EMPTY}
 
 
 *** Keywords ***
@@ -69,11 +72,7 @@ Create Custom DBaaSPolicy as ${DBaaSPersona}
     ${persona}=     Convert To Lower Case    ${persona}
     Set Test Variable  ${policyName}   ${persona}-policy
     Input Text    ${txtBxDBaaSPolicyName}    ${policyName}
-    Click Element    ${btnToggleConnNS}
-    Element Should Be Visible    ${btnAddConnNS}
-    Click Element    ${btnAddConnNS}
-    Element Should Be Visible    ${txtBxConnNS}
-    Input Text    ${txtBxConnNS}    *
+    Specify Connection Namespaces And Labels
     Scroll Element Into View    ${btnCreateEnabled}
     Click Element    ${btnCreateEnabled}
 
@@ -101,10 +100,7 @@ Click If Element Present
 
 User Creates DBaaSPolicy For ${namespace} From Admin View As ${DBaaSPersona}
     User Navigates To DBaaSPolicy Screen    ${namespace}
-    Click If Element Present    ${lblOperand}
-    Wait Until Page Contains Element    ${btnCreateDBaaSPolicy}
-    Click Element    ${btnCreateDBaaSPolicy}
-    Create Custom DBaaSPolicy as ${DBaaSPersona}
+    User Creates DBaaSPolicy For ${DBaaSPersona}
 
 User Creates DBaaSPolicy For ${namespace} From Invalid Namespace Alert on Dev View As ${DBaaSPersona}
     User Navigates To Import MongoDB Provider Account On Developer View
@@ -113,3 +109,27 @@ User Creates DBaaSPolicy For ${namespace} From Invalid Namespace Alert on Dev Vi
     Create Custom DBaaSPolicy as ${DBaaSPersona}
     User Selects Administrator View
 
+User Creates DBaaSPolicy For ${DBaaSPersona}
+    Click If Element Present    ${lblOperand}
+    Wait Until Page Contains Element    ${btnCreateDBaaSPolicy}
+    Click Element    ${btnCreateDBaaSPolicy}
+    Create Custom DBaaSPolicy as ${DBaaSPersona}
+
+Max Quota Exceeded Error Displays
+    Scroll Element Into View    ${txtQuotaError}
+    Element Should Be Visible   ${txtQuotaError}
+
+Specify Connection Namespaces And Labels
+    ${ns}=  Run Keyword And Return Status   Should Contain    ${nsAndLabel}    namespaces
+    ${label}=  Run Keyword And Return Status   Should Contain    ${nsAndLabel}    label
+    IF      ${ns}
+        Click Element    ${btnToggleConnNS}
+        Add Policy Connection Namespaces    ${addNS}
+    END
+    IF    ${label}
+        Click Element    ${btnToggleConnNSSelect}
+        Element Should Be Visible    ${btnToggleMatchExp}
+        Click Element    ${btnToggleMatchExp}
+        Element Should Be Visible    ${btnAddMatchExp}
+        Add Policy Connection Nsselector    ${addLabel}
+    END
