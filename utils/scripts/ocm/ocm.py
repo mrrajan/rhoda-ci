@@ -60,6 +60,8 @@ class OpenshiftClusterManager:
         self.crdb_api_key = args.get("crdb_api_key")
         self.configrepo_dir = args.get("configrepo_dir")
         self.dbaas_persona = args.get("dbaas_persona")
+        self.rhoda_dev_version = args.get("rhoda_dev_version")
+        self.rhobs_token = args.get("rhobs_token")
 
         ocm_env = glob.glob(dir_path + "/../../../ocm.json.*")
         if ocm_env != []:
@@ -826,8 +828,8 @@ class OpenshiftClusterManager:
         """Login to Cluster as Admin using oc cli"""
 
         cmd = "oc login {} -u {} -p {} ".format(self.get_osd_cluster_api_url(),
-                                                 self.htpasswd_cluster_admin,
-                                                 self.htpasswd_cluster_password)
+                                                self.htpasswd_cluster_admin,
+                                                self.htpasswd_cluster_password)
 
         log.info("CMD: {}".format(cmd))
         ret = execute_command(cmd, True)
@@ -835,6 +837,36 @@ class OpenshiftClusterManager:
         if ret is None:
             log.info("Failed to login to Cluster {} through OC cli".format(self.cluster_name))
             sys.exit(1)
+
+    def install_rhoda_dev(self):
+        """To install RHODA operator for the given RHODA Dev Catalog version"""
+        match_values = [("stringData", "rhobs-token"), ("spec", "image"), ("spec", "startingCSV")]
+        rhoda_install_dev_temp = (
+            os.path.abspath(os.path.dirname(__file__))
+            + "/../../../utils/data/oc_install_dev_rhoda_build.yaml"
+        )
+        rhoda_temp_file = "./rhoda_install_temp.yaml"
+        with open(rhoda_install_dev_temp, "r") as file:
+            docs = yaml.load_all(file, yaml.FullLoader)
+            for data in docs:
+                for k1, k2 in match_values:
+                    try:
+                        if k2 in data[k1]:
+                            if not "spec" in k1:
+                                data["stringData"]["rhobs-token"] = self.rhobs_token
+                            else:
+                                image = data[k1][k2]
+                                data[k1][k2] = image.replace("<<version>>", self.rhoda_dev_version)
+                            match_values.pop(0)
+                    except KeyError:
+                        continue
+                with open(rhoda_temp_file, "w") as temp:
+                    temp.write(yaml.dump(data, default_flow_style=False, sort_keys=False))
+                cmd = "oc apply -f {}".format(rhoda_temp_file)
+                log.info("CMD: {}".format(cmd))
+                ret = execute_command(cmd)
+                if ret is None:
+                    log.info("Failed to deploy RHODA Operator")
 
 
 if __name__ == "__main__":
@@ -1404,6 +1436,28 @@ if __name__ == "__main__":
         metavar="",
     )
     dbaaspolicy_parser.set_defaults(func=ocm_obj.update_dbaaspolicy_config)
+
+    # Argument Parser to install RHODA for given version from Dev Catalog
+    install_rhoda_dev_parser = subparsers.add_parser(
+        "install_rhoda_dev",
+        help=("To Install RHODA from Develop Catalog Image"),
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    required_install_rhoda_dev_parser = install_rhoda_dev_parser.add_argument_group("required arguments")
+
+    required_install_rhoda_dev_parser.add_argument(
+        "--rhoda-version",
+        help="RHODA version to be installed",
+        action="store",
+        dest="rhoda_dev_version",
+    )
+    required_install_rhoda_dev_parser.add_argument(
+        "--rhobs-token",
+        help="RHOBS Token",
+        action="store",
+        dest="rhobs_token",
+    )
+    install_rhoda_dev_parser.set_defaults(func=ocm_obj.install_rhoda_dev)
 
     # Argument parsers for create_idp
     create_idp_parser = subparsers.add_parser(
