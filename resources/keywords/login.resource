@@ -7,7 +7,6 @@ Library     ../../utils/scripts/dbaas_utils.py
 Library     ../../utils/scripts/util.py
 Resource    ../object_repo/login_obj.resource
 Resource    ../keywords/suite_and_test_setup_teardown.resource
-Variables   ../../test-variables.yaml
 
 
 *** Variables ***

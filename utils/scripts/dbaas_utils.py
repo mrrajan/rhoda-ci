@@ -115,11 +115,8 @@ def create_secret_yaml(isv_lower, valid, namespace):
     """To configure secrets yaml template parameters basis
     input ISV(Database Provider)"""
     secret_temp = "./utils/data/oc_secrets.yaml"
-    test_variables = "./test-variables.yaml"
     with open(secret_temp, "r") as sf:
         data = yaml.safe_load(sf)
-    with open(test_variables, "r") as sf2:
-        variables = yaml.safe_load(sf2)
     global secret_name
     secret_name = (
         str(data["metadata"]["name"])
@@ -132,20 +129,29 @@ def create_secret_yaml(isv_lower, valid, namespace):
     data["metadata"]["namespace"] = namespace
     if "mongo" in isv_lower:
         data["metadata"]["labels"]["atlas.mongodb.com/type"] = "credentials"
-        data["stringData"] = variables["MONGO"]
+        data["stringData"] = get_secret_variable("MONGO")
     elif "crunchy" in isv_lower:
-        data["stringData"] = variables["CRUNCHY"]
+        data["stringData"] = get_secret_variable("CRUNCHY")
         data["metadata"]["labels"]["db-operator/type"] = "credentials"
     elif "cockroach" in isv_lower:
-        data["stringData"] = variables["COCKROACH"]
+        data["stringData"] = get_secret_variable("COCKROACH")
         data["metadata"]["labels"]["db-operator/type"] = "credentials"
     elif "rds" in isv_lower:
-        data["stringData"] = variables["RDS"]
+        data["stringData"] = get_secret_variable("RDS")
         data["metadata"]["labels"]["db-operator/type"] = "credentials"
     if valid == "False":
         last_key = list(data["stringData"].keys())[-1]
         data["stringData"][last_key] = "invalidData"
     return yaml.dump(data, sort_keys=False)
+
+
+def get_secret_variable(arg):
+    """To retrieve the secrets in Dict format"""
+    secrets = BuiltIn().get_variable_value("&{" + arg + "}")
+    returndict = {}
+    for key in secrets.keys():
+        returndict[key] = secrets[key]
+    return returndict
 
 
 def create_secret_cli(isv, valid, namespace=None):
