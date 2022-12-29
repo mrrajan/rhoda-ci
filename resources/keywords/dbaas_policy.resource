@@ -121,7 +121,7 @@ User Creates DBaaSPolicy For ${DBaaSPersona}
     Click Element    ${btnCreateDBaaSPolicy}
     Create Custom DBaaSPolicy as ${DBaaSPersona}
 
-Max Quota Exceeded Error Displays
+The Maximum Quota Exceeded Error Message Occurs
     Scroll Element Into View    ${txtQuotaError}
     Element Should Be Visible   ${txtQuotaError}
 
