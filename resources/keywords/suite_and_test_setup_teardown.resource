@@ -24,11 +24,13 @@ Remove Provisioned DBaaSInstances
     ...        get removed on ISV side
 
 Remove Created Namespaces
-    IF    "${newProject}" != "${EMPTY}"
-        ${cmd_namespaces} =    Catenate    oc delete ns/${newProject} --wait=True --timeout=10s --ignore-not-found
+    [Arguments]     ${ns}=${newProject}
+    IF    "${ns}" != "${EMPTY}"
+        ${cmd_namespaces} =    Catenate    oc delete ns/${ns} --wait=True --timeout=10s --ignore-not-found
         ...    && echo "Namespace deleted within timeout" || echo "Could not delete Namespace, will be force deleted"
         ${stdout} =    Execute Command    ${cmd_namespaces}    True
         Set Suite Variable    ${newProject}    ${EMPTY}
+        Set Suite Variable    ${ns}    ${EMPTY}
     END
 
 Remove DBaaSPolicy
@@ -53,7 +55,10 @@ Force Delete Terminating Namespaces
     ...    xargs -I{} echo "oc get ns {} -o json | jq '.spec.finalizers=[]' |
     ...    curl -H "Content-Type: application/json" -X PUT
     ...    http://127.0.0.1:8001/api/v1/namespaces/{}/finalize --data-binary @-" | xargs -I{} bash -c "{}"
+    Log     ${cmd_force_ns}
     ${stdout} =    Execute Command    ${cmd_force_ns}    True
+    ${kill_oc_proxy} =      Set Variable    pkill -f "oc proxy"
+    Execute Command    ${kill_oc_proxy}    True
 
 Tear Down The Test Case
     Log    Test Case Tear Down
@@ -79,6 +84,15 @@ Tear Down DBaaSPolicy Test Case
     Close Browser
     Remove Imported Provider Accounts
     Remove DBaaSPolicy
+    IF    "${user}" != "${EMPTY}" and "${access}" != "${EMPTY}"
+        Remove RoleBinding For The ${user} With ${access} To ${connectionNS}
+    END
+    IF    "@{addNS}" != "@{EMPTY}"
+        Login To OpenShift CLI As Cluster Admin
+        Remove Created Namespaces   ${connectionNS}
+        Force Delete Terminating Namespaces
+        Set Suite Variable    ${newProject}  ${DBaaSTestNS}
+    END
 
 Tear Down The Test Suite
     Log    Test Suite Tear Down
@@ -100,16 +114,18 @@ Setup The Test Case
     ...    AND    Set Global Variable    ${DBaaSPolicyConfigured}    ${True}
 
 Configure DBaaS Policy Namespaces
+    [Arguments]     ${ns}=${DBaaSTestNS}
     Login To OpenShift CLI As Cluster Admin
     Check LDAP Configuration For The Cluster
-    Add DBaaS Namespace
-    Add RBAC Policies For The Namespace ${DBaaSTestNS}
+    Add DBaaS Namespace     ${ns}
+    Add RBAC Policies For The Namespace ${ns}
 
 Add DBaaS Namespace
-    ${cmd} =    Set Variable    oc new-project ${DBaaSTestNS}
+    [Arguments]     ${ns}
+    ${cmd} =    Set Variable    oc new-project ${ns}
     Execute ${cmd} And Raise Exception For Error
-    Set Suite Variable    ${newProject}     ${DBaaSTestNS}
-    ${cmd} =    Set Variable    oc get project ${DBaaSTestNS}
+    Set Suite Variable    ${newProject}     ${ns}
+    ${cmd} =    Set Variable    oc get project ${ns}
     Execute ${cmd} And Raise Exception For Error
 
 Add RBAC Policies For The Namespace ${ns}
@@ -128,4 +144,8 @@ Execute ${cmd} And Raise Exception For Error
     ${stdout} =    Execute Command    ${cmd}    True
     ${stdout_str} =    Convert To String    ${stdout}
     ${stdout_str} =    Convert To Lower Case    ${stdout_str}
-    Should Not Contain    ${stdout_str}     error    msg=Command Executed With Error ${stdout_str}
+    Should Not Contain Any    ${stdout_str}     error   none    msg=Command Executed With Error ${stdout_str}
+
+Remove RoleBinding For The ${user} With ${access} To ${ns}
+    ${cmd} =    Set Variable    oc adm policy remove-role-from-user ${access} ${${user}.USERNAME} -n ${ns}
+    Execute ${cmd} And Raise Exception For Error

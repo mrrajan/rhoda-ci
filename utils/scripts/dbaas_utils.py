@@ -11,7 +11,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.by import By
 
-ROBOT_LIBRARY_VERSION = "0.8"
+ROBOT_LIBRARY_VERSION = "0.10"
 
 
 def select_database_instance(
@@ -372,3 +372,41 @@ def create_provision_instance_yaml(isv, prov_acc_ns, deploy_instance_ns):
         data["spec"]["otherInstanceParams"]["projectName"] = instance
     print(data)
     return yaml.dump(data, sort_keys=False)
+
+
+def add_policy_connection_namespaces(namespace: list):
+    """Adding Connection Namespace on DBaaSPolicy"""
+    sl = BuiltIn().get_library_instance("SeleniumLibrary")
+    btn_add_conn_xpath = BuiltIn().get_variable_value(r"\${btnAddConnNS}")
+    txtbx_value_xpath = BuiltIn().get_variable_value(r"\${txtBxAddConnValue}")
+    if not namespace:
+        namespace = "*"
+    for i, ns in enumerate(namespace):
+        sl.click_element(btn_add_conn_xpath)
+        txtbx_value_xpath = txtbx_value_xpath.replace("<<index>>", str(i))
+        sl.input_text(txtbx_value_xpath, ns)
+
+
+def add_policy_connection_nsselector(labelandconds: list):
+    """Adding connection Namespace Selector on DBaaSPolicy"""
+    sl = BuiltIn().get_library_instance("SeleniumLibrary")
+    btn_add_matchexp_xpath = BuiltIn().get_variable_value(r"\${btnAddMatchExp}")
+    txtbx_key_xpath = BuiltIn().get_variable_value(r"\${txtBxAddConnNsKey}")
+    txtbx_oper_xpath = BuiltIn().get_variable_value(r"\${txtBxAddConnOper}")
+    btn_values = BuiltIn().get_variable_value(r"\${btnAddConnNSToggle}")
+    btn_add_value = BuiltIn().get_variable_value(r"\${btnAddConnNsValue}")
+    txtbx_value_xpath = BuiltIn().get_variable_value(r"\${txtBxAddConnNsValue}")
+    for i, labelAndCond in enumerate(labelandconds):
+        sl.click_element(btn_add_matchexp_xpath)
+        txtbx_key_xpath = txtbx_key_xpath.replace("<<index>>", str(i))
+        txtbx_oper_xpath = txtbx_oper_xpath.replace("<<index>>", str(i))
+        btn_values = btn_values.replace("<<index>>", str(i))
+        for cond in labelAndCond.split(","):
+            sl.input_text(txtbx_key_xpath, cond[0])
+            sl.input_text(txtbx_oper_xpath, cond[1])
+            sl.click_element(btn_values)
+            for j, value in enumerate(cond[2].split(";")):
+                btn_add_value = btn_add_value.replace("<<index>>", str(i))
+                txtbx_value_xpath = txtbx_value_xpath.replace("<<index>>", str(i)).replace("<<index2>>", str(j))
+                sl.click_element(btn_add_value)
+                sl.input_text(txtbx_value_xpath)

@@ -345,6 +345,8 @@ class OpenshiftClusterManager:
         data["OCP_LDAP_SERVICE_ADM"]["PASSWORD"] = ldap_password
         data["OCP_LDAP_DEV"]["USERNAME"] = "ldap_dev1"
         data["OCP_LDAP_DEV"]["PASSWORD"] = ldap_password
+        data["OCP_DBAAS_USER"]["USERNAME"] = "ldap_project_adm2"
+        data["OCP_DBAAS_USER"]["PASSWORD"] = ldap_password
 
         with open(config_file, "w") as yaml_file:
             yaml_file.write(yaml.safe_dump(data, default_flow_style=False, default_style=False, sort_keys=False))
