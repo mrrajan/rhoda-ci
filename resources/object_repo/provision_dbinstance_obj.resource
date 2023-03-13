@@ -20,3 +20,11 @@ ${drpDwnProvAccOptn}             //select[contains(@aria-label,"Provider Account
 ${lnkCreateDBInst}               //a[contains(.,"Create New Database Instance")]
 ${engineTypeDrpDwn}              //select[@aria-label="Engine Type"]
 ${engineTypeDrpDwnOptn}          //select[@aria-label="Engine Type"]/option
+${drpDwnHostingPlan}             //select[@aria-label="plan"]
+${drpDwnCloudProvider}           //select[@aria-label="cloudProvider"]
+${drpDwnCloudRegion}             //select[@aria-label="regions"]
+${txtBxSpendLimit}               //input[@id="spendLimit"]
+${btnCancel}                     //button[.="Cancel"]
+${drpdwnNodes}                   //select[@aria-label="nodes"]
+${drpdwnCompute}                 //select[@aria-label="machineType"]
+${drpdwnStorage}                 //select[@aria-label="storageGib"]

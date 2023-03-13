@@ -6,8 +6,15 @@ Library     ../../utils/scripts/util.py
 
 
 *** Variables ***
-${engine}     ${EMPTY}
+${engine}       ${EMPTY}
 ${invalid}      False
+${CRDBPlan}     Dedicated
+${CRDBCloud}    Amazon Web Services
+${CRDBRegion}   N. Virginia (us-east-1)
+${CRDBLimit}    0
+${CRDBNodes}    3
+${CRDBCompute}  2 vCPU, 8 GiB RAM
+${CRDBStorage}  15 GiB
 
 *** Keywords ***
 User Navigates To Create Database Instance Screen From Database Access Page
@@ -53,6 +60,8 @@ User Enters Data To Create Database Instance On Admin View
     Run Keyword If    "Mongo" in """${DBProvider}"""    Run Keywords
     ...    Element Should Be Visible    ${txtBxProjName}
     ...    AND    Input Text    ${txtBxProjName}    ${mongoProj}
+    Run Keyword If    "Cockroach" in """${DBProvider}"""
+    ...    Cockroach Instance Full Provision
     Element Should Be Visible    ${btnCreateEnabled}
     Click Element    ${btnCreateEnabled}
     Element Should Be Visible    ${txtCreatingDBInst}
@@ -143,3 +152,27 @@ Instance Available Without Error ${cmd}
     ${stdout_str} =    Convert To Lower Case    ${stdout_str}
     Should Contain    ${stdout_str}    type:provisionready
     Should Not Contain Any    ${stdout_str}     error   notfound
+
+Cockroach Instance Full Provision
+    IF    """${drpDwnHostingPlan}""" == "Free trial"
+        Select From List By Value    ${drpDwnHostingPlan}       ${CRDBPlan}
+        Select From List By Value    ${drpDwnCloudProvider}     ${CRDBCloud}
+    ELSE IF     """${drpDwnHostingPlan}""" == "Serverless"
+        Select From List By Value    ${drpDwnHostingPlan}       ${CRDBPlan}
+        Select From List By Value    ${drpDwnCloudProvider}     ${CRDBCloud}
+        Scroll Element Into View    ${txtBxSpendLimit}
+        Select From List By Value    ${drpDwnCloudRegion}       ${CRDBRegion}
+        Input Text    ${txtBxSpendLimit}    ${CRDBLimit}
+    ELSE IF     """${drpDwnHostingPlan}""" == "Dedicated"
+        Select From List By Value    ${drpDwnHostingPlan}       ${CRDBPlan}
+        Select From List By Value    ${drpDwnCloudProvider}     ${CRDBCloud}
+        Scroll Element Into View    ${drpdwnStorage}
+        Select From List By Value    ${drpDwnCloudRegion}       ${CRDBRegion}
+        Select From List By Value    ${drpdwnNodes}     ${CRDBNodes}
+        Select From List By Value    ${drpdwnCompute}     ${CRDBCompute}
+        Select From List By Value    ${drpdwnStorage}     ${CRDBStorage}
+        Input Text    ${txtBxSpendLimit}    ${CRDBLimit}
+    END
+
+
+
